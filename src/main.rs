@@ -1,3 +1,4 @@
+#![allow(unused)]
 use anyhow::Result;
 use anyhow::anyhow;
 use axum::Router;
@@ -5,15 +6,15 @@ use axum::response::Html;
 use axum::routing::get;
 use port_check::free_local_port_in_range;
 use std::process::Command;
+use tokio::sync::mpsc;
 use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
 use watchexec::Watchexec;
 use watchexec_signals::Signal;
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    println!("Starting up...");
+async fn run_server() -> Result<()> {
     let port = find_port()?;
+    println!("Starting server on port: {}", port);
     let service = ServeDir::new("docs")
         .append_index_html_on_directories(true)
         .not_found_service(get(|| missing_page()));
@@ -23,14 +24,40 @@ async fn main() -> Result<()> {
     let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
         .await
         .unwrap();
-    let http_handle = tokio::spawn(async move {
-        println!("Starting folder server on port {}", port);
-        axum::serve(listener, app).await.unwrap();
-    });
+    axum::serve(listener, app).await.unwrap();
+    Ok(())
+
+    // let http_handle = tokio::spawn(async move {
+    //     println!("Starting folder server on port {}", port);
+    //     axum::serve(listener, app).await.unwrap();
+    // });
+    // let wx = Watchexec::default();
+    // wx.config.pathset(vec!["content"]);
+    // wx.config.on_action(move |mut action| {
+    //     // reloader.reload();
+    //     for event in action.events.iter() {
+    //         eprintln!("EVENT: {event:?}");
+    //     }
+    //     if action
+    //         .signals()
+    //         .any(|sig| sig == Signal::Interrupt || sig == Signal::Terminate)
+    //     {
+    //         action.quit(); // Needed for Ctrl+c
+    //     }
+    //     action
+    // });
+    // println!("Starting watcher");
+    // let _ = wx.main().await?;
+    // http_handle.abort();
+    // println!("Watcher done check");
+    // println!("Process complete.");
+}
+
+async fn run_watcher() -> Result<()> {
     let wx = Watchexec::default();
     wx.config.pathset(vec!["content"]);
     wx.config.on_action(move |mut action| {
-        reloader.reload();
+        // reloader.reload();
         for event in action.events.iter() {
             eprintln!("EVENT: {event:?}");
         }
@@ -44,9 +71,47 @@ async fn main() -> Result<()> {
     });
     println!("Starting watcher");
     let _ = wx.main().await?;
-    http_handle.abort();
-    println!("Watcher done check");
-    println!("Process complete.");
+    //http_handle.abort();
+    println!("Watcher stopped.");
+    Ok(())
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    println!("Starting up...");
+    let (tx, mut rx) = mpsc::channel::<bool>(32);
+
+    let http_handle = tokio::spawn(async move {
+        run_server().await;
+    });
+
+    run_watcher().await;
+
+    //let watcher_handle = tokio::spawn(async move {});
+
+    //watcher_handle.await;
+
+    println!("Process complete");
+
+    // let port = find_port()?;
+    // let service = ServeDir::new("docs")
+    //     .append_index_html_on_directories(true)
+    //     .not_found_service(get(|| missing_page()));
+    // let livereload = LiveReloadLayer::new();
+    // let reloader = livereload.reloader();
+    // let app = Router::new().fallback_service(service).layer(livereload);
+    // let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
+    //     .await
+    //     .unwrap();
+    // let http_handle = tokio::spawn(async move {
+    //     println!("Starting folder server on port {}", port);
+    //     axum::serve(listener, app).await.unwrap();
+    // });
+
+    Ok(())
+}
+
+async fn builder() -> Result<()> {
     Ok(())
 }
 
@@ -99,35 +164,35 @@ async fn missing_page() -> Html<&'static str> {
 //     Ok(())
 // }
 
-async fn run_watcher() -> Result<()> {
-    // let wx = Watchexec::default();
-    // let port = find_port()?;
-    // let service = ServeDir::new("docs")
-    //     .append_index_html_on_directories(true)
-    //     .not_found_service(get(|| missing_page()));
-    // let livereload = LiveReloadLayer::new();
-    // let app = Router::new().fallback_service(service).layer(livereload);
-    // let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-    //     .await
-    //     .unwrap();
-    // let http_handle = tokio::spawn(async move {
-    //     let _ = run_watcher().await;
-    // });
-    // println!("Starting folder server on port {}", port);
-    // axum::serve(listener, app).await.unwrap();
-    // wx.config.pathset(vec!["content"]);
-    // wx.config.on_action(move |mut action| {
-    //     if action.signals().any(|sig| sig == Signal::Interrupt) {
-    //         action.quit(); // Needed for Ctrl+c
-    //     } else {
-    //         action.quit();
-    //     }
-    //     action
-    // });
-    // println!("Starting watcher");
-    // // let _ = wx.main().await?;
-    // // http_handle.abort();
-    // println!("Watcher done check");
+//async fn run_watcher() -> Result<()> {
+// let wx = Watchexec::default();
+// let port = find_port()?;
+// let service = ServeDir::new("docs")
+//     .append_index_html_on_directories(true)
+//     .not_found_service(get(|| missing_page()));
+// let livereload = LiveReloadLayer::new();
+// let app = Router::new().fallback_service(service).layer(livereload);
+// let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
+//     .await
+//     .unwrap();
+// let http_handle = tokio::spawn(async move {
+//     let _ = run_watcher().await;
+// });
+// println!("Starting folder server on port {}", port);
+// axum::serve(listener, app).await.unwrap();
+// wx.config.pathset(vec!["content"]);
+// wx.config.on_action(move |mut action| {
+//     if action.signals().any(|sig| sig == Signal::Interrupt) {
+//         action.quit(); // Needed for Ctrl+c
+//     } else {
+//         action.quit();
+//     }
+//     action
+// });
+// println!("Starting watcher");
+// // let _ = wx.main().await?;
+// // http_handle.abort();
+// println!("Watcher done check");
 
-    Ok(())
-}
+//   Ok(())
+//}
