@@ -7,6 +7,8 @@ use axum::routing::get;
 use port_check::free_local_port_in_range;
 use std::process::Command;
 use tokio::sync::mpsc;
+use tokio::sync::mpsc::Receiver;
+use tokio::sync::mpsc::Sender;
 use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
 use watchexec::Watchexec;
@@ -14,7 +16,7 @@ use watchexec_signals::Signal;
 
 async fn run_server() -> Result<()> {
     let port = find_port()?;
-    println!("Starting server on port: {}", port);
+    println!("Starting web server on port: {}", port);
     let service = ServeDir::new("docs")
         .append_index_html_on_directories(true)
         .not_found_service(get(|| missing_page()));
@@ -27,10 +29,6 @@ async fn run_server() -> Result<()> {
     axum::serve(listener, app).await.unwrap();
     Ok(())
 
-    // let http_handle = tokio::spawn(async move {
-    //     println!("Starting folder server on port {}", port);
-    //     axum::serve(listener, app).await.unwrap();
-    // });
     // let wx = Watchexec::default();
     // wx.config.pathset(vec!["content"]);
     // wx.config.on_action(move |mut action| {
@@ -53,14 +51,30 @@ async fn run_server() -> Result<()> {
     // println!("Process complete.");
 }
 
-async fn run_watcher() -> Result<()> {
+async fn run_builder(mut rx: Receiver<bool>) -> Result<()> {
+    println!("Starting builder");
+    while let Some(message) = rx.recv().await {
+        println!("GOT = {}", message);
+    }
+    println!("Builder stopped.");
+    Ok(())
+}
+
+async fn run_watcher(tx: Sender<bool>) -> Result<()> {
+    println!("Starting watcher");
     let wx = Watchexec::default();
     wx.config.pathset(vec!["content"]);
     wx.config.on_action(move |mut action| {
+        println!("----");
+        let tx2 = tx.clone();
+        tokio::spawn(async move {
+            tx2.send(true).await.unwrap();
+        });
+
         // reloader.reload();
-        for event in action.events.iter() {
-            eprintln!("EVENT: {event:?}");
-        }
+        // for event in action.events.iter() {
+        //     eprintln!("EVENT: {event:?}");
+        // }
         if action
             .signals()
             .any(|sig| sig == Signal::Interrupt || sig == Signal::Terminate)
@@ -69,9 +83,7 @@ async fn run_watcher() -> Result<()> {
         }
         action
     });
-    println!("Starting watcher");
     let _ = wx.main().await?;
-    //http_handle.abort();
     println!("Watcher stopped.");
     Ok(())
 }
@@ -79,13 +91,16 @@ async fn run_watcher() -> Result<()> {
 #[tokio::main]
 async fn main() -> Result<()> {
     println!("Starting up...");
-    let (tx, mut rx) = mpsc::channel::<bool>(32);
-
     let http_handle = tokio::spawn(async move {
         run_server().await;
     });
-
-    run_watcher().await;
+    let (tx, mut rx) = mpsc::channel::<bool>(32);
+    let builder_handle = tokio::spawn(async move {
+        run_builder(rx).await;
+    });
+    run_watcher(tx).await;
+    http_handle.abort();
+    builder_handle.abort();
 
     //let watcher_handle = tokio::spawn(async move {});
 
