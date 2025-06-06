@@ -10,3 +10,6 @@ port_check = "0.2.1"
 tokio = { version = "1.45.1", features = ["rt-multi-thread", "macros"] }
 tower-http = { version= "0.6.6", features = ["fs"] }
 tower-livereload = "0.9.6"
+watchexec = "8.0.1"
+watchexec-events = "6.0.0"
+watchexec-signals = "5.0.0"
