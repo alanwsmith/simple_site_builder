@@ -4,6 +4,8 @@ use anyhow::anyhow;
 use axum::Router;
 use axum::response::Html;
 use axum::routing::get;
+use minijinja::syntax::SyntaxConfig;
+use minijinja::{Environment, Value, context};
 use port_check::free_local_port_in_range;
 use std::process::Command;
 use tokio::sync::mpsc;
