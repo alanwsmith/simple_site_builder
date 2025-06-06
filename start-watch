@@ -1,3 +1,6 @@
 #!/bin/bash
 
 cargo watch -C example -q -c -x run
+
+
+

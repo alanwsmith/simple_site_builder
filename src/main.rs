@@ -13,12 +13,12 @@ use watchexec_signals::Signal;
 #[tokio::main]
 async fn main() -> Result<()> {
     println!("Starting up...");
-    let wx = Watchexec::default();
     let port = find_port()?;
     let service = ServeDir::new("docs")
         .append_index_html_on_directories(true)
         .not_found_service(get(|| missing_page()));
     let livereload = LiveReloadLayer::new();
+    let reloader = livereload.reloader();
     let app = Router::new().fallback_service(service).layer(livereload);
     let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
         .await
@@ -27,12 +27,18 @@ async fn main() -> Result<()> {
         println!("Starting folder server on port {}", port);
         axum::serve(listener, app).await.unwrap();
     });
+    let wx = Watchexec::default();
     wx.config.pathset(vec!["content"]);
     wx.config.on_action(move |mut action| {
-        if action.signals().any(|sig| sig == Signal::Interrupt) {
+        reloader.reload();
+        for event in action.events.iter() {
+            eprintln!("EVENT: {event:?}");
+        }
+        if action
+            .signals()
+            .any(|sig| sig == Signal::Interrupt || sig == Signal::Terminate)
+        {
             action.quit(); // Needed for Ctrl+c
-        } else {
-            action.quit();
         }
         action
     });
@@ -44,6 +50,7 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+//
 fn find_port() -> Result<u16> {
     free_local_port_in_range(5444..=6000).ok_or(anyhow!("Could not find port"))
 }
