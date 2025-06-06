@@ -11,17 +11,16 @@ use tokio::sync::mpsc::Receiver;
 use tokio::sync::mpsc::Sender;
 use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
+use tower_livereload::Reloader;
 use watchexec::Watchexec;
 use watchexec_signals::Signal;
 
-async fn run_server() -> Result<()> {
+async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
     let port = find_port()?;
     println!("Starting web server on port: {}", port);
     let service = ServeDir::new("docs")
         .append_index_html_on_directories(true)
         .not_found_service(get(|| missing_page()));
-    let livereload = LiveReloadLayer::new();
-    let reloader = livereload.reloader();
     let app = Router::new().fallback_service(service).layer(livereload);
     let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
         .await
@@ -51,10 +50,11 @@ async fn run_server() -> Result<()> {
     // println!("Process complete.");
 }
 
-async fn run_builder(mut rx: Receiver<bool>) -> Result<()> {
+async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
     println!("Starting builder");
     while let Some(message) = rx.recv().await {
-        println!("GOT = {}", message);
+        println!("Building.");
+        reloader.reload();
     }
     println!("Builder stopped.");
     Ok(())
@@ -91,14 +91,16 @@ async fn run_watcher(tx: Sender<bool>) -> Result<()> {
 #[tokio::main]
 async fn main() -> Result<()> {
     println!("Starting up...");
+    let livereload = LiveReloadLayer::new();
+    let reloader = livereload.reloader();
+    let (watcher_tx, mut watcher_rx) = mpsc::channel::<bool>(32);
     let http_handle = tokio::spawn(async move {
-        run_server().await;
+        run_server(livereload).await;
     });
-    let (tx, mut rx) = mpsc::channel::<bool>(32);
     let builder_handle = tokio::spawn(async move {
-        run_builder(rx).await;
+        run_builder(watcher_rx, reloader).await;
     });
-    run_watcher(tx).await;
+    run_watcher(watcher_tx).await;
     http_handle.abort();
     builder_handle.abort();
 
