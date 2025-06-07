@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cargo watch -C example -q -c -x run
+cargo watch -C site -q -c -x run
 
 
 

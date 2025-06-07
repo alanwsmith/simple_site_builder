@@ -1,4 +1,3 @@
-#![allow(unused)]
 use anyhow::Result;
 use anyhow::anyhow;
 use axum::Router;
@@ -26,17 +25,46 @@ async fn main() -> Result<()> {
     println!("Starting up...");
     let livereload = LiveReloadLayer::new();
     let reloader = livereload.reloader();
-    let (watcher_tx, mut watcher_rx) = mpsc::channel::<bool>(32);
+    let (watcher_tx, watcher_rx) = mpsc::channel::<bool>(32);
     let http_handle = tokio::spawn(async move {
-        run_server(livereload).await;
+        let _ = run_server(livereload).await;
     });
     let builder_handle = tokio::spawn(async move {
-        run_builder(watcher_rx, reloader).await;
+        let _ = run_builder(watcher_rx, reloader).await;
     });
-    run_watcher(watcher_tx).await;
+    let _ = run_watcher(watcher_tx).await;
     http_handle.abort();
     builder_handle.abort();
     println!("Process complete");
+    Ok(())
+}
+
+fn deploy_non_html_files() -> Result<()> {
+    let content_dir = PathBuf::from("content");
+    let docs_dir = PathBuf::from("docs");
+    let file_list: Vec<PathBuf> = WalkDir::new(&content_dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_file())
+        .filter(|e| {
+            !e.file_name()
+                .to_str()
+                .map(|s| s.starts_with("."))
+                .unwrap_or(false)
+        })
+        .filter(|e| e.path().extension().is_some())
+        .filter(|e| e.path().extension().unwrap() != "html")
+        .map(|e| e.path().to_path_buf())
+        .map(|e| e.strip_prefix(content_dir.clone()).unwrap().to_path_buf())
+        .collect();
+    for file in file_list.iter() {
+        let in_path = content_dir.join(file);
+        let out_path = docs_dir.join(file);
+        let out_parent = out_path.parent().unwrap();
+        fs::create_dir_all(&out_parent)?;
+        fs::copy(in_path, out_path)?;
+    }
+
     Ok(())
 }
 
@@ -98,20 +126,20 @@ async fn missing_page() -> Html<&'static str> {
 
 async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
     println!("Starting builder");
-    let mut env = Environment::new();
-    env.set_syntax(
-        SyntaxConfig::builder()
-            .block_delimiters("[!", "!]")
-            .variable_delimiters("[@", "@]")
-            .comment_delimiters("[#", "#]")
-            .build()
-            .unwrap(),
-    );
-    while let Some(message) = rx.recv().await {
+    while let Some(_) = rx.recv().await {
         println!("Building.");
+        let mut env = Environment::new();
+        env.set_syntax(
+            SyntaxConfig::builder()
+                .block_delimiters("[!", "!]")
+                .variable_delimiters("[@", "@]")
+                .comment_delimiters("[#", "#]")
+                .build()
+                .unwrap(),
+        );
         let docs_dir = PathBuf::from("docs");
-        empty_dir(&docs_dir);
-        std::fs::create_dir_all(&docs_dir);
+        empty_dir(&docs_dir)?;
+        std::fs::create_dir_all(&docs_dir)?;
         env.set_loader(path_loader("templates"));
         for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
             if let Some(parent) = source_file.parent() {
@@ -133,6 +161,7 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
                 }
             }
         }
+        deploy_non_html_files()?;
         reloader.reload();
     }
     println!("Builder stopped.");
@@ -141,6 +170,7 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
 
 async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
     let port = find_port()?;
+    // launch_browser(port.into())?;
     println!("Starting web server on port: {}", port);
     let service = ServeDir::new("docs")
         .append_index_html_on_directories(true)
@@ -157,7 +187,7 @@ async fn run_watcher(tx: Sender<bool>) -> Result<()> {
     println!("Starting watcher");
     tx.send(true).await.unwrap();
     let wx = Watchexec::default();
-    wx.config.pathset(vec!["content"]);
+    wx.config.pathset(vec!["content", "templates"]);
     wx.config.on_action(move |mut action| {
         let tx2 = tx.clone();
         tokio::spawn(async move {

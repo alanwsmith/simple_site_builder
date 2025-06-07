@@ -1,12 +1,42 @@
 # ssbuild
 
-A bare-bones static site builder that 
+A personal, bare-bones static site builder that 
 uses jinja style templates
 
+## Overview
 
-## Notes
+This is my quick site builder. It'll eventually
+be replaced by [Neopoligen](https://www.neopoligen.com/). 
+It lets me quickly fire up site using templates 
+in the mean time.
 
-- TODO: Runs in the current directory.
+(It also servers as a small thing to practice on
+to learn more about rust, tokio, static site builders
+in general, etc...)
+
+Feel free to poke around to see how things work, but
+I probably wouldn't use it if I were you. It's super
+customized for the way I want to use it.
+
+## Details 
+
+- [x] Runs in the current directory
+
+- [x] Pulls templates from `./templates`
+
+- [x] Pulls .html files from `./content`,
+processes them as templates in MiniJinja
+and drops the output in `./docs` with the same
+file name/path that the source file had in `./content`.
+
+- [] Copies non .html files from `./content/`
+directly to `./docs` with the same file name/path.
+
+
+
+
+
+
 
 - TODO: Serves a dev version of the site out
 of a "docs" folder in the current directory.
