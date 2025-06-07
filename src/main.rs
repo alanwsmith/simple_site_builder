@@ -4,9 +4,12 @@ use anyhow::anyhow;
 use axum::Router;
 use axum::response::Html;
 use axum::routing::get;
+use minijinja::path_loader;
 use minijinja::syntax::SyntaxConfig;
 use minijinja::{Environment, Value, context};
 use port_check::free_local_port_in_range;
+use std::fs;
+use std::path::PathBuf;
 use std::process::Command;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::Receiver;
@@ -14,6 +17,7 @@ use tokio::sync::mpsc::Sender;
 use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
 use tower_livereload::Reloader;
+use walkdir::WalkDir;
 use watchexec::Watchexec;
 use watchexec_signals::Signal;
 
@@ -54,8 +58,17 @@ async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
 
 async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
     println!("Starting builder");
+    let mut env = Environment::new();
     while let Some(message) = rx.recv().await {
         println!("Building.");
+        env.set_loader(path_loader("templates"));
+        for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
+            let current_source = fs::read_to_string(format!("content/{}", source_file.display()))?;
+            dbg!(&current_source);
+            env.add_template_owned("current-source", current_source)?;
+            let template = env.get_template("current-source")?;
+            let output = template.render(context!(name => "world"))?;
+        }
         reloader.reload();
     }
     println!("Builder stopped.");
@@ -105,47 +118,13 @@ async fn main() -> Result<()> {
     run_watcher(watcher_tx).await;
     http_handle.abort();
     builder_handle.abort();
-
-    //let watcher_handle = tokio::spawn(async move {});
-
-    //watcher_handle.await;
-
     println!("Process complete");
-
-    // let port = find_port()?;
-    // let service = ServeDir::new("docs")
-    //     .append_index_html_on_directories(true)
-    //     .not_found_service(get(|| missing_page()));
-    // let livereload = LiveReloadLayer::new();
-    // let reloader = livereload.reloader();
-    // let app = Router::new().fallback_service(service).layer(livereload);
-    // let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-    //     .await
-    //     .unwrap();
-    // let http_handle = tokio::spawn(async move {
-    //     println!("Starting folder server on port {}", port);
-    //     axum::serve(listener, app).await.unwrap();
-    // });
-
     Ok(())
 }
 
-async fn builder() -> Result<()> {
-    Ok(())
-}
-
-//
 fn find_port() -> Result<u16> {
     free_local_port_in_range(5444..=6000).ok_or(anyhow!("Could not find port"))
 }
-
-// async fn init() -> Result<()> {
-//     tokio::spawn(async move {
-//         let _ = run_server().await;
-//     });
-//     let _ = run_watcher().await;
-//     Ok(())
-// }
 
 fn launch_browser(port: usize) -> Result<()> {
     let args: Vec<String> = vec![format!("http://localhost:{}", port)];
@@ -161,6 +140,25 @@ async fn missing_page() -> Html<&'static str> {
 <body>Page Not Found</body>
 </html>"#,
     )
+}
+
+pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
+    let file_list: Vec<PathBuf> = WalkDir::new(root_dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_file())
+        .filter(|e| {
+            !e.file_name()
+                .to_str()
+                .map(|s| s.starts_with("."))
+                .unwrap_or(false)
+        })
+        .filter(|e| e.path().extension().is_some())
+        .filter(|e| e.path().extension().unwrap() == "html")
+        .map(|e| e.path().to_path_buf())
+        .map(|e| e.strip_prefix(root_dir).unwrap().to_path_buf())
+        .collect();
+    Ok(file_list)
 }
 
 // async fn run_server() -> Result<()> {
