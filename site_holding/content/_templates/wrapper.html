@@ -1,19 +1,16 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <title>ssbuild</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!--
-    <title>A_NEW_WEBSITE</title>
-    <meta property="og:title" content="A_NEW_WEBSITE" />
-    <meta property="og:description" content="A_NEW_DESCRIPTION" />
-    <meta name="description" content="A_NEW_DESCRIPTION" />
+    <meta property="og:title" content="ssbuild" />
+    <meta property="og:description" content="a personal static site builder" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="A_NEW_DOMAIN" />
+    <meta property="og:url" content="https://ssbuild.alanwsmith.com/" />
     <meta
       property="og:image"
-      content="A_NEW_OG_IMAGE"
+      content="https://ssbuild.alanwsmith.com/og-images/og-image-main.jpg"
     />
     <link
       rel="apple-touch-icon"
@@ -42,8 +39,7 @@
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
     <meta name="theme-color" content="#000000" />
--->
-
+    <meta name="description" content="a personal static site builder" />
     <style>
       a {
         color: #aaa;
@@ -59,23 +55,18 @@
     </style>
   </head>
   <body>
-    <header>
-      <a href="https://www.alanwsmith.com">alanwsmith.com</a>
-    </header>
+    <!-- prettier-ignore -->
 
-    <main class="[! block main_classes !]default-wrapper[! endblock !]">
-      <!-- prettier-ignore -->
+    [! block header !][! endblock !] 
+    [! block main !][! endblock !]
 
-      [! block main !][! endblock !]
-
-      <!-- prettier-ignore-end -->
-    </main>
-
-    <footer class="default-wrapper align-center">
+    <footer>
       made by <a href="https://www.alanwsmith.com">alan w smith</a><br />
       <a href="https://links.alanwsmith.com">other projects</a> ~
       <a href="https://github.com/alanwsmith/ssbuild">source</a> ~
       <a href="https://socials.alanwsmith.com/">socials</a>
     </footer>
+
+    <!-- prettier-ignore-end -->
   </body>
 </html>
