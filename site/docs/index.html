@@ -43,6 +43,13 @@
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="a personal static site builder" />
     <style>
+      a {
+        color: #aaa;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #ddd;
+      }
       body {
         background-color: black;
         color: goldenrod;
@@ -71,17 +78,101 @@
     It lets me get ideas outta my head with less friction in the mean time.
   </p>
   <p>
+    It also give me another rep in designing and building a static site
+    generator.
+  </p>
+  <p>
     I wouldn't recommend trying to use it. It's super customized for the way I'm
     currently working. Feel free to poke around
     <a href="https://github.com/alanwsmith/ssbuild">the source code</a>
     if you're into that kinda thing.
   </p>
+
+  <h2>Features</h2>
+
+  <pre>
+- [x] Runs in the current directory
+
+- [x] Loads every `.html` file in `./content` 
+    as a template.
+
+- [x] Skips `.html` files in directories
+    that start with a `_` at the root of
+    the project. Everything else gets processed
+    and its output placed in `./docs` with
+    a matching file name/path.
+
+- [x] Empties the `./docs` output directory 
+    before each run.
+
+- [x] Runs a local dev server with hot-reload
+    when files change.
+
+- [x] Automatically finds an available port
+    for the server so multiple instances
+    can be run at the same time.
+
+- [] Automatically make `content` and
+    `docs` directories if they don't exist.
+
+- [] Automatically make an `index.html` file
+    when making `content` directory if it 
+    doesn't exist. 
+
+
+
+- [x] Pulls .html files from `./content`,
+processes them as templates in MiniJinja
+and drops the output in `./docs` with the same
+file name/path that the source file had in `./content`.
+
+- [] Copies non .html files from `./content/`
+directly to `./docs` with the same file name/path.
+
+- TODO: Serves a dev version of the site out
+of a "docs" folder in the current directory.
+
+- TODO: Loads templates from the "templates"
+folder in the current directory.
+
+- TODO: Runs any executable files in a 
+"scripts" directory" sorted by when things
+change (TBD on filtering this so content
+doesn't trigger scripts which make content
+that trigger scripts etc...)
+
+- TODO: Runs ".html" files in the "content" folder
+through minijinja and puts the results
+in the "docs" folder with the same filename. 
+
+- TODO: Copies other files from the "content" folder
+into the "docs" folder unchanged
+
+- DONE: Looks for a free port to serve on between
+5444 and 6000
+
+- TODO: Servers a built-in 404 page if a file can't
+be found.
+
+
+
+
+
+
+  </pre>
+
   <p>
     <img src="/og-images/og-image-main.jpg" />
   </p>
 </main>
 
-     
+
+    <footer>
+      made by <a href="https://www.alanwsmith.com">alan w smith</a><br />
+      <a href="https://links.alanwsmith.com">other projects</a> ~
+      <a href="https://github.com/alanwsmith/ssbuild">source</a> ~
+      <a href="https://socials.alanwsmith.com/">socials</a>
+    </footer>
 
     <!-- prettier-ignore-end -->
   </body>

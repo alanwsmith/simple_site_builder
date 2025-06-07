@@ -56,6 +56,7 @@ fn deploy_non_html_files() -> Result<()> {
         .filter(|e| e.path().extension().unwrap() != "html")
         .map(|e| e.path().to_path_buf())
         .map(|e| e.strip_prefix(content_dir.clone()).unwrap().to_path_buf())
+        .filter(|e| !e.display().to_string().starts_with("_"))
         .collect();
     for file in file_list.iter() {
         let in_path = content_dir.join(file);
@@ -104,7 +105,9 @@ pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
         .filter(|e| e.path().extension().unwrap() == "html")
         .map(|e| e.path().to_path_buf())
         .map(|e| e.strip_prefix(root_dir).unwrap().to_path_buf())
+        .filter(|e| !e.display().to_string().starts_with("_"))
         .collect();
+    dbg!(&file_list);
     Ok(file_list)
 }
 
@@ -140,7 +143,7 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
         let docs_dir = PathBuf::from("docs");
         empty_dir(&docs_dir)?;
         std::fs::create_dir_all(&docs_dir)?;
-        env.set_loader(path_loader("templates"));
+        env.set_loader(path_loader("content"));
         for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
             if let Some(parent) = source_file.parent() {
                 if parent.display().to_string() != "" {
@@ -187,7 +190,7 @@ async fn run_watcher(tx: Sender<bool>) -> Result<()> {
     println!("Starting watcher");
     tx.send(true).await.unwrap();
     let wx = Watchexec::default();
-    wx.config.pathset(vec!["content", "templates"]);
+    wx.config.pathset(vec!["content"]);
     wx.config.on_action(move |mut action| {
         let tx2 = tx.clone();
         tokio::spawn(async move {
