@@ -21,88 +21,6 @@ use walkdir::WalkDir;
 use watchexec::Watchexec;
 use watchexec_signals::Signal;
 
-async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
-    let port = find_port()?;
-    println!("Starting web server on port: {}", port);
-    let service = ServeDir::new("docs")
-        .append_index_html_on_directories(true)
-        .not_found_service(get(|| missing_page()));
-    let app = Router::new().fallback_service(service).layer(livereload);
-    let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-        .await
-        .unwrap();
-    axum::serve(listener, app).await.unwrap();
-    Ok(())
-
-    // let wx = Watchexec::default();
-    // wx.config.pathset(vec!["content"]);
-    // wx.config.on_action(move |mut action| {
-    //     // reloader.reload();
-    //     for event in action.events.iter() {
-    //         eprintln!("EVENT: {event:?}");
-    //     }
-    //     if action
-    //         .signals()
-    //         .any(|sig| sig == Signal::Interrupt || sig == Signal::Terminate)
-    //     {
-    //         action.quit(); // Needed for Ctrl+c
-    //     }
-    //     action
-    // });
-    // println!("Starting watcher");
-    // let _ = wx.main().await?;
-    // http_handle.abort();
-    // println!("Watcher done check");
-    // println!("Process complete.");
-}
-
-async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
-    println!("Starting builder");
-    let mut env = Environment::new();
-    while let Some(message) = rx.recv().await {
-        println!("Building.");
-        env.set_loader(path_loader("templates"));
-        for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
-            let current_source = fs::read_to_string(format!("content/{}", source_file.display()))?;
-            dbg!(&current_source);
-            env.add_template_owned("current-source", current_source)?;
-            let template = env.get_template("current-source")?;
-            let output = template.render(context!(name => "world"))?;
-        }
-        reloader.reload();
-    }
-    println!("Builder stopped.");
-    Ok(())
-}
-
-async fn run_watcher(tx: Sender<bool>) -> Result<()> {
-    println!("Starting watcher");
-    let wx = Watchexec::default();
-    wx.config.pathset(vec!["content"]);
-    wx.config.on_action(move |mut action| {
-        println!("----");
-        let tx2 = tx.clone();
-        tokio::spawn(async move {
-            tx2.send(true).await.unwrap();
-        });
-
-        // reloader.reload();
-        // for event in action.events.iter() {
-        //     eprintln!("EVENT: {event:?}");
-        // }
-        if action
-            .signals()
-            .any(|sig| sig == Signal::Interrupt || sig == Signal::Terminate)
-        {
-            action.quit(); // Needed for Ctrl+c
-        }
-        action
-    });
-    let _ = wx.main().await?;
-    println!("Watcher stopped.");
-    Ok(())
-}
-
 #[tokio::main]
 async fn main() -> Result<()> {
     println!("Starting up...");
@@ -126,22 +44,6 @@ fn find_port() -> Result<u16> {
     free_local_port_in_range(5444..=6000).ok_or(anyhow!("Could not find port"))
 }
 
-fn launch_browser(port: usize) -> Result<()> {
-    let args: Vec<String> = vec![format!("http://localhost:{}", port)];
-    Command::new("open").args(args).output()?;
-    Ok(())
-}
-
-async fn missing_page() -> Html<&'static str> {
-    Html(
-        r#"<!DOCTYPE html>
-<html lang="en">
-<head><style>body { background: black; color: white;}</style></head>
-<body>Page Not Found</body>
-</html>"#,
-    )
-}
-
 pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
     let file_list: Vec<PathBuf> = WalkDir::new(root_dir)
         .into_iter()
@@ -161,55 +63,85 @@ pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
     Ok(file_list)
 }
 
-// async fn run_server() -> Result<()> {
-//     let port = find_port()?;
-//     let service = ServeDir::new("docs")
-//         .append_index_html_on_directories(true)
-//         .not_found_service(get(|| missing_page()));
-//     let livereload = LiveReloadLayer::new();
-//     let reloader = livereload.reloader();
-//     let app = Router::new().fallback_service(service).layer(livereload);
-//     let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-//         .await
-//         .unwrap();
-//     tokio::spawn(async move {
-//         let _ = run_watcher().await;
-//     });
-//     println!("Starting folder server on port {}", port);
-//     // launch_browser(port.into())?;
-//     axum::serve(listener, app).await.unwrap();
-//     Ok(())
-// }
+fn launch_browser(port: usize) -> Result<()> {
+    let args: Vec<String> = vec![format!("http://localhost:{}", port)];
+    Command::new("open").args(args).output()?;
+    Ok(())
+}
 
-//async fn run_watcher() -> Result<()> {
-// let wx = Watchexec::default();
-// let port = find_port()?;
-// let service = ServeDir::new("docs")
-//     .append_index_html_on_directories(true)
-//     .not_found_service(get(|| missing_page()));
-// let livereload = LiveReloadLayer::new();
-// let app = Router::new().fallback_service(service).layer(livereload);
-// let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-//     .await
-//     .unwrap();
-// let http_handle = tokio::spawn(async move {
-//     let _ = run_watcher().await;
-// });
-// println!("Starting folder server on port {}", port);
-// axum::serve(listener, app).await.unwrap();
-// wx.config.pathset(vec!["content"]);
-// wx.config.on_action(move |mut action| {
-//     if action.signals().any(|sig| sig == Signal::Interrupt) {
-//         action.quit(); // Needed for Ctrl+c
-//     } else {
-//         action.quit();
-//     }
-//     action
-// });
-// println!("Starting watcher");
-// // let _ = wx.main().await?;
-// // http_handle.abort();
-// println!("Watcher done check");
+async fn missing_page() -> Html<&'static str> {
+    Html(
+        r#"<!DOCTYPE html>
+<html lang="en">
+<head><style>body { background: black; color: white;}</style></head>
+<body>Page Not Found</body>
+</html>"#,
+    )
+}
 
-//   Ok(())
-//}
+async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
+    println!("Starting builder");
+    let mut env = Environment::new();
+    env.set_syntax(
+        SyntaxConfig::builder()
+            .block_delimiters("[!", "!]")
+            .variable_delimiters("[@", "@]")
+            .comment_delimiters("[#", "#]")
+            .build()
+            .unwrap(),
+    );
+    while let Some(message) = rx.recv().await {
+        println!("Building.");
+        env.set_loader(path_loader("templates"));
+        for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
+            let current_source = fs::read_to_string(format!("content/{}", source_file.display()))?;
+            env.add_template_owned("current-source", current_source)?;
+            let template = env.get_template("current-source")?;
+            match template.render(context!()) {
+                Ok(output) => {
+                    fs::write(format!("docs/{}", source_file.display()), output).unwrap();
+                }
+                Err(e) => {}
+            }
+        }
+        reloader.reload();
+    }
+    println!("Builder stopped.");
+    Ok(())
+}
+
+async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
+    let port = find_port()?;
+    println!("Starting web server on port: {}", port);
+    let service = ServeDir::new("docs")
+        .append_index_html_on_directories(true)
+        .not_found_service(get(|| missing_page()));
+    let app = Router::new().fallback_service(service).layer(livereload);
+    let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
+        .await
+        .unwrap();
+    axum::serve(listener, app).await.unwrap();
+    Ok(())
+}
+
+async fn run_watcher(tx: Sender<bool>) -> Result<()> {
+    println!("Starting watcher");
+    let wx = Watchexec::default();
+    wx.config.pathset(vec!["content"]);
+    wx.config.on_action(move |mut action| {
+        let tx2 = tx.clone();
+        tokio::spawn(async move {
+            tx2.send(true).await.unwrap();
+        });
+        if action
+            .signals()
+            .any(|sig| sig == Signal::Interrupt || sig == Signal::Terminate)
+        {
+            action.quit(); // Needed for Ctrl+c
+        }
+        action
+    });
+    let _ = wx.main().await?;
+    println!("Watcher stopped.");
+    Ok(())
+}
