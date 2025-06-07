@@ -40,6 +40,23 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+fn empty_dir(dir: &PathBuf) -> Result<()> {
+    if let Ok(exists) = dir.try_exists() {
+        if exists {
+            for entry in dir.read_dir()? {
+                let entry = entry?;
+                let path = entry.path();
+                if path.is_dir() {
+                    fs::remove_dir_all(path)?;
+                } else {
+                    fs::remove_file(path)?;
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
 fn find_port() -> Result<u16> {
     free_local_port_in_range(5444..=6000).ok_or(anyhow!("Could not find port"))
 }
@@ -92,8 +109,18 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
     );
     while let Some(message) = rx.recv().await {
         println!("Building.");
+        let docs_dir = PathBuf::from("docs");
+        empty_dir(&docs_dir);
+        std::fs::create_dir_all(&docs_dir);
         env.set_loader(path_loader("templates"));
         for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
+            if let Some(parent) = source_file.parent() {
+                if parent.display().to_string() != "" {
+                    let dir_path = PathBuf::from("docs").join(parent);
+                    dbg!(&dir_path);
+                    std::fs::create_dir_all(dir_path)?;
+                }
+            }
             let current_source = fs::read_to_string(format!("content/{}", source_file.display()))?;
             env.add_template_owned("current-source", current_source)?;
             let template = env.get_template("current-source")?;
@@ -101,7 +128,9 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
                 Ok(output) => {
                     fs::write(format!("docs/{}", source_file.display()), output).unwrap();
                 }
-                Err(e) => {}
+                Err(e) => {
+                    println!("{}", e);
+                }
             }
         }
         reloader.reload();
@@ -126,6 +155,7 @@ async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
 
 async fn run_watcher(tx: Sender<bool>) -> Result<()> {
     println!("Starting watcher");
+    tx.send(true).await.unwrap();
     let wx = Watchexec::default();
     wx.config.pathset(vec!["content"]);
     wx.config.on_action(move |mut action| {
