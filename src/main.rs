@@ -25,8 +25,8 @@ use watchexec::Watchexec;
 use watchexec_signals::Signal;
 
 #[derive(RustEmbed)]
-#[folder = "src/defaults/content"]
-struct ContentFiles;
+#[folder = "src/defaults"]
+struct DefaultFiles;
 
 struct Site {
     content_dir: PathBuf,
@@ -114,25 +114,6 @@ fn empty_dir(dir: &PathBuf) -> Result<()> {
     Ok(())
 }
 
-fn extract_content() -> Result<()> {
-    let output_root = PathBuf::from("content");
-    for file in ContentFiles::iter() {
-        let name = file.as_ref();
-        let output_path = output_root.join(name);
-        if let Some(content) = ContentFiles::get(name) {
-            if let Some(parent) = output_path.parent() {
-                if !parent.exists() {
-                    std::fs::create_dir_all(parent)?
-                }
-            }
-            let body: Vec<u8> = content.data.into();
-            let mut output = File::create(output_path)?;
-            output.write_all(&body)?;
-        }
-    }
-    Ok(())
-}
-
 fn find_port() -> Result<u16> {
     free_local_port_in_range(5444..=6000).ok_or(anyhow!("Could not find port"))
 }
@@ -160,23 +141,22 @@ pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
 
 fn init_files_and_dirs(site: &Site) -> Result<()> {
     if !path_exists(&site.content_dir) {
-        fs::create_dir_all(&site.content_dir)?;
-        extract_content()?;
-        // REMINDER: only make other directories and
-        // files if the original content directory
-        // didn't exist
-        let templates_dir = &site.content_dir.join("_templates");
-        if !path_exists(templates_dir) {
-            fs::create_dir_all(templates_dir)?;
-        }
-        if !path_exists(&site.data_dir) {
-            fs::create_dir_all(&site.data_dir)?;
-        }
-        if !path_exists(&site.docs_dir) {
-            fs::create_dir_all(&site.docs_dir)?;
-        }
-        if !path_exists(&site.scripts_dir) {
-            fs::create_dir_all(&site.scripts_dir)?;
+        let output_root = PathBuf::from(".");
+        for file in DefaultFiles::iter() {
+            let name = file.as_ref();
+            let output_path = output_root.join(name);
+            if let Some(content) = DefaultFiles::get(name) {
+                if let Some(parent) = output_path.parent() {
+                    if !parent.exists() {
+                        std::fs::create_dir_all(parent)?
+                    }
+                }
+                if !output_path.exists() {
+                    let body: Vec<u8> = content.data.into();
+                    let mut output = File::create(output_path)?;
+                    output.write_all(&body)?;
+                }
+            }
         }
     }
     Ok(())
@@ -228,7 +208,6 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
         empty_dir(&docs_dir)?;
         std::fs::create_dir_all(&docs_dir)?;
         env.set_loader(path_loader("content"));
-
         for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
             if let Some(parent) = source_file.parent() {
                 if parent.display().to_string() != "" {
