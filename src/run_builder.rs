@@ -5,7 +5,9 @@ use minijinja::Environment;
 use minijinja::context;
 use minijinja::path_loader;
 use minijinja::syntax::SyntaxConfig;
-use serde_json::Value;
+// use serde_json::Value;
+use minijinja::Value;
+use serde_json5;
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
@@ -97,6 +99,7 @@ pub async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site)
                 .to_lowercase()
         );
         run_scripts(&site.scripts_dir)?;
+        let data = get_data()?;
         let mut env = Environment::new();
         env.set_syntax(
             SyntaxConfig::builder()
@@ -121,7 +124,7 @@ pub async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site)
             let current_source = fs::read_to_string(format!("content/{}", source_file.display()))?;
             env.add_template_owned("current-source", current_source)?;
             let template = env.get_template("current-source")?;
-            match template.render(context!()) {
+            match template.render(context!(data)) {
                 Ok(output) => {
                     fs::write(format!("docs/{}", source_file.display()), output).unwrap();
                 }
@@ -137,7 +140,33 @@ pub async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site)
     Ok(())
 }
 
-fn get_json5_data_files() -> Result<BTreeMap<String, Value>> {
+fn get_data() -> Result<Value> {
     let mut data = BTreeMap::new();
-    Ok(data)
+    let root_dir = PathBuf::from("data");
+    let file_list: Vec<PathBuf> = WalkDir::new(root_dir.clone())
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_file())
+        .filter(|e| {
+            !e.file_name()
+                .to_str()
+                .map(|s| s.starts_with("."))
+                .unwrap_or(false)
+        })
+        .filter(|e| e.path().extension().is_some())
+        .filter(|e| {
+            e.path().extension().unwrap() == "json" || e.path().extension().unwrap() == "json5"
+        })
+        .map(|e| e.path().to_path_buf())
+        .filter(|e| !e.display().to_string().starts_with("_"))
+        .collect();
+    for data_file in file_list.iter() {
+        let json = fs::read_to_string(data_file)?;
+        if let Ok(value) = serde_json5::from_str::<Value>(&json) {
+            if let Some(file_name) = data_file.file_name() {
+                data.insert(file_name.display().to_string(), value);
+            }
+        }
+    }
+    Ok(Value::from_serialize(data))
 }
