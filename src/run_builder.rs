@@ -163,8 +163,8 @@ fn get_data() -> Result<Value> {
     for data_file in file_list.iter() {
         let json = fs::read_to_string(data_file)?;
         if let Ok(value) = serde_json5::from_str::<Value>(&json) {
-            if let Some(file_name) = data_file.file_name() {
-                data.insert(file_name.display().to_string(), value);
+            if let Some(file_stem) = data_file.file_stem() {
+                data.insert(file_stem.display().to_string(), value);
             }
         }
     }
