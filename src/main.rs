@@ -52,6 +52,7 @@ impl Site {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    clearscreen::clear()?;
     println!("Starting up...");
     let site = Site::new();
     init_files_and_dirs(&site)?;
@@ -196,9 +197,14 @@ fn path_exists(path: &PathBuf) -> bool {
 }
 
 async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site) -> Result<()> {
+    let mut first_run = true;
     println!("Starting builder");
     while let Some(_) = rx.recv().await {
-        println!("Building.");
+        if !first_run {
+            clearscreen::clear()?;
+        }
+        first_run = false;
+        println!("Building");
         run_scripts(&site.scripts_dir)?;
         let mut env = Environment::new();
         env.set_syntax(
@@ -241,7 +247,6 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site) -> 
 }
 
 pub fn run_scripts(dir: &PathBuf) -> Result<()> {
-    println!("Running scripts");
     if !dir.is_dir() {
         return Err(anyhow!("Not a directory at: {}", dir.display()));
     }
@@ -264,6 +269,7 @@ pub fn run_scripts(dir: &PathBuf) -> Result<()> {
             let name = file.file_name().ok_or(anyhow!("Cound not get file name"))?;
             let parent = file.parent().ok_or(anyhow!("Could not get parent"))?;
             let canon_parent = canonicalize(parent)?;
+            println!("Running: {}", file.display());
             Command::new(format!("./{}", name.display()))
                 .current_dir(canon_parent)
                 .spawn()?;
