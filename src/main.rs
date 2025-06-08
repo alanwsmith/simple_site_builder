@@ -12,6 +12,7 @@ use permissions::is_executable;
 use port_check::free_local_port_in_range;
 use rust_embed::RustEmbed;
 use ssbuild::run_builder::*;
+use ssbuild::run_server::run_server;
 use ssbuild::site::Site;
 use std::collections::BTreeMap;
 use std::fs;
@@ -56,10 +57,6 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn find_port() -> Result<u16> {
-    free_local_port_in_range(5444..=6000).ok_or(anyhow!("Could not find port"))
-}
-
 fn get_json5_data_files() -> Result<BTreeMap<String, Value>> {
     let mut data = BTreeMap::new();
     Ok(data)
@@ -94,16 +91,6 @@ fn launch_browser(port: usize) -> Result<()> {
     Ok(())
 }
 
-async fn missing_page() -> Html<&'static str> {
-    Html(
-        r#"<!DOCTYPE html>
-<html lang="en">
-<head><style>body { background: black; color: white;}</style></head>
-<body>Page Not Found</body>
-</html>"#,
-    )
-}
-
 fn path_exists(path: &PathBuf) -> bool {
     match path.try_exists() {
         Ok(exists) => {
@@ -115,21 +102,6 @@ fn path_exists(path: &PathBuf) -> bool {
         }
         Err(_) => false,
     }
-}
-
-async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
-    let port = find_port()?;
-    // launch_browser(port.into())?;
-    println!("Starting web server on port: {}", port);
-    let service = ServeDir::new("docs")
-        .append_index_html_on_directories(true)
-        .not_found_service(get(|| missing_page()));
-    let app = Router::new().fallback_service(service).layer(livereload);
-    let listener = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-        .await
-        .unwrap();
-    axum::serve(listener, app).await.unwrap();
-    Ok(())
 }
 
 async fn run_watcher(tx: Sender<bool>) -> Result<()> {
