@@ -30,23 +30,6 @@ fn deploy_non_html_files() -> Result<()> {
     Ok(())
 }
 
-fn empty_dir(dir: &PathBuf) -> Result<()> {
-    if let Ok(exists) = dir.try_exists() {
-        if exists {
-            for entry in dir.read_dir()? {
-                let entry = entry?;
-                let path = entry.path();
-                if path.is_dir() {
-                    fs::remove_dir_all(path)?;
-                } else {
-                    fs::remove_file(path)?;
-                }
-            }
-        }
-    }
-    Ok(())
-}
-
 pub async fn run_builder(
     mut rx: Receiver<DateTime<Local>>,
     reloader: Reloader,
