@@ -95,11 +95,11 @@ pub async fn run_builder(
     let format = "%-I:%M:%S%p";
     let mut last_update = Instant::now();
     while let Some(_) = rx.recv().await {
-        if !first_run {
-            clearscreen::clear()?;
-        }
         let elapsed = last_update.elapsed();
         if first_run || elapsed > Duration::from_millis(200) {
+            if !first_run {
+                clearscreen::clear()?;
+            }
             first_run = false;
             println!(
                 "Building at {}",
