@@ -140,7 +140,6 @@ pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
         .map(|e| e.strip_prefix(root_dir).unwrap().to_path_buf())
         .filter(|e| !e.display().to_string().starts_with("_"))
         .collect();
-    dbg!(&file_list);
     Ok(file_list)
 }
 
@@ -199,12 +198,19 @@ fn path_exists(path: &PathBuf) -> bool {
 async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site) -> Result<()> {
     let mut first_run = true;
     println!("Starting builder");
+    let format = "%-I:%M:%S%p";
     while let Some(_) = rx.recv().await {
         if !first_run {
             clearscreen::clear()?;
         }
         first_run = false;
-        println!("Building");
+        println!(
+            "Building at {}",
+            chrono::Local::now()
+                .format(format)
+                .to_string()
+                .to_lowercase()
+        );
         run_scripts(&site.scripts_dir)?;
         let mut env = Environment::new();
         env.set_syntax(
