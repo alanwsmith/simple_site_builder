@@ -8,6 +8,7 @@ anyhow = "1.0.98"
 axum = "0.8.4"
 chrono = "0.4.41"
 clearscreen = "4.0.1"
+dialoguer = "0.11.0"
 itertools = "0.14.0"
 minijinja = { version = "2.10.2", features = ["custom_syntax", "loader"] }
 permissions = "0.5.1"

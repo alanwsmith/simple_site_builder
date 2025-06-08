@@ -1,5 +1,6 @@
 use anyhow::Result;
 use anyhow::anyhow;
+use dialoguer::Confirm;
 use itertools::Itertools;
 use rust_embed::RustEmbed;
 use ssbuild::run_builder::*;
@@ -22,44 +23,56 @@ async fn main() -> Result<()> {
     clearscreen::clear()?;
     println!("Starting up...");
     let site = Site::new();
-    init_files_and_dirs(&site)?;
-    let livereload = LiveReloadLayer::new();
-    let reloader = livereload.reloader();
-    let (watcher_tx, watcher_rx) = mpsc::channel::<bool>(32);
-    let http_handle = tokio::spawn(async move {
-        let _ = run_server(livereload).await;
-    });
-    let builder_handle = tokio::spawn(async move {
-        let _ = run_builder(watcher_rx, reloader, site.clone()).await;
-    });
-    let _ = run_watcher(watcher_tx).await;
-    http_handle.abort();
-    builder_handle.abort();
-    println!("Process complete");
+    if init_files_and_dirs(&site)? {
+        let livereload = LiveReloadLayer::new();
+        let reloader = livereload.reloader();
+        let (watcher_tx, watcher_rx) = mpsc::channel::<bool>(32);
+        let http_handle = tokio::spawn(async move {
+            let _ = run_server(livereload).await;
+        });
+        let builder_handle = tokio::spawn(async move {
+            let _ = run_builder(watcher_rx, reloader, site.clone()).await;
+        });
+        let _ = run_watcher(watcher_tx).await;
+        http_handle.abort();
+        builder_handle.abort();
+        println!("Process complete");
+    }
     Ok(())
 }
 
-fn init_files_and_dirs(site: &Site) -> Result<()> {
+fn init_files_and_dirs(site: &Site) -> Result<bool> {
     if !path_exists(&site.content_dir) {
-        let output_root = PathBuf::from(".");
-        for file in DefaultFiles::iter() {
-            let name = file.as_ref();
-            let output_path = output_root.join(name);
-            if let Some(content) = DefaultFiles::get(name) {
-                if let Some(parent) = output_path.parent() {
-                    if !parent.exists() {
-                        std::fs::create_dir_all(parent)?
+        let confirmation = Confirm::new()
+            .with_prompt("Make this a website directory?")
+            .default(false)
+            .interact()
+            .unwrap();
+        if confirmation {
+            let output_root = PathBuf::from(".");
+            for file in DefaultFiles::iter() {
+                let name = file.as_ref();
+                let output_path = output_root.join(name);
+                if let Some(content) = DefaultFiles::get(name) {
+                    if let Some(parent) = output_path.parent() {
+                        if !parent.exists() {
+                            std::fs::create_dir_all(parent)?
+                        }
+                    }
+                    if !output_path.exists() {
+                        let body: Vec<u8> = content.data.into();
+                        let mut output = File::create(output_path)?;
+                        output.write_all(&body)?;
                     }
                 }
-                if !output_path.exists() {
-                    let body: Vec<u8> = content.data.into();
-                    let mut output = File::create(output_path)?;
-                    output.write_all(&body)?;
-                }
             }
+            Ok(true)
+        } else {
+            Ok(false)
         }
+    } else {
+        Ok(true)
     }
-    Ok(())
 }
 
 fn path_exists(path: &PathBuf) -> bool {
