@@ -6,8 +6,11 @@ if [ -d "test-site" ]; then
 fi
 
 mkdir "test-site"
-echo "*" > "test-site/.gitignore"
-echo "!.gitignore" >> "test-site/.gitignore"
+
+# Can't do this for now since it makes
+# things disappear in nvim tree
+#echo "*" > "test-site/.gitignore"
+#echo "!.gitignore" >> "test-site/.gitignore"
 
 cargo watch -C test-site -q -c -x run
 

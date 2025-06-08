@@ -2,10 +2,10 @@ use anyhow::Result;
 use anyhow::anyhow;
 use chrono::DateTime;
 use chrono::Local;
-// use chrono::Utc;
 use dialoguer::Confirm;
 use itertools::Itertools;
 use rust_embed::RustEmbed;
+use ssbuild::helpers::*;
 use ssbuild::run_builder::*;
 use ssbuild::run_server::run_server;
 use ssbuild::run_watcher::run_watcher;
@@ -13,6 +13,7 @@ use ssbuild::site::Site;
 use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
+use std::process::Command;
 use tokio::sync::mpsc;
 use tower_livereload::LiveReloadLayer;
 use walkdir::WalkDir;
@@ -68,6 +69,14 @@ fn init_files_and_dirs(site: &Site) -> Result<bool> {
                         output.write_all(&body)?;
                     }
                 }
+            }
+            // make scripts executable
+            for script in get_files_in_dir(&site.scripts_dir, None, None)?.iter() {
+                let script_path = &site.scripts_dir.join(script);
+                let file_name = format!("{}", script_path.display());
+                let args = vec!["u+x", &file_name];
+                let _ = Command::new("chmod").args(args).output();
+                dbg!(script_path);
             }
             Ok(true)
         } else {
