@@ -12,6 +12,8 @@ use serde_json5;
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
+use std::time::Duration;
+use std::time::Instant;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use walkdir::WalkDir;
@@ -91,11 +93,13 @@ pub async fn run_builder(
     let mut first_run = true;
     println!("Starting builder");
     let format = "%-I:%M:%S%p";
-    let mut last_update = chrono::Local::now();
-    while let Some(ts) = rx.recv().await {
-        if ts > last_update {
+    let mut last_update = Instant::now();
+    while let Some(_) = rx.recv().await {
+        let elapsed = last_update.elapsed();
+        if elapsed > Duration::from_millis(200) {
+            last_update = Instant::now();
             if !first_run {
-                // clearscreen::clear()?;
+                clearscreen::clear()?;
             }
             first_run = false;
             println!(
@@ -143,7 +147,6 @@ pub async fn run_builder(
             }
             deploy_non_html_files()?;
             reloader.reload();
-            last_update = chrono::Local::now();
         }
     }
     println!("Builder stopped.");

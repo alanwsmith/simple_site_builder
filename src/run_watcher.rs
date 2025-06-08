@@ -1,5 +1,5 @@
 use anyhow::Result;
-use chrono::{DateTime, Local, Utc};
+use chrono::{DateTime, Local};
 use itertools::Itertools;
 use std::path::PathBuf;
 use std::sync::Arc;
