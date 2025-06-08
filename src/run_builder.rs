@@ -97,7 +97,6 @@ pub async fn run_builder(
     while let Some(_) = rx.recv().await {
         let elapsed = last_update.elapsed();
         if elapsed > Duration::from_millis(200) {
-            last_update = Instant::now();
             if !first_run {
                 clearscreen::clear()?;
             }
@@ -147,6 +146,7 @@ pub async fn run_builder(
             }
             deploy_non_html_files()?;
             reloader.reload();
+            last_update = Instant::now();
         }
     }
     println!("Builder stopped.");
