@@ -4,13 +4,16 @@ use anyhow::anyhow;
 use axum::Router;
 use axum::response::Html;
 use axum::routing::get;
+use itertools::Itertools;
 use minijinja::path_loader;
 use minijinja::syntax::SyntaxConfig;
 use minijinja::{Environment, Value, context};
+use permissions::is_executable;
 use port_check::free_local_port_in_range;
 use rust_embed::RustEmbed;
 use std::fs;
 use std::fs::File;
+use std::fs::canonicalize;
 use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
@@ -28,6 +31,7 @@ use watchexec_signals::Signal;
 #[folder = "src/defaults"]
 struct DefaultFiles;
 
+#[derive(Clone)]
 struct Site {
     content_dir: PathBuf,
     data_dir: PathBuf,
@@ -58,7 +62,7 @@ async fn main() -> Result<()> {
         let _ = run_server(livereload).await;
     });
     let builder_handle = tokio::spawn(async move {
-        let _ = run_builder(watcher_rx, reloader).await;
+        let _ = run_builder(watcher_rx, reloader, site.clone()).await;
     });
     let _ = run_watcher(watcher_tx).await;
     http_handle.abort();
@@ -191,10 +195,11 @@ fn path_exists(path: &PathBuf) -> bool {
     }
 }
 
-async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
+async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site) -> Result<()> {
     println!("Starting builder");
     while let Some(_) = rx.recv().await {
         println!("Building.");
+        run_scripts(&site.scripts_dir)?;
         let mut env = Environment::new();
         env.set_syntax(
             SyntaxConfig::builder()
@@ -235,6 +240,38 @@ async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader) -> Result<()> {
     Ok(())
 }
 
+pub fn run_scripts(dir: &PathBuf) -> Result<()> {
+    println!("Running scripts");
+    if !dir.is_dir() {
+        return Err(anyhow!("Not a directory at: {}", dir.display()));
+    }
+    let walker = WalkDir::new(dir).into_iter();
+    let files: Vec<_> = walker
+        .filter_map(|entry| match entry {
+            Ok(e) => Some(e.path().to_path_buf()),
+            Err(_) => None,
+        })
+        .filter(|pb| pb.is_file())
+        .filter(|pb| {
+            pb.components()
+                .find(|part| part.as_os_str().to_string_lossy().starts_with("."))
+                .is_none()
+        })
+        .sorted()
+        .collect();
+    for file in files {
+        if is_executable(&file)? {
+            let name = file.file_name().ok_or(anyhow!("Cound not get file name"))?;
+            let parent = file.parent().ok_or(anyhow!("Could not get parent"))?;
+            let canon_parent = canonicalize(parent)?;
+            Command::new(format!("./{}", name.display()))
+                .current_dir(canon_parent)
+                .spawn()?;
+        }
+    }
+    Ok(())
+}
+
 async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
     let port = find_port()?;
     // launch_browser(port.into())?;
@@ -271,4 +308,29 @@ async fn run_watcher(tx: Sender<bool>) -> Result<()> {
     let _ = wx.main().await?;
     println!("Watcher stopped.");
     Ok(())
+}
+
+pub fn get_file_list(dir: &PathBuf) -> Result<Vec<PathBuf>> {
+    if !dir.is_dir() {
+        return Err(anyhow!("Not a directory at: {}", dir.display()));
+    }
+    let walker = WalkDir::new(dir).into_iter();
+    let files: Vec<_> = walker
+        .filter_map(|entry| match entry {
+            Ok(e) => Some(e.path().to_path_buf()),
+            Err(_) => None,
+        })
+        .filter(|pb| pb.is_file())
+        .filter_map(|path| match path.strip_prefix(dir) {
+            Ok(p) => Some(p.to_path_buf()),
+            Err(_) => None,
+        })
+        .filter(|pb| {
+            pb.components()
+                .find(|part| part.as_os_str().to_string_lossy().starts_with("."))
+                .is_none()
+        })
+        .sorted()
+        .collect();
+    Ok(files)
 }
