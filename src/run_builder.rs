@@ -4,7 +4,6 @@ use crate::site::Site;
 use anyhow::Result;
 use chrono::DateTime;
 use chrono::Local;
-use dialoguer::Confirm;
 use minijinja::Environment;
 use minijinja::Value;
 use minijinja::context;
