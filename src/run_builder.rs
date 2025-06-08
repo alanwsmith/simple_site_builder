@@ -5,6 +5,8 @@ use minijinja::Environment;
 use minijinja::context;
 use minijinja::path_loader;
 use minijinja::syntax::SyntaxConfig;
+use serde_json::Value;
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 use tokio::sync::mpsc::Receiver;
@@ -133,4 +135,9 @@ pub async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site)
     }
     println!("Builder stopped.");
     Ok(())
+}
+
+fn get_json5_data_files() -> Result<BTreeMap<String, Value>> {
+    let mut data = BTreeMap::new();
+    Ok(data)
 }

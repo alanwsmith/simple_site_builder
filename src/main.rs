@@ -13,6 +13,7 @@ use port_check::free_local_port_in_range;
 use rust_embed::RustEmbed;
 use ssbuild::run_builder::*;
 use ssbuild::run_server::run_server;
+use ssbuild::run_watcher::run_watcher;
 use ssbuild::site::Site;
 use std::collections::BTreeMap;
 use std::fs;
@@ -57,11 +58,6 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_json5_data_files() -> Result<BTreeMap<String, Value>> {
-    let mut data = BTreeMap::new();
-    Ok(data)
-}
-
 fn init_files_and_dirs(site: &Site) -> Result<()> {
     if !path_exists(&site.content_dir) {
         let output_root = PathBuf::from(".");
@@ -102,29 +98,6 @@ fn path_exists(path: &PathBuf) -> bool {
         }
         Err(_) => false,
     }
-}
-
-async fn run_watcher(tx: Sender<bool>) -> Result<()> {
-    println!("Starting watcher");
-    tx.send(true).await.unwrap();
-    let wx = Watchexec::default();
-    wx.config.pathset(vec!["content"]);
-    wx.config.on_action(move |mut action| {
-        let tx2 = tx.clone();
-        tokio::spawn(async move {
-            tx2.send(true).await.unwrap();
-        });
-        if action
-            .signals()
-            .any(|sig| sig == Signal::Interrupt || sig == Signal::Terminate)
-        {
-            action.quit(); // Needed for Ctrl+c
-        }
-        action
-    });
-    let _ = wx.main().await?;
-    println!("Watcher stopped.");
-    Ok(())
 }
 
 pub fn get_file_list(dir: &PathBuf) -> Result<Vec<PathBuf>> {
