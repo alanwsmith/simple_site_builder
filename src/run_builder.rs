@@ -4,6 +4,7 @@ use crate::site::Site;
 use anyhow::Result;
 use chrono::DateTime;
 use chrono::Local;
+use dialoguer::Confirm;
 use minijinja::Environment;
 use minijinja::Value;
 use minijinja::context;
@@ -13,11 +14,28 @@ use serde_json5;
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
+use std::process::Command;
 use std::time::Duration;
 use std::time::Instant;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use walkdir::WalkDir;
+
+fn check_script_list(files: &Vec<PathBuf>, dir: &PathBuf) -> Result<Vec<PathBuf>> {
+    let return_list = get_files_in_tree(dir, None, None)?
+        .iter()
+        .map(|f| {
+            let check_file = f.to_path_buf();
+            if !files.contains(&check_file) {
+                let file_name = format!("{}", dir.join(&check_file).display());
+                let args = vec!["u+x", &file_name];
+                let _ = Command::new("chmod").args(args).output();
+            }
+            check_file
+        })
+        .collect();
+    Ok(return_list)
+}
 
 fn deploy_non_html_files() -> Result<()> {
     let content_dir = PathBuf::from("content");
@@ -39,6 +57,7 @@ pub async fn run_builder(
     println!("Starting builder");
     let format = "%-I:%M:%S%p";
     let mut last_update = Instant::now();
+    let mut script_list = get_files_in_tree(&site.scripts_dir, None, None)?;
     while let Some(_) = rx.recv().await {
         let elapsed = last_update.elapsed();
         if first_run || elapsed > Duration::from_millis(200) {
@@ -46,6 +65,7 @@ pub async fn run_builder(
                 clearscreen::clear()?;
             }
             first_run = false;
+            script_list = check_script_list(&script_list, &site.scripts_dir)?;
             println!(
                 "Building at {}",
                 chrono::Local::now()
@@ -74,7 +94,6 @@ pub async fn run_builder(
                 if let Some(parent) = source_file.parent() {
                     if parent.display().to_string() != "" {
                         let dir_path = PathBuf::from("docs").join(parent);
-                        dbg!(&dir_path);
                         std::fs::create_dir_all(dir_path)?;
                     }
                 }
