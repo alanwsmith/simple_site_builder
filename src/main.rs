@@ -1,36 +1,17 @@
-#![allow(unused)]
 use anyhow::Result;
 use anyhow::anyhow;
-use axum::Router;
-use axum::response::Html;
-use axum::routing::get;
 use itertools::Itertools;
-use minijinja::path_loader;
-use minijinja::syntax::SyntaxConfig;
-use minijinja::{Environment, Value, context};
-use permissions::is_executable;
-use port_check::free_local_port_in_range;
 use rust_embed::RustEmbed;
 use ssbuild::run_builder::*;
 use ssbuild::run_server::run_server;
 use ssbuild::run_watcher::run_watcher;
 use ssbuild::site::Site;
-use std::collections::BTreeMap;
-use std::fs;
 use std::fs::File;
-use std::fs::canonicalize;
 use std::io::Write;
 use std::path::PathBuf;
-use std::process::Command;
 use tokio::sync::mpsc;
-use tokio::sync::mpsc::Receiver;
-use tokio::sync::mpsc::Sender;
-use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
-use tower_livereload::Reloader;
 use walkdir::WalkDir;
-use watchexec::Watchexec;
-use watchexec_signals::Signal;
 
 #[derive(RustEmbed)]
 #[folder = "src/defaults"]
