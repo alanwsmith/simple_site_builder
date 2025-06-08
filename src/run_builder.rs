@@ -65,25 +65,25 @@ fn empty_dir(dir: &PathBuf) -> Result<()> {
     Ok(())
 }
 
-pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
-    let file_list: Vec<PathBuf> = WalkDir::new(root_dir)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().is_file())
-        .filter(|e| {
-            !e.file_name()
-                .to_str()
-                .map(|s| s.starts_with("."))
-                .unwrap_or(false)
-        })
-        .filter(|e| e.path().extension().is_some())
-        .filter(|e| e.path().extension().unwrap() == "html")
-        .map(|e| e.path().to_path_buf())
-        .map(|e| e.strip_prefix(root_dir).unwrap().to_path_buf())
-        .filter(|e| !e.display().to_string().starts_with("_"))
-        .collect();
-    Ok(file_list)
-}
+// pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
+//     let file_list: Vec<PathBuf> = WalkDir::new(root_dir)
+//         .into_iter()
+//         .filter_map(|e| e.ok())
+//         .filter(|e| e.path().is_file())
+//         .filter(|e| {
+//             !e.file_name()
+//                 .to_str()
+//                 .map(|s| s.starts_with("."))
+//                 .unwrap_or(false)
+//         })
+//         .filter(|e| e.path().extension().is_some())
+//         .filter(|e| e.path().extension().unwrap() == "html")
+//         .map(|e| e.path().to_path_buf())
+//         .map(|e| e.strip_prefix(root_dir).unwrap().to_path_buf())
+//         .filter(|e| !e.display().to_string().starts_with("_"))
+//         .collect();
+//     Ok(file_list)
+// }
 
 pub async fn run_builder(
     mut rx: Receiver<DateTime<Local>>,
@@ -123,7 +123,9 @@ pub async fn run_builder(
             empty_dir(&docs_dir)?;
             std::fs::create_dir_all(&docs_dir)?;
             env.set_loader(path_loader("content"));
-            for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
+            for source_file in
+                get_files_in_dir(&PathBuf::from("content"), Some(vec!["html"]), None)?.iter()
+            {
                 if let Some(parent) = source_file.parent() {
                     if parent.display().to_string() != "" {
                         let dir_path = PathBuf::from("docs").join(parent);
@@ -182,4 +184,44 @@ fn get_data() -> Result<Value> {
         }
     }
     Ok(Value::from_serialize(data))
+}
+
+pub fn get_files_in_dir(
+    dir: &PathBuf,
+    with: Option<Vec<&str>>,
+    without: Option<Vec<&str>>,
+) -> Result<Vec<PathBuf>> {
+    Ok(fs::read_dir(dir)?
+        .into_iter()
+        .filter_map(|path| path.ok())
+        .map(|path| path.path().to_path_buf())
+        .filter(|path| path.is_file())
+        .filter_map(|path| match path.strip_prefix(dir) {
+            Ok(p) => Some(p.to_path_buf()),
+            Err(_) => None,
+        })
+        .filter(|path| !path.display().to_string().starts_with("."))
+        .filter(|path| {
+            if let Some(with) = &with {
+                if let Some(ext) = path.extension() {
+                    with.contains(&ext.to_str().unwrap())
+                } else {
+                    false
+                }
+            } else {
+                true
+            }
+        })
+        .filter(|path| {
+            if let Some(without) = &without {
+                if let Some(ext) = path.extension() {
+                    !without.contains(&ext.to_str().unwrap())
+                } else {
+                    false
+                }
+            } else {
+                true
+            }
+        })
+        .collect())
 }
