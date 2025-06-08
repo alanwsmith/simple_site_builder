@@ -1,8 +1,13 @@
 #!/bin/bash
 
-if [ ! -d "test-site" ]; then
-  mkdir "test-site"
+if [ -d "test-site" ]; then
+  rm -rf "test-site"
+]
 fi
+
+mkdir "test-site"
+echo "*" > "test-site/.gitignore"
+echo "!.gitignore" >> "test-site/.gitignore"
 
 cargo watch -C test-site -q -c -x run
 
