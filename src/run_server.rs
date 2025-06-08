@@ -10,7 +10,7 @@ use tower_livereload::LiveReloadLayer;
 
 pub async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
     let port = find_port()?;
-    // launch_browser(port.into())?;
+    launch_browser(port.into())?;
     println!("Starting web server on port: {}", port);
     let service = ServeDir::new("docs")
         .append_index_html_on_directories(true)
