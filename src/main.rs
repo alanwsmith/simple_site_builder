@@ -1,5 +1,8 @@
 use anyhow::Result;
 use anyhow::anyhow;
+use chrono::DateTime;
+use chrono::Local;
+use chrono::Utc;
 use dialoguer::Confirm;
 use itertools::Itertools;
 use rust_embed::RustEmbed;
@@ -26,7 +29,7 @@ async fn main() -> Result<()> {
     if init_files_and_dirs(&site)? {
         let livereload = LiveReloadLayer::new();
         let reloader = livereload.reloader();
-        let (watcher_tx, watcher_rx) = mpsc::channel::<bool>(32);
+        let (watcher_tx, watcher_rx) = mpsc::channel::<DateTime<Local>>(32);
         let http_handle = tokio::spawn(async move {
             let _ = run_server(livereload).await;
         });

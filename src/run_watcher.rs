@@ -1,23 +1,29 @@
 use anyhow::Result;
+use chrono::{DateTime, Local, Utc};
 use itertools::Itertools;
 use std::path::PathBuf;
 use std::sync::Arc;
+// use std::time::Duration;
 use tokio::sync::mpsc::Sender;
 use watchexec::Watchexec;
 use watchexec_events::filekind::*;
 use watchexec_events::{Event, Tag};
 use watchexec_signals::Signal;
 
-pub async fn run_watcher(tx: Sender<bool>) -> Result<()> {
+pub async fn run_watcher(tx: Sender<DateTime<Local>>) -> Result<()> {
     println!("Starting watcher");
-    tx.send(true).await.unwrap();
+    tx.send(chrono::Local::now()).await.unwrap();
     let wx = Watchexec::default();
+    // wx.config.pathset(vec!["content", "data"]);
+    //wx.config.throttle(Duration::from_millis(200));
     wx.config.pathset(vec!["content", "data", "scripts"]);
     wx.config.on_action(move |mut action| {
-        if get_paths(&action.events).len() > 0 {
+        let paths = get_paths(&action.events);
+        dbg!(&paths);
+        if paths.len() > 0 {
             let tx2 = tx.clone();
             tokio::spawn(async move {
-                tx2.send(true).await.unwrap();
+                tx2.send(chrono::Local::now()).await.unwrap();
             });
         }
         if action

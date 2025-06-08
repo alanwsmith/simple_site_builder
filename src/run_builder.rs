@@ -1,6 +1,8 @@
 use crate::run_scripts::run_scripts;
 use crate::site::Site;
 use anyhow::Result;
+use chrono::DateTime;
+use chrono::Local;
 use minijinja::Environment;
 use minijinja::Value;
 use minijinja::context;
@@ -81,59 +83,68 @@ pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
     Ok(file_list)
 }
 
-pub async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site) -> Result<()> {
+pub async fn run_builder(
+    mut rx: Receiver<DateTime<Local>>,
+    reloader: Reloader,
+    site: Site,
+) -> Result<()> {
     let mut first_run = true;
     println!("Starting builder");
     let format = "%-I:%M:%S%p";
-    while let Some(_) = rx.recv().await {
-        if !first_run {
-            clearscreen::clear()?;
-        }
-        first_run = false;
-        println!(
-            "Building at {}",
-            chrono::Local::now()
-                .format(format)
-                .to_string()
-                .to_lowercase()
-        );
-        run_scripts(&site.scripts_dir)?;
-        let data = get_data()?;
-        let mut env = Environment::new();
-        env.set_syntax(
-            SyntaxConfig::builder()
-                .block_delimiters("[!", "!]")
-                .variable_delimiters("[@", "@]")
-                .comment_delimiters("[#", "#]")
-                .build()
-                .unwrap(),
-        );
-        let docs_dir = PathBuf::from("docs");
-        empty_dir(&docs_dir)?;
-        std::fs::create_dir_all(&docs_dir)?;
-        env.set_loader(path_loader("content"));
-        for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
-            if let Some(parent) = source_file.parent() {
-                if parent.display().to_string() != "" {
-                    let dir_path = PathBuf::from("docs").join(parent);
-                    dbg!(&dir_path);
-                    std::fs::create_dir_all(dir_path)?;
+    let mut last_update = chrono::Local::now();
+    while let Some(ts) = rx.recv().await {
+        if ts > last_update {
+            if !first_run {
+                // clearscreen::clear()?;
+            }
+            first_run = false;
+            println!(
+                "Building at {}",
+                chrono::Local::now()
+                    .format(format)
+                    .to_string()
+                    .to_lowercase()
+            );
+            run_scripts(&site.scripts_dir)?;
+            let data = get_data()?;
+            let mut env = Environment::new();
+            env.set_syntax(
+                SyntaxConfig::builder()
+                    .block_delimiters("[!", "!]")
+                    .variable_delimiters("[@", "@]")
+                    .comment_delimiters("[#", "#]")
+                    .build()
+                    .unwrap(),
+            );
+            let docs_dir = PathBuf::from("docs");
+            empty_dir(&docs_dir)?;
+            std::fs::create_dir_all(&docs_dir)?;
+            env.set_loader(path_loader("content"));
+            for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
+                if let Some(parent) = source_file.parent() {
+                    if parent.display().to_string() != "" {
+                        let dir_path = PathBuf::from("docs").join(parent);
+                        dbg!(&dir_path);
+                        std::fs::create_dir_all(dir_path)?;
+                    }
+                }
+                let current_source =
+                    fs::read_to_string(format!("content/{}", source_file.display()))?;
+                env.add_template_owned("current-source", current_source)?;
+                let template = env.get_template("current-source")?;
+                match template.render(context!(data)) {
+                    Ok(output) => {
+                        fs::write(format!("docs/{}", source_file.display()), output).unwrap();
+                    }
+                    Err(e) => {
+                        println!("{}", e);
+                    }
                 }
             }
-            let current_source = fs::read_to_string(format!("content/{}", source_file.display()))?;
-            env.add_template_owned("current-source", current_source)?;
-            let template = env.get_template("current-source")?;
-            match template.render(context!(data)) {
-                Ok(output) => {
-                    fs::write(format!("docs/{}", source_file.display()), output).unwrap();
-                }
-                Err(e) => {
-                    println!("{}", e);
-                }
-            }
+            deploy_non_html_files()?;
+            reloader.reload();
+            last_update = chrono::Local::now();
         }
-        deploy_non_html_files()?;
-        reloader.reload();
     }
     println!("Builder stopped.");
     Ok(())
