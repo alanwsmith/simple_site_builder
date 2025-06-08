@@ -55,6 +55,7 @@ pub async fn run_builder(
     let mut first_run = true;
     println!("Starting builder");
     let mut last_update = Instant::now();
+    // TODO: don't kill the builder here if this fails
     let mut script_list = get_files_in_tree(&site.scripts_dir, None, None)?;
     while let Some(_) = rx.recv().await {
         let elapsed = last_update.elapsed();
@@ -64,29 +65,28 @@ pub async fn run_builder(
         if !first_run {
             clearscreen::clear()?;
         }
-        first_run = false;
         print_timestamp();
+        // TODO: don't kill the builder here if this fails
+        script_list = check_script_list(&script_list, &site.scripts_dir)?;
+        // TODO: show errors here if they happen
+        let _ = run_scripts(&site.scripts_dir);
+        let docs_dir = PathBuf::from("docs");
+        let _ = empty_dir(&docs_dir);
+        if let Ok(_) = std::fs::create_dir_all(&docs_dir) {
+            println!("Made directory: {}", docs_dir.display());
+            if let Err(e) = output_files(&site) {
+                println!("{}", e);
+            }
+        } else {
+            println!("ERROR: Could not make directory: {}", docs_dir.display());
+        }
 
+        first_run = false;
         last_update = Instant::now();
+        // TODO: show errors here if they happen
+        let _ = deploy_non_html_files();
+        reloader.reload();
 
-        // if first_run || elapsed > Duration::from_millis(200) {
-        //     first_run = false;
-        //     script_list = check_script_list(&script_list, &site.scripts_dir)?;
-        //     run_scripts(&site.scripts_dir)?;
-        //     let data = get_data()?;
-        //     let mut env = Environment::new();
-        //     env.set_syntax(
-        //         SyntaxConfig::builder()
-        //             .block_delimiters("[!", "!]")
-        //             .variable_delimiters("[@", "@]")
-        //             .comment_delimiters("[#", "#]")
-        //             .build()
-        //             .unwrap(),
-        //     );
-        //     let docs_dir = PathBuf::from("docs");
-        //     empty_dir(&docs_dir)?;
-        //     std::fs::create_dir_all(&docs_dir)?;
-        //     env.set_loader(path_loader("content"));
         //     for source_file in
         //         get_files_in_dir(&PathBuf::from("content"), Some(vec!["html"]), None)?.iter()
         //     {
@@ -109,9 +109,6 @@ pub async fn run_builder(
         //             }
         //         }
         //     }
-        //     deploy_non_html_files()?;
-        //     reloader.reload();
-        // }
 
         //
     }
@@ -159,4 +156,37 @@ fn print_timestamp() {
             .to_string()
             .to_lowercase()
     );
+}
+
+fn output_files(site: &Site) -> Result<()> {
+    let data = match get_data() {
+        Ok(d) => d,
+        Err(_) => serde_json5::from_str("{}").unwrap(),
+    };
+    let mut env = Environment::new();
+    env.set_syntax(
+        SyntaxConfig::builder()
+            .block_delimiters("[!", "!]")
+            .variable_delimiters("[@", "@]")
+            .comment_delimiters("[#", "#]")
+            .build()
+            .unwrap(),
+    );
+    env.set_loader(path_loader("content"));
+    if let Ok(html_files) = get_files_in_dir(&site.content_dir, Some(vec!["html"]), None) {
+        for html_file in html_files {
+            if let Some(parent) = html_file.parent() {
+                if parent.display().to_string() != "" {
+                    let dir_path = PathBuf::from("docs").join(parent);
+                    std::fs::create_dir_all(dir_path)?;
+                }
+            }
+        }
+    } else {
+        println!(
+            "ERROR: Cound not load content files from: {}",
+            &site.content_dir.display()
+        );
+    }
+    Ok(())
 }
