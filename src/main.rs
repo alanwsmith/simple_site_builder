@@ -11,6 +11,9 @@ use minijinja::{Environment, Value, context};
 use permissions::is_executable;
 use port_check::free_local_port_in_range;
 use rust_embed::RustEmbed;
+use ssbuild::run_builder::*;
+use ssbuild::site::Site;
+use std::collections::BTreeMap;
 use std::fs;
 use std::fs::File;
 use std::fs::canonicalize;
@@ -30,25 +33,6 @@ use watchexec_signals::Signal;
 #[derive(RustEmbed)]
 #[folder = "src/defaults"]
 struct DefaultFiles;
-
-#[derive(Clone)]
-struct Site {
-    content_dir: PathBuf,
-    data_dir: PathBuf,
-    docs_dir: PathBuf,
-    scripts_dir: PathBuf,
-}
-
-impl Site {
-    pub fn new() -> Site {
-        Site {
-            content_dir: PathBuf::from("content"),
-            data_dir: PathBuf::from("data"),
-            docs_dir: PathBuf::from("docs"),
-            scripts_dir: PathBuf::from("scripts"),
-        }
-    }
-}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -72,75 +56,13 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn deploy_non_html_files() -> Result<()> {
-    let content_dir = PathBuf::from("content");
-    let docs_dir = PathBuf::from("docs");
-    let file_list: Vec<PathBuf> = WalkDir::new(&content_dir)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().is_file())
-        .filter(|e| {
-            !e.file_name()
-                .to_str()
-                .map(|s| s.starts_with("."))
-                .unwrap_or(false)
-        })
-        .filter(|e| e.path().extension().is_some())
-        .filter(|e| e.path().extension().unwrap() != "html")
-        .map(|e| e.path().to_path_buf())
-        .map(|e| e.strip_prefix(content_dir.clone()).unwrap().to_path_buf())
-        .filter(|e| !e.display().to_string().starts_with("_"))
-        .collect();
-    for file in file_list.iter() {
-        let in_path = content_dir.join(file);
-        let out_path = docs_dir.join(file);
-        let out_parent = out_path.parent().unwrap();
-        fs::create_dir_all(&out_parent)?;
-        let data = std::fs::read(in_path)?;
-        std::fs::write(out_path, &data)?;
-    }
-    Ok(())
-}
-
-fn empty_dir(dir: &PathBuf) -> Result<()> {
-    if let Ok(exists) = dir.try_exists() {
-        if exists {
-            for entry in dir.read_dir()? {
-                let entry = entry?;
-                let path = entry.path();
-                if path.is_dir() {
-                    fs::remove_dir_all(path)?;
-                } else {
-                    fs::remove_file(path)?;
-                }
-            }
-        }
-    }
-    Ok(())
-}
-
 fn find_port() -> Result<u16> {
     free_local_port_in_range(5444..=6000).ok_or(anyhow!("Could not find port"))
 }
 
-pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
-    let file_list: Vec<PathBuf> = WalkDir::new(root_dir)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().is_file())
-        .filter(|e| {
-            !e.file_name()
-                .to_str()
-                .map(|s| s.starts_with("."))
-                .unwrap_or(false)
-        })
-        .filter(|e| e.path().extension().is_some())
-        .filter(|e| e.path().extension().unwrap() == "html")
-        .map(|e| e.path().to_path_buf())
-        .map(|e| e.strip_prefix(root_dir).unwrap().to_path_buf())
-        .filter(|e| !e.display().to_string().starts_with("_"))
-        .collect();
-    Ok(file_list)
+fn get_json5_data_files() -> Result<BTreeMap<String, Value>> {
+    let mut data = BTreeMap::new();
+    Ok(data)
 }
 
 fn init_files_and_dirs(site: &Site) -> Result<()> {
@@ -193,95 +115,6 @@ fn path_exists(path: &PathBuf) -> bool {
         }
         Err(_) => false,
     }
-}
-
-async fn run_builder(mut rx: Receiver<bool>, reloader: Reloader, site: Site) -> Result<()> {
-    let mut first_run = true;
-    println!("Starting builder");
-    let format = "%-I:%M:%S%p";
-    while let Some(_) = rx.recv().await {
-        if !first_run {
-            clearscreen::clear()?;
-        }
-        first_run = false;
-        println!(
-            "Building at {}",
-            chrono::Local::now()
-                .format(format)
-                .to_string()
-                .to_lowercase()
-        );
-        run_scripts(&site.scripts_dir)?;
-        let mut env = Environment::new();
-        env.set_syntax(
-            SyntaxConfig::builder()
-                .block_delimiters("[!", "!]")
-                .variable_delimiters("[@", "@]")
-                .comment_delimiters("[#", "#]")
-                .build()
-                .unwrap(),
-        );
-        let docs_dir = PathBuf::from("docs");
-        empty_dir(&docs_dir)?;
-        std::fs::create_dir_all(&docs_dir)?;
-        env.set_loader(path_loader("content"));
-        for source_file in get_source_html_files(&PathBuf::from("content"))?.iter() {
-            if let Some(parent) = source_file.parent() {
-                if parent.display().to_string() != "" {
-                    let dir_path = PathBuf::from("docs").join(parent);
-                    dbg!(&dir_path);
-                    std::fs::create_dir_all(dir_path)?;
-                }
-            }
-            let current_source = fs::read_to_string(format!("content/{}", source_file.display()))?;
-            env.add_template_owned("current-source", current_source)?;
-            let template = env.get_template("current-source")?;
-            match template.render(context!()) {
-                Ok(output) => {
-                    fs::write(format!("docs/{}", source_file.display()), output).unwrap();
-                }
-                Err(e) => {
-                    println!("{}", e);
-                }
-            }
-        }
-        deploy_non_html_files()?;
-        reloader.reload();
-    }
-    println!("Builder stopped.");
-    Ok(())
-}
-
-pub fn run_scripts(dir: &PathBuf) -> Result<()> {
-    if !dir.is_dir() {
-        return Err(anyhow!("Not a directory at: {}", dir.display()));
-    }
-    let walker = WalkDir::new(dir).into_iter();
-    let files: Vec<_> = walker
-        .filter_map(|entry| match entry {
-            Ok(e) => Some(e.path().to_path_buf()),
-            Err(_) => None,
-        })
-        .filter(|pb| pb.is_file())
-        .filter(|pb| {
-            pb.components()
-                .find(|part| part.as_os_str().to_string_lossy().starts_with("."))
-                .is_none()
-        })
-        .sorted()
-        .collect();
-    for file in files {
-        if is_executable(&file)? {
-            let name = file.file_name().ok_or(anyhow!("Cound not get file name"))?;
-            let parent = file.parent().ok_or(anyhow!("Could not get parent"))?;
-            let canon_parent = canonicalize(parent)?;
-            println!("Running: {}", file.display());
-            Command::new(format!("./{}", name.display()))
-                .current_dir(canon_parent)
-                .spawn()?;
-        }
-    }
-    Ok(())
 }
 
 async fn run_server(livereload: LiveReloadLayer) -> Result<()> {
