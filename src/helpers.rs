@@ -4,6 +4,18 @@ use std::fs;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 
+pub fn copy_file_list_from_to(files: &Vec<PathBuf>, from: &PathBuf, to: &PathBuf) -> Result<()> {
+    for file in files.iter() {
+        let in_path = from.join(file);
+        let out_path = to.join(file);
+        let out_parent = out_path.parent().unwrap();
+        fs::create_dir_all(&out_parent)?;
+        let data = std::fs::read(in_path)?;
+        std::fs::write(out_path, &data)?;
+    }
+    Ok(())
+}
+
 pub fn get_files_in_dir(
     dir: &PathBuf,
     with: Option<Vec<&str>>,

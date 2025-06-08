@@ -26,14 +26,7 @@ fn deploy_non_html_files() -> Result<()> {
         .into_iter()
         .filter(|pb| !pb.display().to_string().starts_with("_"))
         .collect();
-    for file in file_list.iter() {
-        let in_path = content_dir.join(file);
-        let out_path = docs_dir.join(file);
-        let out_parent = out_path.parent().unwrap();
-        fs::create_dir_all(&out_parent)?;
-        let data = std::fs::read(in_path)?;
-        std::fs::write(out_path, &data)?;
-    }
+    copy_file_list_from_to(&file_list, &content_dir, &docs_dir)?;
     Ok(())
 }
 
