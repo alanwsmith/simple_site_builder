@@ -26,7 +26,7 @@ fn deploy_non_html_files() -> Result<()> {
         .into_iter()
         .filter(|pb| !pb.display().to_string().starts_with("_"))
         .collect();
-    copy_file_list_from_to(&file_list, &content_dir, &docs_dir)?;
+    copy_file_list_from_to(&file_list, &content_dir, &docs_dir, true)?;
     Ok(())
 }
 
