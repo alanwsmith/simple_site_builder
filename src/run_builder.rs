@@ -1,3 +1,4 @@
+use crate::helpers::*;
 use crate::run_scripts::run_scripts;
 use crate::site::Site;
 use anyhow::Result;
@@ -21,21 +22,9 @@ use walkdir::WalkDir;
 fn deploy_non_html_files() -> Result<()> {
     let content_dir = PathBuf::from("content");
     let docs_dir = PathBuf::from("docs");
-    let file_list: Vec<PathBuf> = WalkDir::new(&content_dir)
+    let file_list: Vec<PathBuf> = get_files_in_tree(&content_dir, None, Some(vec!["html"]))?
         .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().is_file())
-        .filter(|e| {
-            !e.file_name()
-                .to_str()
-                .map(|s| s.starts_with("."))
-                .unwrap_or(false)
-        })
-        .filter(|e| e.path().extension().is_some())
-        .filter(|e| e.path().extension().unwrap() != "html")
-        .map(|e| e.path().to_path_buf())
-        .map(|e| e.strip_prefix(content_dir.clone()).unwrap().to_path_buf())
-        .filter(|e| !e.display().to_string().starts_with("_"))
+        .filter(|pb| !pb.display().to_string().starts_with("_"))
         .collect();
     for file in file_list.iter() {
         let in_path = content_dir.join(file);
@@ -64,26 +53,6 @@ fn empty_dir(dir: &PathBuf) -> Result<()> {
     }
     Ok(())
 }
-
-// pub fn get_source_html_files(root_dir: &PathBuf) -> Result<Vec<PathBuf>> {
-//     let file_list: Vec<PathBuf> = WalkDir::new(root_dir)
-//         .into_iter()
-//         .filter_map(|e| e.ok())
-//         .filter(|e| e.path().is_file())
-//         .filter(|e| {
-//             !e.file_name()
-//                 .to_str()
-//                 .map(|s| s.starts_with("."))
-//                 .unwrap_or(false)
-//         })
-//         .filter(|e| e.path().extension().is_some())
-//         .filter(|e| e.path().extension().unwrap() == "html")
-//         .map(|e| e.path().to_path_buf())
-//         .map(|e| e.strip_prefix(root_dir).unwrap().to_path_buf())
-//         .filter(|e| !e.display().to_string().starts_with("_"))
-//         .collect();
-//     Ok(file_list)
-// }
 
 pub async fn run_builder(
     mut rx: Receiver<DateTime<Local>>,
