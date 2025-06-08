@@ -54,65 +54,66 @@ pub async fn run_builder(
 ) -> Result<()> {
     let mut first_run = true;
     println!("Starting builder");
-    let format = "%-I:%M:%S%p";
     let mut last_update = Instant::now();
     let mut script_list = get_files_in_tree(&site.scripts_dir, None, None)?;
     while let Some(_) = rx.recv().await {
         let elapsed = last_update.elapsed();
-        if first_run || elapsed > Duration::from_millis(200) {
-            if !first_run {
-                clearscreen::clear()?;
-            }
-            first_run = false;
-            script_list = check_script_list(&script_list, &site.scripts_dir)?;
-            println!(
-                "Building at {}",
-                chrono::Local::now()
-                    .format(format)
-                    .to_string()
-                    .to_lowercase()
-            );
-            run_scripts(&site.scripts_dir)?;
-            let data = get_data()?;
-            let mut env = Environment::new();
-            env.set_syntax(
-                SyntaxConfig::builder()
-                    .block_delimiters("[!", "!]")
-                    .variable_delimiters("[@", "@]")
-                    .comment_delimiters("[#", "#]")
-                    .build()
-                    .unwrap(),
-            );
-            let docs_dir = PathBuf::from("docs");
-            empty_dir(&docs_dir)?;
-            std::fs::create_dir_all(&docs_dir)?;
-            env.set_loader(path_loader("content"));
-            for source_file in
-                get_files_in_dir(&PathBuf::from("content"), Some(vec!["html"]), None)?.iter()
-            {
-                if let Some(parent) = source_file.parent() {
-                    if parent.display().to_string() != "" {
-                        let dir_path = PathBuf::from("docs").join(parent);
-                        std::fs::create_dir_all(dir_path)?;
-                    }
-                }
-                let current_source =
-                    fs::read_to_string(format!("content/{}", source_file.display()))?;
-                env.add_template_owned("current-source", current_source)?;
-                let template = env.get_template("current-source")?;
-                match template.render(context!(data)) {
-                    Ok(output) => {
-                        fs::write(format!("docs/{}", source_file.display()), output).unwrap();
-                    }
-                    Err(e) => {
-                        println!("{}", e);
-                    }
-                }
-            }
-            deploy_non_html_files()?;
-            reloader.reload();
-            last_update = Instant::now();
+        if !first_run && elapsed < Duration::from_millis(300) {
+            continue;
         }
+        if !first_run {
+            clearscreen::clear()?;
+        }
+        first_run = false;
+        print_timestamp();
+
+        last_update = Instant::now();
+
+        // if first_run || elapsed > Duration::from_millis(200) {
+        //     first_run = false;
+        //     script_list = check_script_list(&script_list, &site.scripts_dir)?;
+        //     run_scripts(&site.scripts_dir)?;
+        //     let data = get_data()?;
+        //     let mut env = Environment::new();
+        //     env.set_syntax(
+        //         SyntaxConfig::builder()
+        //             .block_delimiters("[!", "!]")
+        //             .variable_delimiters("[@", "@]")
+        //             .comment_delimiters("[#", "#]")
+        //             .build()
+        //             .unwrap(),
+        //     );
+        //     let docs_dir = PathBuf::from("docs");
+        //     empty_dir(&docs_dir)?;
+        //     std::fs::create_dir_all(&docs_dir)?;
+        //     env.set_loader(path_loader("content"));
+        //     for source_file in
+        //         get_files_in_dir(&PathBuf::from("content"), Some(vec!["html"]), None)?.iter()
+        //     {
+        //         if let Some(parent) = source_file.parent() {
+        //             if parent.display().to_string() != "" {
+        //                 let dir_path = PathBuf::from("docs").join(parent);
+        //                 std::fs::create_dir_all(dir_path)?;
+        //             }
+        //         }
+        //         let current_source =
+        //             fs::read_to_string(format!("content/{}", source_file.display()))?;
+        //         env.add_template_owned("current-source", current_source)?;
+        //         let template = env.get_template("current-source")?;
+        //         match template.render(context!(data)) {
+        //             Ok(output) => {
+        //                 fs::write(format!("docs/{}", source_file.display()), output).unwrap();
+        //             }
+        //             Err(e) => {
+        //                 println!("{}", e);
+        //             }
+        //         }
+        //     }
+        //     deploy_non_html_files()?;
+        //     reloader.reload();
+        // }
+
+        //
     }
     println!("Builder stopped.");
     Ok(())
@@ -147,4 +148,15 @@ fn get_data() -> Result<Value> {
         }
     }
     Ok(Value::from_serialize(data))
+}
+
+fn print_timestamp() {
+    let format = "%-I:%M:%S%p";
+    println!(
+        "Building at {}",
+        chrono::Local::now()
+            .format(format)
+            .to_string()
+            .to_lowercase()
+    );
 }

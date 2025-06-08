@@ -36,6 +36,9 @@ async fn main() -> Result<()> {
         });
         let builder_handle = tokio::spawn(async move {
             let _ = run_builder(watcher_rx, reloader, site.clone()).await;
+            println!("################ ERROR ##################");
+            println!("builder crashed");
+            println!("#########################################");
         });
         let _ = run_watcher(watcher_tx).await;
         http_handle.abort();
