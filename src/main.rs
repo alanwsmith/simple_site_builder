@@ -81,12 +81,6 @@ fn init_files_and_dirs(site: &Site) -> Result<()> {
     Ok(())
 }
 
-fn launch_browser(port: usize) -> Result<()> {
-    let args: Vec<String> = vec![format!("http://localhost:{}", port)];
-    Command::new("open").args(args).output()?;
-    Ok(())
-}
-
 fn path_exists(path: &PathBuf) -> bool {
     match path.try_exists() {
         Ok(exists) => {
