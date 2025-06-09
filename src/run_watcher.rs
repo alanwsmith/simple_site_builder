@@ -19,7 +19,7 @@ pub async fn run_watcher(tx: Sender<DateTime<Local>>) -> Result<()> {
     wx.config.pathset(vec!["content", "data", "scripts"]);
     wx.config.on_action(move |mut action| {
         let paths = get_paths(&action.events);
-        dbg!(&paths);
+        // dbg!(&paths);
         if paths.len() > 0 {
             let tx2 = tx.clone();
             tokio::spawn(async move {

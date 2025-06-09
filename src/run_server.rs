@@ -38,7 +38,9 @@ async fn missing_page() -> Html<&'static str> {
 }
 
 fn launch_browser(port: usize) -> Result<()> {
-    let args: Vec<String> = vec![format!("http://localhost:{}", port)];
-    Command::new("open").args(args).output()?;
+    if !cfg!(debug_assertions) {
+        let args: Vec<String> = vec![format!("http://localhost:{}", port)];
+        Command::new("open").args(args).output()?;
+    }
     Ok(())
 }

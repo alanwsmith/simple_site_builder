@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if [ -d "test-site" ]; then
+  rm -rf "test-site"
+]
+fi
+
+mkdir "test-site"
+
+# Can't do this for now since it makes
+# things disappear in nvim tree
+#echo "*" > "test-site/.gitignore"
+#echo "!.gitignore" >> "test-site/.gitignore"
+
 cargo watch -C test-site -q -c -x run
 
 

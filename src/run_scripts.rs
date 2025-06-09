@@ -33,7 +33,7 @@ pub fn run_scripts(dir: &PathBuf) -> Result<()> {
             println!("Running: {}", file.display());
             Command::new(format!("./{}", name.display()))
                 .current_dir(canon_parent)
-                .spawn()?;
+                .output()?;
         }
     }
     Ok(())
