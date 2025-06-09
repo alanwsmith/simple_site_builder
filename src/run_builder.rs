@@ -1,4 +1,5 @@
 use crate::helpers::*;
+use crate::renderer::Renderer;
 use crate::run_scripts::run_scripts;
 use crate::site::Site;
 use anyhow::Result;
@@ -52,21 +53,12 @@ pub async fn run_builder(
     reloader: Reloader,
     site: Site,
 ) -> Result<()> {
-    let mut first_run = true;
     println!("Starting builder");
+    let mut first_run = true;
     let mut last_update = Instant::now();
     // TODO: don't kill the builder here if this fails
     let mut script_list = get_files_in_tree(&site.scripts_dir, None, None)?;
-    let mut env = Environment::new();
-    env.set_syntax(
-        SyntaxConfig::builder()
-            .block_delimiters("[!", "!]")
-            .variable_delimiters("[@", "@]")
-            .comment_delimiters("[#", "#]")
-            .build()
-            .unwrap(),
-    );
-    env.set_loader(path_loader("content"));
+    let mut renderer = Renderer::new();
     while let Some(_) = rx.recv().await {
         let elapsed = last_update.elapsed();
         if !first_run && elapsed < Duration::from_millis(300) {
@@ -84,8 +76,30 @@ pub async fn run_builder(
         let _ = empty_dir(&docs_dir);
         if let Ok(_) = std::fs::create_dir_all(&docs_dir) {
             println!("Made directory: {}", docs_dir.display());
-            if let Err(e) = output_files(&site, &mut env) {
-                println!("{}", e);
+            renderer.env.clear_templates();
+            renderer.add_template_dir(&site.content_dir);
+            if let Ok(data_context) = get_data_context() {
+                if let Ok(source_files) =
+                    get_files_in_dir(&PathBuf::from("content"), Some(vec!["html"]), None)
+                {
+                    for source_file in source_files.iter() {
+                        let in_path = &site.content_dir.join(source_file);
+                        let out_path = &site.docs_dir.join(source_file);
+                        renderer.add_template_from_path(&in_path.display().to_string(), &in_path);
+                        let content =
+                            renderer.render_content(&in_path.display().to_string(), &data_context);
+                        match write_file_with_mkdir(&out_path, &content) {
+                            Ok(_) => println!("Generated: {}", &out_path.display()),
+                            Err(e) => {
+                                println!("ERROR: {} with: {}", e.to_string(), &out_path.display())
+                            }
+                        }
+                    }
+                } else {
+                    println!("Could not load source files");
+                }
+            } else {
+                println!("Could not load data context");
             }
         } else {
             println!("ERROR: Could not make directory: {}", docs_dir.display());
@@ -122,11 +136,11 @@ pub async fn run_builder(
 
         //
     }
-    println!("Builder stopped.");
+    println!("ERROR: Builder stopped.");
     Ok(())
 }
 
-fn get_data() -> Result<Value> {
+fn get_data_context() -> Result<Value> {
     let mut data = BTreeMap::new();
     let root_dir = PathBuf::from("data");
     let file_list: Vec<PathBuf> = WalkDir::new(root_dir.clone())
@@ -154,7 +168,7 @@ fn get_data() -> Result<Value> {
             }
         }
     }
-    Ok(Value::from_serialize(data))
+    Ok(context!(data => Value::from_serialize(data)))
 }
 
 fn print_timestamp() {
@@ -168,43 +182,50 @@ fn print_timestamp() {
     );
 }
 
-fn output_files(site: &Site, env: &mut Environment) -> Result<()> {
-    let data = match get_data() {
-        Ok(d) => d,
-        Err(_) => serde_json5::from_str("{}").unwrap(),
-    };
-    if let Ok(html_files) = get_files_in_dir(&site.content_dir, Some(vec!["html"]), None) {
-        for html_file in html_files {
-            if let Err(e) = output_file(&html_file, &data, env) {
-                println!("{}", e);
-            }
-        }
-    } else {
-        println!(
-            "ERROR: Cound not load content files from: {}",
-            &site.content_dir.display()
-        );
-    }
-    Ok(())
-}
+// fn output_files(site: &Site, env: &mut Environment) -> Result<()> {
+//     let data = match get_data() {
+//         Ok(d) => d,
+//         Err(_) => serde_json5::from_str("{}").unwrap(),
+//     };
+//     if let Ok(html_files) = get_files_in_dir(&site.content_dir, Some(vec!["html"]), None) {
+//         for html_file in html_files {
+//             if let Err(e) = output_file(&html_file, &data, env) {
+//                 println!("{}", e);
+//             }
+//         }
+//     } else {
+//         println!(
+//             "ERROR: Cound not load content files from: {}",
+//             &site.content_dir.display()
+//         );
+//     }
+//     Ok(())
+// }
 
-fn output_file(html_file: &PathBuf, data: &Value, env: &mut Environment) -> Result<()> {
-    if let Some(parent) = html_file.parent() {
-        if parent.display().to_string() != "" {
-            let dir_path = PathBuf::from("docs").join(parent);
-            std::fs::create_dir_all(dir_path)?;
-        }
-    }
-    let current_source = fs::read_to_string(format!("content/{}", html_file.display()))?;
-    env.add_template_owned("current-source", current_source)?;
-    let template = env.get_template("current-source")?;
-    match template.render(context!(data)) {
-        Ok(output) => {
-            fs::write(format!("docs/{}", html_file.display()), output).unwrap();
-        }
-        Err(e) => {
-            println!("{}", e);
-        }
-    }
-    Ok(())
-}
+// fn output_file(html_file: &PathBuf, data: &Value, env: &mut Environment) -> Result<()> {
+//     if let Some(parent) = html_file.parent() {
+//         if parent.display().to_string() != "" {
+//             let dir_path = PathBuf::from("docs").join(parent);
+//             std::fs::create_dir_all(dir_path)?;
+//         }
+//     }
+//     let current_source = fs::read_to_string(format!("content/{}", html_file.display()))?;
+//     match env.add_template_owned("current-source", current_source) {
+//         Ok(_) => {
+//             if let Ok(template) = env.get_template("current-source") {
+//                 match template.render(context!(data)) {
+//                     Ok(output) => {
+//                         fs::write(format!("docs/{}", html_file.display()), output).unwrap();
+//                     }
+//                     Err(e) => {
+//                         println!("ERROR IN: {}\n{}", html_file.display(), e);
+//                     }
+//                 }
+//             }
+//         }
+//         Err(e) => {
+//             println!("ERROR IN: {}\n{}", html_file.display(), e);
+//         }
+//     }
+//     Ok(())
+// }

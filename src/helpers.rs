@@ -135,3 +135,12 @@ pub fn get_files_in_tree(
         .collect();
     Ok(files)
 }
+
+pub fn write_file_with_mkdir(path: &PathBuf, content: &str) -> Result<()> {
+    let parent_dir = path
+        .parent()
+        .ok_or(std::io::Error::other("Could not get parent path"))?;
+    std::fs::create_dir_all(parent_dir)?;
+    std::fs::write(path, content)?;
+    Ok(())
+}
