@@ -139,7 +139,7 @@ pub async fn run_builder(
 
 fn get_data_context() -> Result<Value> {
     let mut data = BTreeMap::new();
-    let root_dir = PathBuf::from("data");
+    let root_dir = PathBuf::from("content/_data");
     let file_list: Vec<PathBuf> = WalkDir::new(root_dir.clone())
         .into_iter()
         .filter_map(|e| e.ok())
