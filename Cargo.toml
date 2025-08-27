@@ -3,6 +3,9 @@ name = "bs_site_builder"
 version = "0.1.2"
 edition = "2024"
 
+[[bin]]
+name = "bs"
+
 [dependencies]
 anyhow = "1.0.98"
 axum = "0.8.4"

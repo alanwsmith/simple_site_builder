@@ -23,6 +23,6 @@ in other files with relative ease. Like:
 0020-another-script.py
 
 Outputting `.json` files to the `_data`
-directory makes the data avaialbe
+directory makes the data available 
 for inclusion in templates. 
 

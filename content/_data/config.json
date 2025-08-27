@@ -1,4 +1,4 @@
 {
-  site_name: "A New Site"
+  "site_name": "bs_site_builder",
+  "description": "A personal static site builder"
 }
-
