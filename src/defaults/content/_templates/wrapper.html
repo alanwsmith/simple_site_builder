@@ -44,9 +44,9 @@
   </head>
   <body>
     <header>
-      [! for breadcrumb in _data.config.breadcrumbs !]
-      <a href="[@ breadcrumb.url @]">
-        [@ breadcrumb.text @]
+      [! for navLink in _data.config.navLinks !]
+      <a href="[@ navLink.url @]">
+        [@ navLink.text @]
       </a>
         [! if not loop.last !] 
           ~

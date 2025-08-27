@@ -4,7 +4,7 @@
     "link": "https://www.alanwsmith.com/"
   },
 
-  "breadcrumbs": [
+  "navLinks": [
     {
       "text": "alan's home page",
       "url": "https://www.alanwsmith.com/"
@@ -34,5 +34,5 @@
     }
   ],
 
-  "siteName": "Your New bs Site"
+  "siteName": "Welcome to bs!"
 }
