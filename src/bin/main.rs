@@ -1,10 +1,10 @@
 use anyhow::Result;
 use anyhow::anyhow;
-use bs::helpers::*;
-use bs::run_builder::*;
-use bs::run_server::run_server;
-use bs::run_watcher::run_watcher;
-use bs::site::Site;
+use bs_site_builder::helpers::*;
+use bs_site_builder::run_builder::*;
+use bs_site_builder::run_server::run_server;
+use bs_site_builder::run_watcher::run_watcher;
+use bs_site_builder::site::Site;
 use chrono::DateTime;
 use chrono::Local;
 use dialoguer::Confirm;

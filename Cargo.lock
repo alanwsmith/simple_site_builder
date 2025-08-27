@@ -156,7 +156,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "bs"
+name = "bs_site_builder"
 version = "0.1.2"
 dependencies = [
  "anyhow",
