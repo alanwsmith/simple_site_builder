@@ -16,7 +16,7 @@ pub async fn run_watcher(tx: Sender<DateTime<Local>>) -> Result<()> {
     let wx = Watchexec::default();
     // wx.config.pathset(vec!["content", "data"]);
     //wx.config.throttle(Duration::from_millis(200));
-    wx.config.pathset(vec!["content", "data", "scripts"]);
+    wx.config.pathset(vec!["content"]);
     wx.config.on_action(move |mut action| {
         let paths = get_paths(&action.events);
         // dbg!(&paths);

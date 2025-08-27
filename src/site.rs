@@ -12,9 +12,9 @@ impl Site {
     pub fn new() -> Site {
         Site {
             content_dir: PathBuf::from("content"),
-            data_dir: PathBuf::from("data"),
+            data_dir: PathBuf::from("content/_data"),
             docs_dir: PathBuf::from("docs"),
-            scripts_dir: PathBuf::from("scripts"),
+            scripts_dir: PathBuf::from("content/_scripts"),
         }
     }
 }

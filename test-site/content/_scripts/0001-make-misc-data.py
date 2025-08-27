@@ -10,7 +10,7 @@ data = {
     "updated": current_time
 }
 
-path = "../data/auto.json"
+path = "../_data/auto.json"
 with open(path, 'w', encoding='utf-8') as _out:
     json.dump(data, _out, sort_keys=True, indent=4)
 
