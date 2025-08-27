@@ -51,7 +51,7 @@ async fn main() -> Result<()> {
 fn init_files_and_dirs(site: &Site) -> Result<bool> {
     if !path_exists(&site.content_dir) {
         let confirmation = Confirm::new()
-            .with_prompt("Make this a website directory?")
+            .with_prompt("Make a website in this directory?")
             .default(false)
             .interact()
             .unwrap();

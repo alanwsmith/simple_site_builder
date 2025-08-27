@@ -11,7 +11,7 @@
     <meta property="og:url" content="https:&#x2f;&#x2f;www.alanwsmith.com&#x2f;" />
     <meta
       property="og:image"
-      content="https:&#x2f;&#x2f;www.alanwsmith.com&#x2f;/og-images/og-image-main.jpg"
+      content="https:&#x2f;&#x2f;www.alanwsmith.com&#x2f;/images/og-image-main.jpg"
     />
     <link
       rel="apple-touch-icon"
@@ -75,9 +75,55 @@
 <h2>Welcome to bs!</h2>
 <p>This is the default page for a new
 <em>bs</em> site.</p>
+<h2>Quickstart</h2>
+<ul>
+<li>
+<p>Edit files in the &quot;content&quot; directory
+to update your site.</p>
+<p>The content for this page is in the
+<code>content/index.html</code> file.</p>
+</li>
+<li>
+<p>You can use Jinja style template functionality
+in <code>.html</code> files. (TKTKTK More details below)</p>
+<p>For example, the wrapper for the <code>content/index.html</code>
+page is <code>content/_templates/wrapper.html</code></p>
+</li>
+<li>
+<p>Data from any <code>.json</code> files in the <code>content/_data</code>
+directory is available in the templates (TKTKTK More details
+below)</p>
+</li>
+</ul>
 <h2>Usage</h2>
 <ul>
-<li></li>
+<li>Run <code>bs</code> from the command line in an
+empty directory. It'll ask you if you want
+to build a website in the directory.
+Hitting &quot;y&quot; for yes will create the scaffold
+for a new site and launch a local
+web browser showing it.</li>
+</ul>
+<p>(You probably already did this if you're
+reading this page)</p>
+<ul>
+<li>
+<p>The scaffold consists of two directories
+named &quot;content&quot; and &quot;docs&quot; and two files
+named &quot;netlify.toml&quot; and README.md.</p>
+<p>The &quot;content&quot; directory is where you'll
+make all your changes.</p>
+<p>The &quot;docs&quot; directory is where <code>bs</code> builds
+the files that get used by browsers to
+show your site.</p>
+<p>The &quot;netlify.toml&quot; file is there so you can
+publish your site on netlify easily.
+You can safely ignore it</p>
+<p>The &quot;README.md&quot; file can be used to add
+information about your site if you use
+something like GitHub. You can safely
+ignore it</p>
+</li>
 </ul>
 <h2>About bs</h2>
 <p>I make <a href="https://links.alanwsmith.com/">a lot of little websites</a>.

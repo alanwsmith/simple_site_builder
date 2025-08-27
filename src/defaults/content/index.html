@@ -8,15 +8,64 @@
 This is the default page for a new
 _bs_ site. 
 
+
+## Quickstart
+
+- Edit files in the "content" directory
+to update your site. 
+
+  The content for this page is in the
+  `content/index.html` file. 
+
+- You can use Jinja style template functionality 
+in `.html` files. (TKTKTK More details below)
+
+  For example, the wrapper for the `content/index.html`
+  page is `content/_templates/wrapper.html`
+
+
+- Data from any `.json` files in the `content/_data`
+directory is available in the templates (TKTKTK More details
+below)
+
+
+
+
+
+
 ## Usage
 
-- 
+- Run `bs` from the command line in an 
+empty directory. It'll ask you if you want
+to build a website in the directory. 
+Hitting "y" for yes will create the scaffold
+for a new site and launch a local 
+web browser showing it. 
 
+(You probably already did this if you're
+reading this page)
 
+- The scaffold consists of two directories
+named "content" and "docs" and two files
+named "netlify.toml" and README.md.
 
+  The "content" directory is where you'll
+  make all your changes.  
 
+  The "docs" directory is where `bs` builds 
+  the files that get used by browsers to
+  show your site. 
 
+  The "netlify.toml" file is there so you can 
+  publish your site on netlify easily. 
+  You can safely ignore it
 
+  The "README.md" file can be used to add
+  information about your site if you use
+  something like GitHub. You can safely
+  ignore it
+
+  
 
 
 
