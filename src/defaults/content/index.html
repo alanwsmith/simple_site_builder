@@ -13,6 +13,9 @@ _bs_ site.
 to update your site. For example, the content for 
 this page is in the `content/index.html` file. 
 
+  _bs_ automatically reloads the browser 
+  so you can see your changes immediately. 
+
 - You can use Jinja style template functionality 
 in `.html` files. The `content/_templates` directory
 is set up to house them. For example, the wrapper for the
@@ -45,8 +48,7 @@ variables.
 - `[! raw !][# #][! endraw !]` instead of `{# #}` for
 comments. 
 
-I find the square brackets easier to track visually
-when working with content. 
+I find the square brackets easier to track visually.
 
 Check out [the MiniJinja 
 documentation](https://docs.rs/minijinja/latest/minijinja/)
@@ -68,7 +70,7 @@ filter like this:
 # Markdown Content Goes Here
 
 The quick brown fox jumps over
-the lazy dog.
+the lazy dog. etc...
 
 [! raw !][! endfilter !][! endraw !]
 
@@ -80,10 +82,14 @@ the lazy dog.
 
 ## More About bs
 
-I make [a lot of little websites](https://links.alanwsmith.com/).
-_bs_ is mostly a personal project to
-reduce the friction it takes to spin
-up a new one. It's stable enough to tinker
+_bs_ is mostly a personal project. 
+I make [a lot of little websites](https://links.alanwsmith.com/). 
+I built _bs_ to reduce reduce the friction it takes to spin
+a new one up. 
+
+I wouldn't try to run a big website off it (e.g.
+there's no built-in router),
+but it's stable enough to tinker
 with if you're into that type of thing. 
 
 I'm also working on a full-featured
