@@ -1,15 +1,38 @@
 {
-  "site_name": "A New Site",
-  "description": "A work in progress",
-  "domain": "https://www.alanwsmith.com/",
   "author": {
     "name": "alan w. smith",
     "link": "https://www.alanwsmith.com/"
   },
-  "breadcrumb": [
+
+  "breadcrumbs": [
     {
-      "text": "home",
-      "url": "/"
+      "text": "alan's home page",
+      "url": "https://www.alanwsmith.com/"
+    },
+    {
+      "text": "other projects",
+      "url": "https://links.alanwsmith.com/"
+    },
+    {
+      "text": "socials",
+      "url": "https://socials.alanwsmith.com/"
     }
-  ]
+  ],
+
+  "description": "A work in progress",
+
+  "domain": "https://www.alanwsmith.com/",
+
+  "footerLinks": [
+    {
+      "text": "other projects",
+      "url": "https://links.alanwsmith.com/"
+    },
+    {
+      "text": "socials",
+      "url": "https://socials.alanwsmith.com/"
+    }
+  ],
+
+  "siteName": "Your New bs Site"
 }

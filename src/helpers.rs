@@ -136,6 +136,10 @@ pub fn get_files_in_tree(
     Ok(files)
 }
 
+pub fn markdown_filter(value: String) -> String {
+    markdown::to_html(&value)
+}
+
 pub fn write_file_with_mkdir(path: &PathBuf, content: &str) -> Result<()> {
     let parent_dir = path
         .parent()

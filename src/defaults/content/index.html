@@ -1,13 +1,41 @@
 [! extends "_templates/wrapper.html" !] 
 [! block main !]
 
-<hgroup>
-  <h1>[@ _data.config.site_name @]</h1>
-</hgroup>
+[! filter markdown|safe !]
 
-<p>
-  Updated: [@ _data.updated.timestamp @]
-</p>
+## Welcome to bs!
+
+This is the default page for a new
+_bs_ site. 
+
+## Usage
+
+- 
+
+
+
+
+
+
+
+
+
+
+## About bs
+
+I make [a lot of little websites](https://links.alanwsmith.com/).
+This is mostly a personal project to
+reduce the friction it takes to spin
+up a new one. 
+
+I'm also working on a more full-featured
+generator called [Neopoligen](https://www.neopoligen.com).
+The secondary purpose of _bs_ is to act
+as a playground for it. 
+
+
+
+[! endfilter !]
 
 [! endblock !]
 

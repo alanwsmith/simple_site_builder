@@ -1,3 +1,4 @@
+use crate::helpers::markdown_filter;
 use minijinja::syntax::SyntaxConfig;
 use minijinja::{Environment, Value, path_loader};
 use std::fs;
@@ -25,6 +26,7 @@ impl Renderer<'_> {
                 .build()
                 .unwrap(),
         );
+        renderer.env.add_filter("markdown", markdown_filter);
         renderer
     }
 
