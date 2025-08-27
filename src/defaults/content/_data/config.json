@@ -1,0 +1,15 @@
+{
+  "site_name": "A New Site",
+  "description": "A work in progress",
+  "domain": "https://www.alanwsmith.com/",
+  "author": {
+    "name": "alan w. smith",
+    "link": "https://www.alanwsmith.com/"
+  },
+  "breadcrumb": [
+    {
+      "text": "home",
+      "url": "/"
+    }
+  ]
+}

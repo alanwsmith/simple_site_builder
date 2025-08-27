@@ -1,21 +1,13 @@
-<!-- prettier-ignore -->
-
 [! extends "_templates/wrapper.html" !] 
-
 [! block main !]
 
-<!-- prettier-ignore-end -->
-
 <hgroup>
-  <h1>[@ data.config.site_name @]</h1>
+  <h1>[@ _data.config.site_name @]</h1>
 </hgroup>
 
 <p>
-  Updated: [@ data.auto.updated @]
-
-  <!-- prettier-ignore -->
-
-  [! endblock !]
-
-  <!-- prettier-ignore-end -->
+  Updated: [@ _data.updated.timestamp @]
 </p>
+
+[! endblock !]
+

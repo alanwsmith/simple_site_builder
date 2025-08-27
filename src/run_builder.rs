@@ -165,7 +165,7 @@ fn get_data_context() -> Result<Value> {
             }
         }
     }
-    Ok(context!(data => Value::from_serialize(data)))
+    Ok(context!(_data => Value::from_serialize(data)))
 }
 
 fn print_timestamp() {

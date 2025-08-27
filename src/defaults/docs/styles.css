@@ -1,47 +1,3 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>[@ _data.config.site_name @]</title>
-    <meta property="og:title" content="[@ _data.config.site_name @]" />
-    <meta property="og:description" content="[@ _data.config.description @]" />
-    <meta name="description" content="[@ _data.config.description @]" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="[@ _data.config.domain @]" />
-    <meta
-      property="og:image"
-      content="[@ _data.config.domain @]/og-images/og-image-main.jpg"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/favicons/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/favicons/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="/favicons/favicon-16x16.png"
-    />
-    <link rel="manifest" href="/favicons/site.webmanifest" />
-    <link
-      rel="mask-icon"
-      href="/favicons/safari-pinned-tab.svg"
-      color="#5bbad5"
-    />
-    <link rel="shortcut icon" href="/favicons/favicon.ico" />
-    <meta name="msapplication-TileColor" content="#da532c" />
-    <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
-    <meta name="theme-color" content="#000000" />
-
-    <style>
 :root {
   /* Alignment Variables */
   --align-center: center;
@@ -117,38 +73,38 @@
 :root {
   color-scheme: light dark; /* Default: light */
   /* Color Base Variables */
-  --dark-mode__accent: oklch(64.00000% 0.18525 74.48400);
-  --dark-mode__accent-faded: oklch(64.00000% 0.18525 74.48400 / 0.5);
-  --dark-mode__accent-faded2: oklch(64.00000% 0.18525 74.48400 / 0.2);
-  --dark-mode__background: oklch(19.66% 0.0549 74.484);
-  --dark-mode__default: oklch(82.00000% 0.15021 254.48400);
-  --dark-mode__default-faded: oklch(82.00000% 0.15021 254.48400 / 0.5);
-  --dark-mode__default-faded2: oklch(82.00000% 0.15021 254.48400 / 0.2);
-  --dark-mode__heading: oklch(82.00000% 0.06345 74.48400);
-  --dark-mode__heading-faded: oklch(82.00000% 0.06345 74.48400 / 0.5);
-  --dark-mode__heading-faded2: oklch(82.00000% 0.06345 74.48400 / 0.2);
-  --dark-mode__link: oklch(100.00000% 0.22386 299.48400);
-  --dark-mode__link-faded: oklch(100.00000% 0.22386 299.48400 / 0.5);
-  --dark-mode__link-faded2: oklch(100.00000% 0.22386 299.48400 / 0.2);
-  --dark-mode__warning: oklch(100.00000% 0.21678 119.48400);
-  --dark-mode__warning-faded: oklch(100.00000% 0.21678 119.48400 / 0.5);
-  --dark-mode__warning-faded2: oklch(100.00000% 0.21678 119.48400 / 0.2);
-  --light-mode__accent: oklch(64.00000% 0.18093 103.93200);
-  --light-mode__accent-faded: oklch(64.00000% 0.18093 103.93200 / 0.5);
-  --light-mode__accent-faded2: oklch(64.00000% 0.18093 103.93200 / 0.2);
-  --light-mode__background: oklch(94% 0.03081 103.932);
-  --light-mode__default: oklch(28.00000% 0.28017 103.93200);
-  --light-mode__default-faded: oklch(28.00000% 0.28017 103.93200 / 0.5);
-  --light-mode__default-faded2: oklch(28.00000% 0.28017 103.93200 / 0.2);
-  --light-mode__heading: oklch(28.00000% 0.19287 148.93200);
-  --light-mode__heading-faded: oklch(28.00000% 0.19287 148.93200 / 0.5);
-  --light-mode__heading-faded2: oklch(28.00000% 0.19287 148.93200 / 0.2);
-  --light-mode__link: oklch(46.00000% 0.18291 238.93200);
-  --light-mode__link-faded: oklch(46.00000% 0.18291 238.93200 / 0.5);
-  --light-mode__link-faded2: oklch(46.00000% 0.18291 238.93200 / 0.2);
-  --light-mode__warning: oklch(46.00000% 0.20583 373.93200);
-  --light-mode__warning-faded: oklch(46.00000% 0.20583 373.93200 / 0.5);
-  --light-mode__warning-faded2: oklch(46.00000% 0.20583 373.93200 / 0.2);
+  --dark-mode__accent: oklch(82.00000% 0.21975 144.03600);
+  --dark-mode__accent-faded: oklch(82.00000% 0.21975 144.03600 / 0.5);
+  --dark-mode__accent-faded2: oklch(82.00000% 0.21975 144.03600 / 0.2);
+  --dark-mode__background: oklch(18.64% 0.10911 99.036);
+  --dark-mode__default: oklch(82.00000% 0.15021 234.03600);
+  --dark-mode__default-faded: oklch(82.00000% 0.15021 234.03600 / 0.5);
+  --dark-mode__default-faded2: oklch(82.00000% 0.15021 234.03600 / 0.2);
+  --dark-mode__heading: oklch(82.00000% 0.14907 99.03600);
+  --dark-mode__heading-faded: oklch(82.00000% 0.14907 99.03600 / 0.5);
+  --dark-mode__heading-faded2: oklch(82.00000% 0.14907 99.03600 / 0.2);
+  --dark-mode__link: oklch(100.00000% 0.22386 369.03600);
+  --dark-mode__link-faded: oklch(100.00000% 0.22386 369.03600 / 0.5);
+  --dark-mode__link-faded2: oklch(100.00000% 0.22386 369.03600 / 0.2);
+  --dark-mode__warning: oklch(82.00000% 0.24264 414.03600);
+  --dark-mode__warning-faded: oklch(82.00000% 0.24264 414.03600 / 0.5);
+  --dark-mode__warning-faded2: oklch(82.00000% 0.24264 414.03600 / 0.2);
+  --light-mode__accent: oklch(46.00000% 0.21279 574.84800);
+  --light-mode__accent-faded: oklch(46.00000% 0.21279 574.84800 / 0.5);
+  --light-mode__accent-faded2: oklch(46.00000% 0.21279 574.84800 / 0.2);
+  --light-mode__background: oklch(94.34% 0.04671 259.848);
+  --light-mode__default: oklch(10.00000% 0.28017 349.84800);
+  --light-mode__default-faded: oklch(10.00000% 0.28017 349.84800 / 0.5);
+  --light-mode__default-faded2: oklch(10.00000% 0.28017 349.84800 / 0.2);
+  --light-mode__heading: oklch(46.00000% 0.18363 259.84800);
+  --light-mode__heading-faded: oklch(46.00000% 0.18363 259.84800 / 0.5);
+  --light-mode__heading-faded2: oklch(46.00000% 0.18363 259.84800 / 0.2);
+  --light-mode__link: oklch(46.00000% 0.18393 394.84800);
+  --light-mode__link-faded: oklch(46.00000% 0.18393 394.84800 / 0.5);
+  --light-mode__link-faded2: oklch(46.00000% 0.18393 394.84800 / 0.2);
+  --light-mode__warning: oklch(46.00000% 0.25161 529.84800);
+  --light-mode__warning-faded: oklch(46.00000% 0.25161 529.84800 / 0.5);
+  --light-mode__warning-faded2: oklch(46.00000% 0.25161 529.84800 / 0.2);
 }
 
 :root {
@@ -1307,33 +1263,3 @@ video {
   max-width: 100%;
 }
     
-    </style>
-  </head>
-  <body>
-    <header>
-      <a href="https://www.alanwsmith.com">alanwsmith.com</a>
-    </header>
-
-    <main class="[! block main_classes !]default-wrapper[! endblock !]">
-      <!-- prettier-ignore -->
-
-      [! block main !][! endblock !]
-
-      <!-- prettier-ignore-end -->
-    </main>
-
-    <footer class="default-wrapper align-center">
-      <div>
-        made by 
-        <a href="[@ _data.config.author.link @]">
-          [@ _data.config.author.name @]
-        </a>
-      </div>
-      <div>
-      <a href="https://links.alanwsmith.com">other projects</a> ~
-      <a href="https://github.com/alanwsmith/ssbuild">source</a> ~
-      <a href="https://socials.alanwsmith.com/">socials</a>
-      </div>
-    </footer>
-  </body>
-</html>
