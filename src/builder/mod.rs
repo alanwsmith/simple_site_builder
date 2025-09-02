@@ -3,6 +3,7 @@ use anyhow::Result;
 use chrono::{DateTime, Local};
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
+use tracing::info;
 
 pub struct Builder {
   pub config: Config,
@@ -24,6 +25,7 @@ impl Builder {
   }
 
   pub async fn start(&self) -> Result<()> {
+    info!("Starting builder");
     Ok(())
   }
 }

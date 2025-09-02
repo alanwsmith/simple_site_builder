@@ -10,6 +10,7 @@ name = "bs"
 anyhow = "1.0.99"
 axum = "0.8.4"
 chrono = "0.4.41"
+itertools = "0.14.0"
 port_check = "0.3.0"
 tokio = { version = "1.47.1", features = ["rt-multi-thread", "macros"] }
 tower-http = { version = "0.6.6", features = ["fs"] }
@@ -17,6 +18,9 @@ tower-livereload = "0.9.6"
 tracing = "0.1.41"
 tracing-appender = "0.2.3"
 tracing-subscriber = { version = "0.3.20", features = ["fmt", "json", "registry", "std"] }
+watchexec = "8.0.1"
+watchexec-events = "6.0.0"
+watchexec-signals = "5.0.0"
 
 
 [lib]

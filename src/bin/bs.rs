@@ -24,7 +24,7 @@ async fn main() {
 
   let live_reload = LiveReloadLayer::new();
   let reloader = live_reload.reloader();
-  let (_tx, rx) = mpsc::channel::<DateTime<Local>>(32);
+  let (tx, rx) = mpsc::channel::<DateTime<Local>>(32);
 
   let server = Server::new(config.clone());
   let server_handle = tokio::spawn(async move {
@@ -35,6 +35,9 @@ async fn main() {
   let builder_handle = tokio::spawn(async move {
     let _ = builder.start().await;
   });
+
+  let watcher = Watcher::new(config.clone(), tx);
+  let _ = watcher.start().await;
 
   server_handle.abort();
   builder_handle.abort();
