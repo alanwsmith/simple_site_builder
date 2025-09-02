@@ -2,32 +2,32 @@ use std::path::PathBuf;
 
 #[derive(Clone, Debug)]
 pub struct Config {
-  pub content_dir: PathBuf,
-  pub output_dir: PathBuf,
-  pub logs_dir: PathBuf,
+  pub content_root: PathBuf,
+  pub output_root: PathBuf,
+  pub logs_root: PathBuf,
   pub debug: bool,
 }
 
 impl Config {
   pub fn new(
-    content_dir: PathBuf,
-    logs_dir: PathBuf,
-    output_dir: PathBuf,
+    content_root: PathBuf,
+    logs_root: PathBuf,
+    output_root: PathBuf,
     debug: bool,
   ) -> Config {
     Config {
-      content_dir,
-      logs_dir,
-      output_dir,
+      content_root,
+      logs_root,
+      output_root,
       debug,
     }
   }
 
   pub fn json_logs(&self) -> PathBuf {
-    self.logs_dir.join("json")
+    self.logs_root.join("json")
   }
 
   pub fn txt_logs(&self) -> PathBuf {
-    self.logs_dir.join("txt")
+    self.logs_root.join("txt")
   }
 }

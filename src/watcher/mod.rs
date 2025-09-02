@@ -25,10 +25,10 @@ impl Watcher {
   }
   pub async fn start(&self) -> Result<()> {
     info!("Starting watcher");
-
     let wx = Watchexec::default();
-    wx.config
-      .pathset(vec![self.config.content_dir.display().to_string()]);
+    wx.config.pathset(vec![
+      self.config.content_root.display().to_string(),
+    ]);
     let tx2 = self.tx.clone();
     wx.config.on_action(move |mut action| {
       let paths = filter_paths(&action.events);
@@ -40,7 +40,8 @@ impl Watcher {
       }
       if action.signals().any(|sig| {
         // action.signals() check required for Ctrl+c
-        sig == Signal::Interrupt || sig == Signal::Terminate
+        sig == Signal::Interrupt
+          || sig == Signal::Terminate
       }) {
         action.quit();
       }
@@ -69,14 +70,21 @@ fn filter_paths(events: &Arc<[Event]>) -> Vec<PathBuf> {
       event.tags.iter().find_map(|tag| {
         if let Tag::Path { path, .. } = tag {
           for component in path.components() {
-            if let std::path::Component::Normal(part) = component {
-              if part.display().to_string().starts_with(".") {
+            if let std::path::Component::Normal(part) =
+              component
+            {
+              if part
+                .display()
+                .to_string()
+                .starts_with(".")
+              {
                 return None;
               }
             }
           }
           if let Some(file_name_path) = path.file_name() {
-            let file_name = file_name_path.display().to_string();
+            let file_name =
+              file_name_path.display().to_string();
             if file_name.ends_with("~") {
               return None;
             }

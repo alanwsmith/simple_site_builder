@@ -26,15 +26,17 @@ impl Server {
     let port = find_port()?;
     info!("Found port for web server: {}", &port);
     launch_browser(port.into())?;
-    let service = ServeDir::new(&self.config.output_dir)
+    let service = ServeDir::new(&self.config.output_root)
       .append_index_html_on_directories(true)
-      .not_found_service(get(|| missing_page()));
-    let app =
-      Router::new().fallback_service(service).layer(live_reload);
-    let listener =
-      tokio::net::TcpListener::bind(format!("127.0.0.1:{}", port))
-        .await
-        .unwrap();
+      .not_found_service(get(missing_page));
+    let app = Router::new()
+      .fallback_service(service)
+      .layer(live_reload);
+    let listener = tokio::net::TcpListener::bind(
+      format!("127.0.0.1:{}", port),
+    )
+    .await
+    .unwrap();
     axum::serve(listener, app).await.unwrap();
     Ok(())
   }
