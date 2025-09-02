@@ -24,13 +24,13 @@ async fn main() {
     .init();
   info!("Initilizing");
 
-  let livereload = LiveReloadLayer::new();
+  let live_reload = LiveReloadLayer::new();
   // let reloader = livereload.reloader();
   // let (tx, rx) = mpsc::channel::<DateTime<Local>>(32);
 
   let server = Server::new(config.clone());
   let server_handle = tokio::spawn(async move {
-    let _ = server.start(livereload).await;
+    let _ = server.start(live_reload).await;
   });
 
   server_handle.abort();
