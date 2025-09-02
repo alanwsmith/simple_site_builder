@@ -1,9 +1,6 @@
-site/
-site_holding/
-image-workshop/
-test-site/
-docs
-content
-image-workshop
-scripts
+logs/*
+content/*
+docs/*
+scripts/*
+
 
