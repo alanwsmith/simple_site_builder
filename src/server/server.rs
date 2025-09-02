@@ -40,7 +40,7 @@ impl Server {
   }
 }
 
-fn find_port() -> Result<(u16)> {
+fn find_port() -> Result<u16> {
   free_local_port_in_range(5444..=6000)
     .ok_or(anyhow!("Could not find port"))
 }

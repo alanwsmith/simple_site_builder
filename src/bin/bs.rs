@@ -1,6 +1,4 @@
-use bs_site_builder::config::*;
-use bs_site_builder::logger::*;
-use bs_site_builder::server::*;
+use bs_site_builder::*;
 use chrono::{DateTime, Local};
 use std::path::PathBuf;
 use tokio::sync::mpsc;
@@ -25,13 +23,19 @@ async fn main() {
   info!("Initilizing");
 
   let live_reload = LiveReloadLayer::new();
-  // let reloader = livereload.reloader();
-  // let (tx, rx) = mpsc::channel::<DateTime<Local>>(32);
+  let reloader = live_reload.reloader();
+  let (_tx, rx) = mpsc::channel::<DateTime<Local>>(32);
 
   let server = Server::new(config.clone());
   let server_handle = tokio::spawn(async move {
     let _ = server.start(live_reload).await;
   });
 
+  let builder = Builder::new(config.clone(), reloader, rx);
+  let builder_handle = tokio::spawn(async move {
+    let _ = builder.start().await;
+  });
+
   server_handle.abort();
+  builder_handle.abort();
 }
