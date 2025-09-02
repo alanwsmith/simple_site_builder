@@ -6,8 +6,9 @@ use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
 use chrono::{DateTime, Local};
-use minijinja::Environment;
-use minijinja::Output;
+// use minijinja::Environment;
+// use minijinja::Output;
+use minijinja::context;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -52,15 +53,26 @@ impl Builder {
         );
         match env.get_template(&details.input_path_str())
         {
-          Ok(_template) => {}
+          Ok(template) => {
+            match template.render(context!()) {
+              Ok(output) => {
+                let _ = write_file_with_mkdir(
+                  &details.output_path(),
+                  &output,
+                );
+              }
+              Err(e) => {
+                // TODO: Throw here and print error
+                dbg!(e);
+              }
+            }
+          }
           Err(e) => {
             // TODO: Throw here and print error
             dbg!(e);
           }
         }
-        dbg!(input_path);
       });
-
     Ok(())
   }
 
