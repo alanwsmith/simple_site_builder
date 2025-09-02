@@ -1,6 +1,10 @@
 use bs_site_builder::config::*;
 use bs_site_builder::logger::*;
+use bs_site_builder::server::*;
+use chrono::{DateTime, Local};
 use std::path::PathBuf;
+use tokio::sync::mpsc;
+use tower_livereload::LiveReloadLayer;
 use tracing::info;
 use tracing::metadata::LevelFilter;
 
@@ -20,5 +24,14 @@ async fn main() {
     .init();
   info!("Initilizing");
 
-  println!("starting v0.2.0");
+  let livereload = LiveReloadLayer::new();
+  // let reloader = livereload.reloader();
+  // let (tx, rx) = mpsc::channel::<DateTime<Local>>(32);
+
+  let server = Server::new(config.clone());
+  let server_handle = tokio::spawn(async move {
+    let _ = server.start(livereload).await;
+  });
+
+  server_handle.abort();
 }
