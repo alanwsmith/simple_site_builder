@@ -7,6 +7,7 @@ use crate::config::Config;
 use anyhow::Result;
 use chrono::{DateTime, Local};
 use minijinja::Environment;
+use minijinja::Output;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -32,8 +33,7 @@ impl Builder {
 
   pub fn build_site(&self) -> Result<()> {
     info!("Building site");
-    let env = get_env(&self.config.content_root);
-    let _ = &self.move_html(env)?;
+    let _ = &self.move_html()?;
     //  let _ = &self.transform_files()?;
     // let _ = &self.copy_files()?;
     info!("Reloading browser");
@@ -41,15 +41,24 @@ impl Builder {
     Ok(())
   }
 
-  pub fn move_html(
-    &self,
-    _env: Environment,
-  ) -> Result<()> {
+  pub fn move_html(&self) -> Result<()> {
+    let env = get_env(&self.config.content_root);
     html_file_list(get_files(&self.config.content_root))
       .iter()
-      .for_each(|rel_path| {
-        dbg!(rel_path);
-        ()
+      .for_each(|input_path| {
+        let details = HtmlFileDetails::new(
+          input_path,
+          &self.config.output_root.clone(),
+        );
+        match env.get_template(&details.input_path_str())
+        {
+          Ok(_template) => {}
+          Err(e) => {
+            // TODO: Throw here and print error
+            dbg!(e);
+          }
+        }
+        dbg!(input_path);
       });
 
     Ok(())

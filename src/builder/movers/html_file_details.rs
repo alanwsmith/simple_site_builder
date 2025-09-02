@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::path::PathBuf;
 
 pub struct HtmlFileDetails {
@@ -7,13 +8,17 @@ pub struct HtmlFileDetails {
 
 impl HtmlFileDetails {
   pub fn new(
-    input_path: &PathBuf,
-    output_root: &PathBuf,
+    input_path: &Path,
+    output_root: &Path,
   ) -> HtmlFileDetails {
     HtmlFileDetails {
-      input_path: input_path.clone(),
-      output_root: output_root.clone(),
+      input_path: input_path.to_path_buf(),
+      output_root: output_root.to_path_buf(),
     }
+  }
+
+  pub fn input_path_str(&self) -> String {
+    self.input_path.display().to_string()
   }
 
   pub fn output_path(&self) -> PathBuf {
@@ -66,6 +71,17 @@ mod test {
     );
     let left = PathBuf::from(output_path);
     let right = transform.output_path();
+    assert_eq!(left, right);
+  }
+
+  #[test]
+  fn input_path_str_test() {
+    let details = HtmlFileDetails::new(
+      Path::new("input/file.html"),
+      Path::new("output"),
+    );
+    let left = "input/file.html".to_string();
+    let right = details.input_path_str();
     assert_eq!(left, right);
   }
 }
