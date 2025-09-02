@@ -20,6 +20,7 @@ async fn main() {
     .to_json_dir(&config.json_logs(), LevelFilter::INFO)
     .to_txt_dir(&config.txt_logs(), LevelFilter::INFO)
     .init();
+
   info!("Initilizing");
 
   let live_reload = LiveReloadLayer::new();
@@ -31,7 +32,7 @@ async fn main() {
     let _ = server.start(live_reload).await;
   });
 
-  let builder = Builder::new(config.clone(), reloader, rx);
+  let mut builder = Builder::new(config.clone(), reloader, rx);
   let builder_handle = tokio::spawn(async move {
     let _ = builder.start().await;
   });

@@ -48,7 +48,6 @@ impl Watcher {
     });
     let _ = wx.main().await?;
     println!("Watcher stopped.");
-
     Ok(())
   }
 }

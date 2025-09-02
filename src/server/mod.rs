@@ -26,7 +26,7 @@ impl Server {
     let port = find_port()?;
     info!("Found port for web server: {}", &port);
     launch_browser(port.into())?;
-    let service = ServeDir::new("docs")
+    let service = ServeDir::new(&self.config.output_dir)
       .append_index_html_on_directories(true)
       .not_found_service(get(|| missing_page()));
     let app =

@@ -1,0 +1,158 @@
+[! extends "_templates/wrapper.html" !] 
+[! block main !]
+
+<hgroup>
+  <h1>bs - site builder</h1>
+</hgroup>
+
+<h2>Overview</h2>
+
+<p>
+  <code>bs</code> is a minimal static site builder
+  with a built-in template processing<sup>1</sup>. 
+  Running it in an empty directory creates
+  the scaffold for a site. A local web server runs
+  for the site and does hot-reloads when files change. 
+</p>
+
+<p>
+  The project isn't a framework. It's not even a library. 
+  It's all about the templates and hot-reloading. 
+</p>
+
+<h2>Scripts and Data</h2>
+
+<p>
+  The scaffold includes a <code>_scripts</code> directory. 
+  Executable files in it are run before the main site
+  build when files change. 
+  There's also a <code>_data</code> directory. 
+  Data from any <code>.json</code> files in it 
+  is available in the build process. 
+</p>
+
+<p>
+  Combining the <code>_scripts</code> and <code>_data</code> 
+  provides dynamic content functionality. For example, a 
+  script can update the timestamp in a JSON file in the 
+  <code>_data</code> directory that's picked up in the 
+  templates to show when the site was last updated. 
+</p>
+
+<h2>The Playground</h2>
+
+<p>
+  I'm working on a full featured site builder called 
+  <a href="https://www.neopoligen.com/">Neopoligen</a>. 
+  I'm using 
+  <code>bs</code> to build mini-sites
+  until the larger project is ready. It's also
+  a playground to experiment with potential features.
+</p>
+
+<p>
+  I wouldn't recommend using <code>bs</code> for a production 
+  site. Everything is customized to my 
+  current workflow. I'm mainly publishing the project as
+  part of my general build-in-public approach to things.
+  Something to 
+  <a href="https://github.com/alanwsmith/bs_site_builder">poke around with</a>
+  if you're into that type of thing. 
+</p>
+
+<h2>Features</h2>
+
+<ul>
+  <li>[x] Runs in the current directory.</li>
+
+  <li>[x] Loads every `.html` file in `content` as a template 
+    that gets processed with <a href="https://docs.rs/minijinja/latest/minijinja/">MiniJinja</a> 
+    (the Rust version of the
+    <a href="https://palletsprojects.com/projects/jinja/">Jinja</a> 
+    template engine).
+  </li>
+
+  <li>
+    [x] Renders `.html` files (except those in directories that start with a `_`
+    at the root of the project) and puts the output in the `docs` directory with
+    the same file name/path. 
+  </li>
+
+  <li>[x] Provides a way to drop generic template files
+    in a `_templates` directory that can be used in other files without
+    publishing them.
+  </li>
+
+  <li>[x] Empties the `./docs` output directory before each run.</li>
+
+  <li>[x] Runs a local dev server with hot-reload when files change.</li>
+
+  <li>
+    [x] Automatically finds an available port for the server so multiple
+    instances can be run at the same time.
+  </li>
+
+  <li>
+    [x] Automatically make the `content`, `docs`, `data`, and `scripts`
+    directories if they don't exist on first run in an empty directory. 
+  </li>
+
+  <li>
+    [x] Automatically creates an `index.html` file when making `content`
+    directory if it doesn't exist.
+  </li>
+
+  <li>
+    [x] Automatically creates a netlify.toml file when making a `content`
+    directory if one doesn't already exist.
+  </li>
+
+  <li>
+    [x] Copies non-html files from `content` directly to `docs` with the same
+    file name/path (skipping files in directories at the root that start with a
+    `_`).
+  </li>
+
+  <li>
+    [x] Runs any executable files in the `content/_scripts` directory (sorted by name)
+    prior to each build.
+  </li>
+
+  <li>[x] Serves a default 404 page if a file isn't found.</li>
+
+  <li>
+    [x] Load any `.json` files in the `content/_data` directory into the 
+    payload that's sent to each template to render.
+  </li>
+
+  <li>
+    [x] If run in a directory without a content folder it asks if you want to
+    make a new site.
+  </li>
+
+  <li>
+    [x] When you make a new script in the scripts directory it asks you if you
+    want to make it executable.
+  </li>
+
+  <li>[] Hoist minijinja errors to output pages.</li>
+
+  <li>
+    [] Put <a href="https://docs.rs/clap/latest/clap/index.html">clap</a> 
+    on the script so you can do <code>bs --version</code>, etc...
+  </li>
+
+  <li>[] Output errors for scripts that have problems.</li>
+
+  <li>[] Show a warning if you edit something in the output directory.</li>
+</ul>
+
+
+<h2>Footnotes</h2>
+
+<ol>
+  <li><code>bs</code> stands for &quot;build site&quot;</li>
+</ol>
+
+[! endblock !]
+

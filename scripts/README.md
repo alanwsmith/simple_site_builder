@@ -1,8 +1,9 @@
 # Scripts
 
-Anything executable in this directory gets
-run before each site build. 
+Anything in the "pre" directory
+gets run before the build process
 
-The files are run in order alphabetical
-sort order with all letters lowercased. 
+Anything in the "post" directory
+gets run after the build process
+
 

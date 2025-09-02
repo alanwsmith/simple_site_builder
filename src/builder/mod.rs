@@ -24,8 +24,12 @@ impl Builder {
     }
   }
 
-  pub async fn start(&self) -> Result<()> {
+  pub async fn start(&mut self) -> Result<()> {
     info!("Starting builder");
+    //let _ = &self.build_site();
+    while (self.rx.recv().await).is_some() {
+      // let _ = &self.build_site();
+    }
     Ok(())
   }
 }
