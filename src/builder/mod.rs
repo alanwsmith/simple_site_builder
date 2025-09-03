@@ -6,9 +6,10 @@ use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
 use chrono::{DateTime, Local};
-// use minijinja::Environment;
-// use minijinja::Output;
+use minijinja::Value;
 use minijinja::context;
+use std::collections::BTreeMap;
+use std::fs;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -58,8 +59,40 @@ impl Builder {
     Ok(())
   }
 
+  pub fn load_data(&self) -> Value {
+    let mut data_map = BTreeMap::new();
+    json_file_list(get_files(&self.config.content_root))
+      .iter()
+      .for_each(|input_file| {
+        let input_path =
+          self.config.content_root.join(input_file);
+        match fs::read_to_string(&input_path) {
+          Ok(json) => {
+            match serde_json::from_str::<Value>(&json) {
+              Ok(data) => {
+                data_map.insert(
+                  input_file.display().to_string(),
+                  data,
+                );
+              }
+              Err(e) => {
+                // TODO: Add better error handling here
+                dbg!(e);
+              }
+            }
+          }
+          Err(e) => {
+            // TODO: Add better error messaging here
+            dbg!(e);
+          }
+        }
+      });
+    Value::from_serialize(data_map)
+  }
+
   pub fn transform_html(&self) -> Result<()> {
     let env = get_env(&self.config.content_root);
+    let data = self.load_data();
     html_file_list(get_files(&self.config.content_root))
       .iter()
       .for_each(|input_path| {
@@ -70,7 +103,8 @@ impl Builder {
         match env.get_template(&details.input_path_str())
         {
           Ok(template) => {
-            match template.render(context!()) {
+            match template.render(context!(data => data))
+            {
               Ok(output) => {
                 let _ = write_file_with_mkdir(
                   &details.output_path(),

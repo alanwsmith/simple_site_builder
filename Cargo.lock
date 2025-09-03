@@ -167,6 +167,7 @@ dependencies = [
  "port_check",
  "pretty_assertions",
  "rstest",
+ "serde_json",
  "tokio",
  "tower-http",
  "tower-livereload",
