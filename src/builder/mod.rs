@@ -34,15 +34,31 @@ impl Builder {
 
   pub fn build_site(&self) -> Result<()> {
     info!("Building site");
-    let _ = &self.move_html()?;
-    //  let _ = &self.transform_files()?;
-    // let _ = &self.copy_files()?;
+    let _ = &self.transform_html()?;
+    let _ = &self.copy_files()?;
     info!("Reloading browser");
     let _ = &self.reloader.reload();
     Ok(())
   }
 
-  pub fn move_html(&self) -> Result<()> {
+  pub fn copy_files(&self) -> Result<()> {
+    copy_file_list(get_files(&self.config.content_root))
+      .iter()
+      .for_each(|input_file| {
+        let details = CopyFileDetails::new(
+          &self.config.content_root,
+          input_file,
+          &self.config.output_root,
+        );
+        let _ = copy_file_with_mkdir(
+          &details.input_path(),
+          &details.output_path(),
+        );
+      });
+    Ok(())
+  }
+
+  pub fn transform_html(&self) -> Result<()> {
     let env = get_env(&self.config.content_root);
     html_file_list(get_files(&self.config.content_root))
       .iter()

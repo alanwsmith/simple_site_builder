@@ -6,9 +6,9 @@ pub fn html_file_list(
   source_paths
     .iter()
     .filter(|path| {
-      !path
-        .iter()
-        .any(|part| part.to_str().unwrap().starts_with("_"))
+      !path.iter().any(|part| {
+        part.to_str().unwrap().starts_with("_")
+      })
     })
     .filter(|path| path.extension().is_some())
     .filter(|path| {
@@ -34,7 +34,8 @@ mod test {
       "_skip-dir/text.html",
       "sub-dir/_skip.html",
     ];
-    let left_list = vec!["index.html", "sub-dir/file.html"];
+    let left_list =
+      vec!["index.html", "sub-dir/file.html"];
     let source_paths =
       source_list.iter().map(PathBuf::from).collect();
     let left: Vec<PathBuf> =
