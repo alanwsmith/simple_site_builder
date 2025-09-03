@@ -11,6 +11,7 @@ anyhow = "1.0.99"
 axum = "0.8.4"
 chrono = "0.4.41"
 itertools = "0.14.0"
+markdown = "1.0.0"
 minijinja = { version = "2.12.0", features = ["custom_syntax", "json", "loader"] }
 port_check = "0.3.0"
 pretty_assertions = "1.4.1"

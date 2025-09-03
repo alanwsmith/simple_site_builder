@@ -3,6 +3,9 @@ use minijinja::path_loader;
 use minijinja::syntax::SyntaxConfig;
 use std::path::Path;
 
+pub fn mj_markdown(value: String) -> String {
+  markdown::to_html(&value)
+}
 pub fn get_env(
   content_dir: &Path
 ) -> Environment<'static> {
@@ -20,5 +23,6 @@ pub fn get_env(
   env.set_loader(path_loader(
     content_dir.display().to_string(),
   ));
+  env.add_filter("markdown", mj_markdown);
   env
 }
