@@ -4,10 +4,8 @@
 <h1>Start: Main block</h1>
 <p>This content is inside the main block from minijinja</p>
 
-<h2>TXT INCLUDE - CAN BE DELTED</h2>
-<p>These can just be called with regular includes</p>
-
-<pre>TXT: [@ txt["_includes/examples/0010-send-receive/title.txt"] @]</pre>
+<h2>Include a text file</h2>
+<p>[! include "_includes/examples/0010-send-receive/title.txt" !]</p>
 
 <h2>Data Sets</h2>
 <p>Pulled from JSON data</p>
@@ -16,7 +14,6 @@
 <h2>View Data Sets</h2>
 <p>data sets can also be output as JSON</p>
 <pre>[@ data["data/test.json"]|tojson(true) @]</pre>
-
 
 <h2>Code Syntax Highlighting</h2>
 
@@ -37,7 +34,6 @@ Here's a paragraph from markdown
 - markdown 
 - list
 [! endfilter !]
-
 
 <h2>End Main Block</h2>
 <p>This line closes the minijinja main block</p>
