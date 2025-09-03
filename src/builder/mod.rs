@@ -56,6 +56,7 @@ impl Builder {
           &details.output_path(),
         );
       });
+
     Ok(())
   }
 
@@ -90,9 +91,65 @@ impl Builder {
     Value::from_serialize(data_map)
   }
 
+  pub fn load_highlighted_files(&self) -> Value {
+    let mut files = BTreeMap::new();
+    highlighted_file_list(get_files(
+      &self.config.content_root,
+    ))
+    .iter()
+    .for_each(|input_file| {
+      let input_path =
+        self.config.content_root.join(input_file);
+      // Reminder: files are already filter to make sure
+      // they have a valid extension so you
+      // can just unwrap:
+      let ext = input_path.extension().unwrap();
+      match fs::read_to_string(&input_path) {
+        Ok(code) => {
+          let highlighted = highlight_code(
+            &code,
+            &ext.display().to_string(),
+          );
+          files.insert(
+            input_file.display().to_string(),
+            highlighted,
+          );
+        }
+        Err(e) => {
+          dbg!(e);
+        }
+      }
+    });
+    Value::from_serialize(files)
+  }
+
+  pub fn load_txt(&self) -> Value {
+    let mut txt_map = BTreeMap::new();
+    txt_file_list(get_files(&self.config.content_root))
+      .iter()
+      .for_each(|input_file| {
+        let input_path =
+          self.config.content_root.join(input_file);
+        match fs::read_to_string(&input_path) {
+          Ok(txt) => {
+            txt_map.insert(
+              input_file.display().to_string(),
+              txt,
+            );
+          }
+          Err(e) => {
+            dbg!(e);
+          }
+        }
+      });
+    Value::from_serialize(txt_map)
+  }
+
   pub fn transform_html(&self) -> Result<()> {
     let env = get_env(&self.config.content_root);
     let data = self.load_data();
+    let txt = self.load_txt();
+    let highlighted = self.load_highlighted_files();
     html_file_list(get_files(&self.config.content_root))
       .iter()
       .for_each(|input_path| {
@@ -103,8 +160,11 @@ impl Builder {
         match env.get_template(&details.input_path_str())
         {
           Ok(template) => {
-            match template.render(context!(data => data))
-            {
+            match template.render(context!(
+              data => data,
+              highlighted => highlighted,
+              txt => txt
+            )) {
               Ok(output) => {
                 let _ = write_file_with_mkdir(
                   &details.output_path(),

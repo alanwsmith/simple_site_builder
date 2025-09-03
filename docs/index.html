@@ -2,12 +2,8 @@
 
 <html  lang="en">
   <head>
-<style>
-body {
-background: black;
-color: goldenrod;
-}
-    </style>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/highlight-base16-ocean-dark.css">
   </head>
   <body>
     <header>
@@ -16,28 +12,48 @@ color: goldenrod;
       - <a href="/ping/about/">ping about</a>
     </header>
     <main>
-<h1>This is the home page</h1>
-<p>etc...</p>
+<h1>Start: Main block</h1>
+<p>This content is inside the main block from minijinja</p>
 
-data - 
+<h2>TXT INCLUDE - CAN BE DELTED</h2>
+<p>These can just be called with regular includes</p>
+
+<pre>TXT: Send and Receive
+</pre>
+
+<h2>Data Sets</h2>
+<p>Pulled from JSON data</p>
+<pre>bravo</pre>
+
+<h2>View Data Sets</h2>
+<p>data sets can also be output as JSON</p>
 <pre>{
-  "_includes/test-data/alfa.json": {
-    "ping": "alfa"
-  },
-  "data/test.json": {
-    "alfa": "bravo"
-  }
+  "alfa": "bravo"
 }</pre>
 
-<h2>H2</h2>
-<p>That's a second heading</p>
+
+<h2>Code Syntax Highlighting</h2>
+
+<pre><code><span class="line-marker"></span><span class="source css"><span class="meta selector css"><span class="entity name tag css">body</span> </span><span class="meta property-list css"><span class="punctuation section property-list css">{</span>
+<span class="line-marker"></span>  <span class="meta property-name css"><span class="support type property-name css">background</span></span><span class="punctuation separator key-value css">:</span><span class="meta property-value css"> </span><span class="meta property-value css"><span class="support constant color w3c-standard-color-name css">black</span></span><span class="punctuation terminator rule css">;</span>
+<span class="line-marker"></span>  <span class="meta property-name css"><span class="support type property-name css">color</span></span><span class="punctuation separator key-value css">:</span><span class="meta property-value css"> </span><span class="meta property-value css"><span class="constant other color rgb-value css"><span class="punctuation definition constant css">#</span>aaa</span></span><span class="punctuation terminator rule css">;</span>
+<span class="line-marker"></span></span><span class="punctuation section property-list css">}</span></span></code></pre>
+
+<h2>Markdown Filter</h2>
+
+<h3>This is from a markdown section</h3>
+<p>Here's a paragraph from markdown</p>
 <ul>
 <li>this</li>
 <li>is</li>
 <li>a</li>
+<li>markdown</li>
 <li>list</li>
 </ul>
 
+
+<h2>End Main Block</h2>
+<p>This line closes the minijinja main block</p>
     </main>
   </body>
 </html>

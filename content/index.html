@@ -1,23 +1,45 @@
 [! extends "_includes/wrapper.html" !]
 
 [! block main !]
-<h1>This is the home page</h1>
-<p>etc...</p>
+<h1>Start: Main block</h1>
+<p>This content is inside the main block from minijinja</p>
 
-data - 
-<pre>[@ data|tojson(true) @]</pre>
+<h2>TXT INCLUDE - CAN BE DELTED</h2>
+<p>These can just be called with regular includes</p>
+
+<pre>TXT: [@ txt["_includes/examples/0010-send-receive/title.txt"] @]</pre>
+
+<h2>Data Sets</h2>
+<p>Pulled from JSON data</p>
+<pre>[@ data["data/test.json"].alfa @]</pre>
+
+<h2>View Data Sets</h2>
+<p>data sets can also be output as JSON</p>
+<pre>[@ data["data/test.json"]|tojson(true) @]</pre>
+
+
+<h2>Code Syntax Highlighting</h2>
+
+<pre><code>
+  [@- highlighted["styles/main.css"]|safe -@]
+</code></pre>
+
+<h2>Markdown Filter</h2>
 
 [! filter markdown|safe !]
-## H2
+### This is from a markdown section
 
-That's a second heading
+Here's a paragraph from markdown
 
 - this
 - is 
 - a
+- markdown 
 - list
-
 [! endfilter !]
 
+
+<h2>End Main Block</h2>
+<p>This line closes the minijinja main block</p>
 [! endblock !]
 

@@ -32,7 +32,8 @@ async fn main() {
     let _ = server.start(live_reload).await;
   });
 
-  let mut builder = Builder::new(config.clone(), reloader, rx);
+  let mut builder =
+    Builder::new(config.clone(), reloader, rx);
   let builder_handle = tokio::spawn(async move {
     let _ = builder.start().await;
   });
