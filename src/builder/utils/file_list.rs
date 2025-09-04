@@ -5,7 +5,7 @@ use walkdir::WalkDir;
 pub fn file_list(
   content_dir: &PathBuf
 ) -> Vec<FileDetails> {
-  WalkDir::new(content_dir)
+  let mut file_list = WalkDir::new(content_dir)
     .into_iter()
     .filter_map(|e| e.ok())
     .filter(|e| e.path().is_file())
@@ -19,5 +19,7 @@ pub fn file_list(
       .to_path_buf()
     })
     .map(|pb| FileDetails::new(&pb))
-    .collect()
+    .collect::<Vec<FileDetails>>();
+  file_list.sort_by_key(|f| f.sort_key());
+  file_list
 }

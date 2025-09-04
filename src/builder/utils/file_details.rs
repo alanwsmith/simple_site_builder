@@ -143,7 +143,12 @@ impl FileDetails {
     }
   }
 
-  //
+  pub fn sort_key(&self) -> (String, String) {
+    (
+      self.input_dir.display().to_string(),
+      self.input_name.display().to_string(),
+    )
+  }
 }
 
 #[cfg(test)]
