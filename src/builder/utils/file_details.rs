@@ -50,76 +50,6 @@ impl FileDetails {
   pub fn get_output_dir(
     input_path: &Path
   ) -> Option<PathBuf> {
-    return FileDetails::dev(input_path);
-
-    Some(PathBuf::from(input_path.parent().unwrap()))
-  }
-
-  pub fn dev(input_path: &Path) -> Option<PathBuf> {
-    return FileDetails::dev2(input_path);
-
-    let file_stem =
-      input_path.file_stem().unwrap().to_str().unwrap();
-    let parent_path = PathBuf::from(
-      input_path.parent().unwrap().to_str().unwrap(),
-    );
-    match input_path.extension() {
-      Some(ext) => {
-        if ext.to_str().unwrap() == "html" {
-          if input_path
-            .file_stem()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            != "index"
-          {
-            Some(PathBuf::from(file_stem))
-          } else {
-            Some(parent_path)
-          }
-        } else {
-          Some(input_path.file_name().unwrap().into())
-        }
-      }
-      None => {
-        Some(input_path.file_name().unwrap().into())
-      }
-    }
-  }
-
-  pub fn dev2(input_path: &Path) -> Option<PathBuf> {
-    return FileDetails::dev3(input_path);
-
-    let file_stem =
-      input_path.file_stem().unwrap().to_str().unwrap();
-    let parent_path = PathBuf::from(
-      input_path.parent().unwrap().to_str().unwrap(),
-    );
-    match input_path.extension() {
-      Some(ext) => {
-        if ext.to_str().unwrap() == "html" {
-          if input_path
-            .file_stem()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            != "index"
-          {
-            Some(parent_path.join(file_stem))
-          } else {
-            Some(parent_path)
-          }
-        } else {
-          Some(input_path.file_name().unwrap().into())
-        }
-      }
-      None => {
-        Some(input_path.file_name().unwrap().into())
-      }
-    }
-  }
-
-  pub fn dev3(input_path: &Path) -> Option<PathBuf> {
     if input_path
       .iter()
       .any(|part| part.to_str().unwrap().starts_with("_"))
@@ -300,7 +230,9 @@ mod test {
   #[rstest]
   #[case("index.html", "")]
   #[case("sub-dir/index.html", "sub-dir")]
-  fn solo_get_output_dir_test(
+  #[case("about.html", "about")]
+  #[case("valid-dir/about.html", "valid-dir/about")]
+  fn get_output_dir_valid_test(
     #[case] input_path: &str,
     #[case] target: &str,
   ) {
@@ -312,41 +244,18 @@ mod test {
   }
 
   #[rstest]
-  #[case("about.html", "about")]
-  fn solo_dev(
-    #[case] input_path: &str,
-    #[case] target: &str,
-  ) {
-    let expected = Some(PathBuf::from(target));
-    let got =
-      FileDetails::dev(&PathBuf::from(input_path));
-    assert_eq!(expected, got);
-  }
-
-  #[rstest]
-  #[case("valid-dir/about.html", "valid-dir/about")]
-  fn solo_dev2(
-    #[case] input_path: &str,
-    #[case] target: &str,
-  ) {
-    let expected = Some(PathBuf::from(target));
-    let got =
-      FileDetails::dev2(&PathBuf::from(input_path));
-    assert_eq!(expected, got);
-  }
-
-  #[rstest]
   #[case("_skipped.html", None)]
   #[case("_skipped-dir/index.html", None)]
   #[case("_skipped-dir/about.html", None)]
   #[case("valid-dir/_skip.html", None)]
   #[case("valid-dir/_skip-dir/file.html", None)]
-  fn solo_dev3(
+  fn get_output_dir_skipped_test(
     #[case] input_path: &str,
     #[case] expected: Option<PathBuf>,
   ) {
-    let got =
-      FileDetails::dev3(&PathBuf::from(input_path));
+    let got = FileDetails::get_output_dir(
+      &PathBuf::from(input_path),
+    );
     assert_eq!(expected, got);
   }
 
