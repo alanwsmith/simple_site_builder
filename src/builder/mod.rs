@@ -39,7 +39,7 @@ impl Builder {
   }
 
   pub fn build_site(&self) -> Result<()> {
-    // let _ = clearscreen::clear();
+    let _ = clearscreen::clear();
     info!("Building site");
     let file_list = file_list(&self.config.content_root);
     let _ = &self.transform_html(&file_list)?;
