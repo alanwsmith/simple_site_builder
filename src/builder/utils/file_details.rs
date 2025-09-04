@@ -319,7 +319,12 @@ mod test {
   #[case("_skipped-dir/index.html", None)]
   #[case("_skipped-dir/about.html", None)]
   #[case("valid-dir/_skip.html", None)]
+  #[case(".valid-dir/_skip.html", None)]
   #[case("valid-dir/_skip-dir/file.html", None)]
+  #[case("_skipped.json", None)]
+  #[case("_skipped-dir/skipped.json", None)]
+  #[case("valid-dir/_skipped.json", None)]
+  #[case("valid-dir/_skip-dir/file.json", None)]
   fn get_output_dir_skipped_test(
     #[case] input_path: &str,
     #[case] expected: Option<PathBuf>,
