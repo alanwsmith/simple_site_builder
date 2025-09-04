@@ -16,7 +16,7 @@ impl FileDetails {
     // unwrapping directly can be used
     let input_dir = input_path.parent().unwrap().into();
     let input_name =
-      input_path.file_name().unwrap().into();
+      FileDetails::get_input_name(input_path);
     let output_dir =
       Some(input_path.parent().unwrap().into());
     let output_name =
@@ -31,21 +31,43 @@ impl FileDetails {
     }
   }
 
+  // pub fn get_input_name(input_path: &Path) -> PathBuf {
+  //   FileDetails::get_input_name_dev(input_path)
+  // }
+
   pub fn get_input_name(input_path: &Path) -> PathBuf {
-    FileDetails::get_input_name_dev(input_path)
-  }
-
-  pub fn get_input_name_dev(
-    input_path: &Path
-  ) -> PathBuf {
     input_path.file_name().unwrap().into()
   }
 
-  pub fn get_input_name_dev2(
-    input_path: &Path
-  ) -> PathBuf {
-    input_path.file_name().unwrap().into()
+  pub fn get_input_dir(input_path: &Path) -> PathBuf {
+    input_path.parent().unwrap().into()
   }
+
+  // TODO: This is really for output name
+  // pub fn get_input_name_dev2(
+  //   input_path: &Path
+  // ) -> PathBuf {
+  //   match input_path.extension() {
+  //     Some(ext) => {
+  //       if ext.to_str().unwrap() == "html" {
+  //         if input_path
+  //           .file_stem()
+  //           .unwrap()
+  //           .to_str()
+  //           .unwrap()
+  //           != "index"
+  //         {
+  //           PathBuf::from("index.html")
+  //         } else {
+  //           input_path.file_name().unwrap().into()
+  //         }
+  //       } else {
+  //         input_path.file_name().unwrap().into()
+  //       }
+  //     }
+  //     None => input_path.file_name().unwrap().into(),
+  //   }
+  // }
 
   //
 }
@@ -93,11 +115,16 @@ mod test {
 
   #[rstest]
   #[case("index.html", "index.html")]
-  fn file_input_name_test(
+  #[case("about.html", "about.html")]
+  #[case("test.json", "test.json")]
+  #[case("no_extension", "no_extension")]
+  #[case(".dot-hidden", ".dot-hidden")]
+  #[case("_leading_underscore", "_leading_underscore")]
+  fn input_name_test(
     #[case] input_path: &str,
-    #[case] input_name: &str,
+    #[case] target: &str,
   ) {
-    let expected = PathBuf::from(&input_name);
+    let expected = PathBuf::from(&target);
     let got = FileDetails::get_input_name(
       &PathBuf::from(input_path),
     );
@@ -105,21 +132,32 @@ mod test {
   }
 
   #[rstest]
-  #[case("test.json", "test.json")]
-  #[case("no_extension", "no_extension")]
-  #[case(".dot-hidden", ".dot-hidden")]
-  fn dev(
+  #[case("sub-dir/index.html", "sub-dir")]
+  fn input_dir_test(
     #[case] input_path: &str,
-    #[case] input_name: &str,
+    #[case] target: &str,
   ) {
-    let expected = PathBuf::from(&input_name);
-    let got = FileDetails::get_input_name_dev(
-      &PathBuf::from(input_path),
-    );
+    let expected = PathBuf::from(target);
+    let got = FileDetails::get_input_dir(&PathBuf::from(
+      input_path,
+    ));
     assert_eq!(expected, got);
   }
 
   // #[rstest]
+  // fn dev(
+  //   #[case] input_path: &str,
+  //   #[case] input_name: &str,
+  // ) {
+  //   let expected = PathBuf::from(&input_name);
+  //   let got = FileDetails::get_input_name_dev(
+  //     &PathBuf::from(input_path),
+  //   );
+  //   assert_eq!(expected, got);
+  // }
+
+  // #[rstest]
+  // #[case("about.html", "index.html")]
   // fn dev2(
   //   #[case] input_path: &str,
   //   #[case] input_name: &str,
