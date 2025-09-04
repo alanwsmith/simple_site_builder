@@ -3,13 +3,20 @@ use std::path::Path;
 use std::path::PathBuf;
 
 #[derive(Debug, PartialEq)]
+pub enum FileMoveType {
+  Copy,
+  Skip,
+  TransformHtml,
+}
+
+#[derive(Debug, PartialEq)]
 pub struct FileDetails {
   extension: Option<String>,
   input_dir: PathBuf,
   input_name: PathBuf,
   output_dir: Option<PathBuf>,
   output_name: Option<PathBuf>,
-  move_type: FileMoveType,
+  file_move_type: FileMoveType,
 }
 
 impl FileDetails {
@@ -24,15 +31,15 @@ impl FileDetails {
       FileDetails::get_output_dir(input_path);
     let output_name =
       FileDetails::get_output_name(input_path);
-    let move_type =
-      FileDetails::get_move_type(input_path);
+    let file_move_type =
+      FileDetails::get_file_move_type(input_path);
     FileDetails {
       extension,
       input_dir,
       input_name,
       output_dir,
       output_name,
-      move_type,
+      file_move_type,
     }
   }
 
@@ -52,11 +59,26 @@ impl FileDetails {
     input_path.parent().unwrap().into()
   }
 
-  // TODO:
-  pub fn get_move_type(
+  pub fn get_file_move_type(
     input_path: &Path
   ) -> FileMoveType {
-    FileMoveType::Transform
+    if input_path
+      .iter()
+      .any(|part| part.to_str().unwrap().starts_with("_"))
+    {
+      FileMoveType::Skip
+    } else {
+      match input_path.extension() {
+        Some(ext) => {
+          if ext == "html" {
+            FileMoveType::TransformHtml
+          } else {
+            FileMoveType::Copy
+          }
+        }
+        None => FileMoveType::Copy,
+      }
+    }
   }
 
   pub fn get_output_dir(
@@ -125,13 +147,6 @@ impl FileDetails {
   //
 }
 
-#[derive(Debug, PartialEq)]
-pub enum FileMoveType {
-  Copy,
-  Skip,
-  Transform,
-}
-
 #[cfg(test)]
 mod test {
   use super::*;
@@ -146,7 +161,7 @@ mod test {
     "index.html",
     "",
     "index.html",
-    FileMoveType::Transform
+    FileMoveType::TransformHtml
   )]
   fn file_details_integration_test(
     #[case] extension: &str,
@@ -155,7 +170,7 @@ mod test {
     #[case] input_name: &str,
     #[case] output_dir: &str,
     #[case] output_name: &str,
-    #[case] move_type: FileMoveType,
+    #[case] file_move_type: FileMoveType,
   ) {
     let left = FileDetails {
       extension: Some(extension.to_string()),
@@ -163,7 +178,7 @@ mod test {
       input_name: PathBuf::from(input_name),
       output_dir: Some(PathBuf::from(output_dir)),
       output_name: Some(PathBuf::from(output_name)),
-      move_type,
+      file_move_type,
     };
     let right =
       FileDetails::new(&PathBuf::from(input_path));
@@ -298,6 +313,36 @@ mod test {
       &PathBuf::from(input_path),
     );
     assert_eq!(expected, got);
+  }
+
+  #[rstest]
+  #[case("index.html", FileMoveType::TransformHtml)]
+  #[case("data.json", FileMoveType::Copy)]
+  #[case("no-extension", FileMoveType::Copy)]
+  #[case(".dot-file", FileMoveType::Copy)]
+  #[case(".dot.html", FileMoveType::TransformHtml)]
+  #[case("_skip.html", FileMoveType::Skip)]
+  #[case("_skip-dir/file.html", FileMoveType::Skip)]
+  #[case("valid-dir/_skip.html", FileMoveType::Skip)]
+  #[case(
+    "valid-dir/_skip-dir/file.html",
+    FileMoveType::Skip
+  )]
+  // #[case("subdir/index.html", FileMoveType::TransformHtml)]
+  // #[case("about.html", FileMoveType::TransformHtml)]
+  // #[case("subdir/about.html", FileMoveType::TransformHtml)]
+  // #[case("index.md", FileMoveType::TransformMarkdown)]
+  // #[case("about.md", FileMoveType::TransformMarkdown)]
+  // #[case("subdir/index.md", FileMoveType::TransformMarkdown)]
+  // #[case("subdir/about.md", FileMoveType::TransformMarkdown)]
+  fn solo_file_move_type_test(
+    #[case] input_path: &str,
+    #[case] expected: FileMoveType,
+  ) {
+    let got = FileDetails::get_file_move_type(
+      &PathBuf::from(input_path),
+    );
+    assert_eq!(expected, got)
   }
 
   //
