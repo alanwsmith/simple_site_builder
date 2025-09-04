@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[@ _data.config.siteName @]</title>
+    <meta property="og:title" content="[@ _data.config.siteName @]" />
+    <meta property="og:description" content="[@ _data.config.description @]" />
+    <meta name="description" content="[@ _data.config.description @]" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="[@ _data.config.domain @]" />
+    <meta
+      property="og:image"
+      content="[@ _data.config.domain @]/images/og-image-main.jpg"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/images/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/images/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/images/favicons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/images/favicons/site.webmanifest" />
+    <link
+      rel="mask-icon"
+      href="/images/favicons/safari-pinned-tab.svg"
+      color="#5bbad5"
+    />
+    <link rel="shortcut icon" href="/images/favicons/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="msapplication-config" content="/images/favicons/browserconfig.xml" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="stylesheet" href="/styles/main.css">
+  </head>
+  <body>
+    <header>
+      [! for navLink in _data.config.navLinks !]
+      <a href="[@ navLink.url @]">
+        [@ navLink.text @]
+      </a>
+        [! if not loop.last !] 
+          ~
+        [! endif !]
+      [! endfor !]
+    </header>
+
+    <main>
+      <hgroup>
+        <h1>[@ _data.config.siteName @]</h1>
+      </hgroup>
+      [! block main !][! endblock !]
+    </main>
+
+    <footer class="default-wrapper align-center">
+      <div>
+        made by 
+        <a href="[@ _data.config.author.link @]">
+          [@ _data.config.author.name @]
+        </a>
+      </div>
+      <div>
+      [! for footerLink in _data.config.footerLinks!]
+        <a href="[@ footerLink.url @]">
+          [@ footerLink.text @]
+        </a>
+        [! if not loop.last !] 
+          ~
+        [! endif !]
+      [! endfor !]
+      </div>
+      <div>
+        Updated: [@ _data.updated.timestamp @]
+      </div>
+    </footer>
+  </body>
+</html>

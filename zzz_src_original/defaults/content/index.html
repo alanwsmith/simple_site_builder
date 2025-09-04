@@ -1,0 +1,102 @@
+[! extends "_templates/wrapper.html" !] 
+[! block main !]
+
+[! filter markdown|safe !]
+
+This is the default page for a new
+_bs_ site. 
+
+## Quickstart
+
+- Edit files in the `content` directory
+to update your site. For example, the content for 
+this page is in the `content/index.html` file. 
+
+  _bs_ automatically reloads the browser 
+  so you can see your changes immediately. 
+
+- You can use Jinja style template functionality 
+in `.html` files. The `content/_templates` directory
+is set up to house them. For example, the wrapper for the
+`content/index.html` page is `content/_templates/wrapper.html`
+
+- Data from any `.json` files in the `content/_data`
+directory is available in the templates. 
+  For example, the links at the top of the page 
+  and the footer are defined in `content/_data/config.json`
+
+- Scripts in the `content/_scripts` directory get run
+each time there's a change to the content. For example, 
+the `content/_scripts/update-timestamp.bash` file 
+updates the `content/_data/updated.json` file with
+the current date. It's what gets used to
+show the date at the bottom of this page. 
+
+
+## Templates
+
+_bs_ uses MiniJinja with custom delimiters. Specifically, 
+it uses:
+
+- `[! raw !][! !][! endraw !]` instead of `{% %}` for
+blocks. 
+
+- `[! raw !][@ @][! endraw !]` instead of `{@ @}` for
+variables. 
+
+- `[! raw !][# #][! endraw !]` instead of `{# #}` for
+comments. 
+
+I find the square brackets easier to track visually.
+
+Check out [the MiniJinja 
+documentation](https://docs.rs/minijinja/latest/minijinja/)
+for details. (Just remember to keep the delimiter changes in mind.)
+
+
+## Markdown
+
+_bs_ supports Common Markdown. To use it, 
+wrap markdown text inside a MiniJinja
+filter like this:
+
+[! endfilter !]
+
+
+<pre>
+[! raw !][! filter markdown|safe !][! endraw !]
+
+# Markdown Content Goes Here
+
+The quick brown fox jumps over
+the lazy dog. etc...
+
+[! raw !][! endfilter !][! endraw !]
+
+</pre>
+
+
+
+[! filter markdown|safe !]
+
+## More About bs
+
+_bs_ is mostly a personal project. 
+I make [a lot of little websites](https://links.alanwsmith.com/). 
+I built _bs_ to reduce reduce the friction it takes to spin
+a new one up. 
+
+I wouldn't try to run a big website off it (e.g.
+there's no built-in router),
+but it's stable enough to tinker
+with if you're into that type of thing. 
+
+I'm also working on a full-featured
+generator called [Neopoligen](https://www.neopoligen.com).
+The secondary purpose of _bs_ is to act
+as a playground for it. 
+
+[! endfilter !]
+
+[! endblock !]
+

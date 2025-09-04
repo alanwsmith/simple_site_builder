@@ -1,97 +1,12 @@
-<!-- prettier-ignore -->
-
-[! extends "_templates/wrapper.html" !] 
-
-
+[! extends "_includes/wrappers/main.html" !]
 [! block main !]
 
-<!-- prettier-ignore-end -->
+<pre>
+  [@ folders|tojson(true) @]
+</pre>
 
-<hgroup>
-  <h1>ssbuild</h1>
-  <p>my personal static site builder</p>
-</hgroup>
-<h2>Overview</h2>
-<p>
-  ssbuild is a <strong>very</strong> opinionated (and hacky) static site
-  builder. It's designed to make it quick and easy for me to create new
-  mini-sites. It'll be replaced by
-  <a href="https://www.neopoligen.com/">Neopoligen</a> once that app is ready.
-  It lets me get ideas outta my head with less friction in the mean time.
-</p>
-<p>
-  It also give me another rep in designing and building a static site generator.
-</p>
-<p>
-  I wouldn't recommend trying to use it. It's super customized for the way I'm
-  currently working. Feel free to poke around
-  <a href="https://github.com/alanwsmith/ssbuild">the source code</a>
-  if you're into that kinda thing.
-</p>
-
-<h2>Features</h2>
-
-<ul>
-  <li>[x] Runs in the current directory.</li>
-
-  <li>[x] Loads every `.html` file in `content` as a template.</li>
-  <li>
-    [x] Renders `.html` files (except those in directories that start with a `_`
-    at the root of the project) and puts the output in the `docs` directory with
-    the same file name/path. The provides a way to drop generic template files
-    in a `_templates` directory that can be used in other files without
-    publishing them.
-  </li>
-  <li>[x] Empties the `./docs` output directory before each run.</li>
-  <li>[x] Runs a local dev server with hot-reload when files change.</li>
-  <li>
-    [x] Automatically finds an available port for the server so multiple
-    instances can be run at the same time.
-  </li>
-  <li>
-    [x] Automatically make the `content`, `docs`, `data`, and `scripts`
-    directories if they don't exist.
-  </li>
-  <li>
-    [x] Automatically creates an `index.html` file when making `content`
-    directory if it doesn't exist.
-  </li>
-  <li>
-    [x] Automatically creates a netlify.toml file when making a `content`
-    directory if one doesn't already exist.
-  </li>
-  <li>
-    [x] Copies non-html files from `content` directly to `docs` with the same
-    file name/path (skipping files in directories at the root that start with a
-    `_`)
-  </li>
-  <li>
-    [x] Runs any executable files in the `scripts` directory (sorted by name)
-    prior to each build.
-  </li>
-  <li>[x] Serves a default 404 page if a file isn't found.</li>
-  <li>
-    [x] Load any `.json` files in the `data` directory into the payload that's
-    send to each render
-  </li>
-  <li>
-    [x] If run in a directory without a content folder it asks if you want to
-    make a new site.
-  </li>
-  <li>
-    [x] When you make a new script in the scripts directory it asks you if you
-    want to make it executable
-  </li>
-  <li>[] Hoist minijinja errors to output pages</li>
-  <li>
-    [] Put clap on the script so you can do <code>ssbuild --version</code>
-  </li>
-  <li>[] Output errors for scripts that have problems</li>
-  <li>[] Show a warning if you edit something in the output directory</li>
-</ul>
-
-<!-- prettier-ignore -->
-
+[! include "_sections/0010-overview/index.html" !]
 [! endblock !]
 
-<!-- prettier-ignore-end -->
+
+

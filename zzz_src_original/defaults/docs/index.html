@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to bs!</title>
+    <meta property="og:title" content="Welcome to bs!" />
+    <meta property="og:description" content="A work in progress" />
+    <meta name="description" content="A work in progress" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https:&#x2f;&#x2f;www.alanwsmith.com&#x2f;" />
+    <meta
+      property="og:image"
+      content="https:&#x2f;&#x2f;www.alanwsmith.com&#x2f;/images/og-image-main.jpg"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/favicons/site.webmanifest" />
+    <link
+      rel="mask-icon"
+      href="/favicons/safari-pinned-tab.svg"
+      color="#5bbad5"
+    />
+    <link rel="shortcut icon" href="/favicons/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="stylesheet" href="/styles/main.css">
+  </head>
+  <body>
+    <header>
+      
+      <a href="https:&#x2f;&#x2f;www.alanwsmith.com&#x2f;">
+        alan&#x27;s home page
+      </a>
+         
+          ~
+        
+      
+      <a href="https:&#x2f;&#x2f;links.alanwsmith.com&#x2f;">
+        other projects
+      </a>
+         
+          ~
+        
+      
+      <a href="https:&#x2f;&#x2f;socials.alanwsmith.com&#x2f;">
+        socials
+      </a>
+        
+      
+    </header>
+
+    <main>
+      <hgroup>
+        <h1>Welcome to bs!</h1>
+      </hgroup>
+      
+
+<p>This is the default page for a new
+<em>bs</em> site.</p>
+<h2>Quickstart</h2>
+<ul>
+<li>
+<p>Edit files in the <code>content</code> directory
+to update your site. For example, the content for
+this page is in the <code>content/index.html</code> file.</p>
+<p><em>bs</em> automatically reloads the browser
+so you can see your changes immediately.</p>
+</li>
+<li>
+<p>You can use Jinja style template functionality
+in <code>.html</code> files. The <code>content/_templates</code> directory
+is set up to house them. For example, the wrapper for the
+<code>content/index.html</code> page is <code>content/_templates/wrapper.html</code></p>
+</li>
+<li>
+<p>Data from any <code>.json</code> files in the <code>content/_data</code>
+directory is available in the templates.
+For example, the links at the top of the page
+and the footer are defined in <code>content/_data/config.json</code></p>
+</li>
+<li>
+<p>Scripts in the <code>content/_scripts</code> directory get run
+each time there's a change to the content. For example,
+the <code>content/_scripts/update-timestamp.bash</code> file
+updates the <code>content/_data/updated.json</code> file with
+the current date. It's what gets used to
+show the date at the bottom of this page.</p>
+</li>
+</ul>
+<h2>Templates</h2>
+<p><em>bs</em> uses MiniJinja with custom delimiters. Specifically,
+it uses:</p>
+<ul>
+<li>
+<p><code>[! !]</code> instead of <code>{% %}</code> for
+blocks.</p>
+</li>
+<li>
+<p><code>[@ @]</code> instead of <code>{@ @}</code> for
+variables.</p>
+</li>
+<li>
+<p><code>[# #]</code> instead of <code>{# #}</code> for
+comments.</p>
+</li>
+</ul>
+<p>I find the square brackets easier to track visually.</p>
+<p>Check out <a href="https://docs.rs/minijinja/latest/minijinja/">the MiniJinja
+documentation</a>
+for details. (Just remember to keep the delimiter changes in mind.)</p>
+<h2>Markdown</h2>
+<p><em>bs</em> supports Common Markdown. To use it,
+wrap markdown text inside a MiniJinja
+filter like this:</p>
+
+
+
+<pre>
+[! filter markdown|safe !]
+
+# Markdown Content Goes Here
+
+The quick brown fox jumps over
+the lazy dog. etc...
+
+[! endfilter !]
+
+</pre>
+
+
+
+<h2>More About bs</h2>
+<p><em>bs</em> is mostly a personal project.
+I make <a href="https://links.alanwsmith.com/">a lot of little websites</a>.
+I built <em>bs</em> to reduce reduce the friction it takes to spin
+a new one up.</p>
+<p>I wouldn't try to run a big website off it (e.g.
+there's no built-in router),
+but it's stable enough to tinker
+with if you're into that type of thing.</p>
+<p>I'm also working on a full-featured
+generator called <a href="https://www.neopoligen.com">Neopoligen</a>.
+The secondary purpose of <em>bs</em> is to act
+as a playground for it.</p>
+
+
+
+    </main>
+
+    <footer class="default-wrapper align-center">
+      <div>
+        made by 
+        <a href="https:&#x2f;&#x2f;www.alanwsmith.com&#x2f;">
+          alan w. smith
+        </a>
+      </div>
+      <div>
+      
+        <a href="https:&#x2f;&#x2f;links.alanwsmith.com&#x2f;">
+          other projects
+        </a>
+         
+          ~
+        
+      
+        <a href="https:&#x2f;&#x2f;socials.alanwsmith.com&#x2f;">
+          socials
+        </a>
+        
+      
+      </div>
+      <div>
+        Updated: August 27, 2025 - 7:27 PM
+      </div>
+    </footer>
+  </body>
+</html>
