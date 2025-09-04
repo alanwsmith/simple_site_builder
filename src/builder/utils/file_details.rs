@@ -1,15 +1,16 @@
+use serde::Serialize;
 use std::fs::File;
 use std::path::Path;
 use std::path::PathBuf;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum FileMoveType {
   Copy,
   Skip,
   TransformHtml,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct FileDetails {
   pub extension: Option<String>,
   pub input_dir: PathBuf,

@@ -185,6 +185,7 @@ dependencies = [
  "pretty_assertions",
  "regex",
  "rstest",
+ "serde",
  "serde_json",
  "syntect",
  "tokio",

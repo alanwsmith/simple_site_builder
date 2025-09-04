@@ -130,6 +130,8 @@ impl Builder {
     file_list: &[FileDetails],
   ) -> Result<()> {
     let env = get_env(&self.config.content_root);
+    let file_list_as_value =
+      Value::from_serialize(file_list);
     file_list.iter().for_each(|details| {
       if details.file_move_type
         == FileMoveType::TransformHtml
@@ -148,7 +150,9 @@ impl Builder {
         );
         match env.get_template(&template_name) {
           Ok(template) => {
-            match template.render(context!()) {
+            match template.render(context!(
+              file_list => file_list_as_value
+            )) {
               Ok(content) => {
                 let _ = write_file_with_mkdir(
                   output_path,
