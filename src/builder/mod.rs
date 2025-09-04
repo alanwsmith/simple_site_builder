@@ -1,18 +1,12 @@
-#![allow(unused)]
-pub mod movers;
 pub mod utils;
 
-use self::movers::*;
 use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
 use chrono::{DateTime, Local};
 use minijinja::Value;
 use minijinja::context;
-use std::collections::BTreeMap;
-use std::fs;
-use std::io::empty;
-use std::path::PathBuf;
+// use std::collections::BTreeMap;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -42,7 +36,7 @@ impl Builder {
   pub fn build_site(&self) -> Result<()> {
     let _ = clearscreen::clear();
     info!("Building site");
-    self.empty_dir();
+    let _ = self.empty_dir();
     let file_list = file_list(&self.config.content_root);
     let folders = folder_list(&self.config.content_root);
     let _ = &self.transform_html(&file_list, &folders)?;
@@ -78,14 +72,15 @@ impl Builder {
     Ok(())
   }
 
+  // TODO: set this up so the names aren't the same
   pub fn empty_dir(&self) -> Result<()> {
-    empty_dir(&self.config.output_root);
+    let _ = empty_dir(&self.config.output_root);
     Ok(())
   }
 
   pub fn load_data(&self) -> Value {
-    let mut data_map: BTreeMap<String, Value> =
-      BTreeMap::new();
+    // let mut data_map: BTreeMap<String, Value> =
+    //   BTreeMap::new();
 
     // json_file_list(get_files(&self.config.content_root))
     //   .iter()
@@ -114,7 +109,8 @@ impl Builder {
     //     }
     //   });
 
-    Value::from_serialize(data_map)
+    //Value::from_serialize(data_map)
+    Value::from("")
   }
 
   pub async fn start(&mut self) -> Result<()> {
