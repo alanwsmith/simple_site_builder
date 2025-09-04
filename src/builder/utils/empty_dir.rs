@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::fs;
 use std::path::Path;
 
-fn empty_dir(dir: &Path) -> Result<()> {
+pub fn empty_dir(dir: &Path) -> Result<()> {
   if let Ok(exists) = dir.try_exists() {
     if exists {
       for entry in dir.read_dir()? {

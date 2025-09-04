@@ -11,6 +11,7 @@ use minijinja::Value;
 use minijinja::context;
 use std::collections::BTreeMap;
 use std::fs;
+use std::io::empty;
 use std::path::PathBuf;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
@@ -41,6 +42,7 @@ impl Builder {
   pub fn build_site(&self) -> Result<()> {
     let _ = clearscreen::clear();
     info!("Building site");
+    &self.empty_dir();
     let file_list = file_list(&self.config.content_root);
     let _ = &self.transform_html(&file_list)?;
     // let _ = &self.copy_files()?;
@@ -49,6 +51,11 @@ impl Builder {
       self.port
     );
     let _ = &self.reloader.reload();
+    Ok(())
+  }
+
+  pub fn empty_dir(&self) -> Result<()> {
+    empty_dir(&self.config.output_root);
     Ok(())
   }
 
