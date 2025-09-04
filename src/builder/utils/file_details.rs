@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 #[derive(Debug, PartialEq)]
 pub struct FileDetails {
+  extension: Option<String>,
   input_dir: PathBuf,
   input_name: PathBuf,
   output_dir: Option<PathBuf>,
@@ -13,6 +14,8 @@ pub struct FileDetails {
 
 impl FileDetails {
   pub fn new(input_path: &Path) -> FileDetails {
+    let extension =
+      FileDetails::get_extension(input_path);
     let input_dir =
       FileDetails::get_input_dir(input_path);
     let input_name =
@@ -24,12 +27,21 @@ impl FileDetails {
     let move_type =
       FileDetails::get_move_type(input_path);
     FileDetails {
+      extension,
       input_dir,
       input_name,
       output_dir,
       output_name,
       move_type,
     }
+  }
+
+  pub fn get_extension(
+    input_path: &Path
+  ) -> Option<String> {
+    input_path
+      .extension()
+      .map(|ext| ext.display().to_string())
   }
 
   pub fn get_input_name(input_path: &Path) -> PathBuf {
@@ -128,6 +140,7 @@ mod test {
 
   #[rstest]
   #[case(
+    "html",
     "index.html",
     "",
     "index.html",
@@ -136,6 +149,7 @@ mod test {
     FileMoveType::Transform
   )]
   fn file_details_integration_test(
+    #[case] extension: &str,
     #[case] input_path: &str,
     #[case] input_dir: &str,
     #[case] input_name: &str,
@@ -144,6 +158,7 @@ mod test {
     #[case] move_type: FileMoveType,
   ) {
     let left = FileDetails {
+      extension: Some(extension.to_string()),
       input_dir: PathBuf::from(input_dir),
       input_name: PathBuf::from(input_name),
       output_dir: Some(PathBuf::from(output_dir)),
@@ -153,6 +168,32 @@ mod test {
     let right =
       FileDetails::new(&PathBuf::from(input_path));
     assert_eq!(left, right);
+  }
+
+  #[rstest]
+  #[case("index.html", "html")]
+  #[case("data.json", "json")]
+  fn solo_get_extension_test(
+    #[case] input_path: &str,
+    #[case] target: &str,
+  ) {
+    let expected = Some(target.to_string());
+    let got = FileDetails::get_extension(&PathBuf::from(
+      input_path,
+    ));
+    assert_eq!(expected, got);
+  }
+
+  #[rstest]
+  #[case("no_extension", None)]
+  fn solo_get_extension_none(
+    #[case] input_path: &str,
+    #[case] expected: Option<String>,
+  ) {
+    let got = FileDetails::get_extension(&PathBuf::from(
+      input_path,
+    ));
+    assert_eq!(expected, got);
   }
 
   #[rstest]
