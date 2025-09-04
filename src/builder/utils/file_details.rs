@@ -173,7 +173,7 @@ mod test {
   #[rstest]
   #[case("index.html", "html")]
   #[case("data.json", "json")]
-  fn solo_get_extension_test(
+  fn get_extension_test(
     #[case] input_path: &str,
     #[case] target: &str,
   ) {
@@ -186,7 +186,7 @@ mod test {
 
   #[rstest]
   #[case("no_extension", None)]
-  fn solo_get_extension_none(
+  fn get_extension_none(
     #[case] input_path: &str,
     #[case] expected: Option<String>,
   ) {
