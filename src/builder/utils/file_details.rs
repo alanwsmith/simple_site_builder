@@ -1,3 +1,4 @@
+use std::fs::File;
 use std::path::Path;
 use std::path::PathBuf;
 
@@ -14,14 +15,16 @@ impl FileDetails {
   pub fn new(input_path: &Path) -> FileDetails {
     // REMINDER: only files are send in so
     // unwrapping directly can be used
-    let input_dir = input_path.parent().unwrap().into();
+    let input_dir =
+      FileDetails::get_input_dir(input_path);
     let input_name =
       FileDetails::get_input_name(input_path);
     let output_dir =
-      Some(input_path.parent().unwrap().into());
+      FileDetails::get_output_dir(input_path);
     let output_name =
-      Some(input_path.file_name().unwrap().into());
-    let move_type = FileMoveType::Transform;
+      FileDetails::get_output_name(input_path);
+    let move_type =
+      FileDetails::get_move_type(input_path);
     FileDetails {
       input_dir,
       input_name,
@@ -31,10 +34,6 @@ impl FileDetails {
     }
   }
 
-  // pub fn get_input_name(input_path: &Path) -> PathBuf {
-  //   FileDetails::get_input_name_dev(input_path)
-  // }
-
   pub fn get_input_name(input_path: &Path) -> PathBuf {
     input_path.file_name().unwrap().into()
   }
@@ -43,31 +42,65 @@ impl FileDetails {
     input_path.parent().unwrap().into()
   }
 
-  // TODO: This is really for output name
-  // pub fn get_input_name_dev2(
-  //   input_path: &Path
-  // ) -> PathBuf {
-  //   match input_path.extension() {
-  //     Some(ext) => {
-  //       if ext.to_str().unwrap() == "html" {
-  //         if input_path
-  //           .file_stem()
-  //           .unwrap()
-  //           .to_str()
-  //           .unwrap()
-  //           != "index"
-  //         {
-  //           PathBuf::from("index.html")
-  //         } else {
-  //           input_path.file_name().unwrap().into()
-  //         }
-  //       } else {
-  //         input_path.file_name().unwrap().into()
-  //       }
-  //     }
-  //     None => input_path.file_name().unwrap().into(),
-  //   }
-  // }
+  // TODO:
+  pub fn get_move_type(
+    input_path: &Path
+  ) -> FileMoveType {
+    FileMoveType::Transform
+  }
+
+  // TODO:
+  pub fn get_output_dir(
+    input_path: &Path
+  ) -> Option<PathBuf> {
+    Some(PathBuf::from(""))
+  }
+
+  pub fn get_output_name(
+    input_path: &Path
+  ) -> Option<PathBuf> {
+    FileDetails::get_output_name2(input_path)
+  }
+
+  pub fn get_output_name2(
+    input_path: &Path
+  ) -> Option<PathBuf> {
+    FileDetails::get_output_name3(input_path)
+  }
+
+  pub fn get_output_name3(
+    input_path: &Path
+  ) -> Option<PathBuf> {
+    if input_path
+      .iter()
+      .any(|part| part.to_str().unwrap().starts_with("_"))
+    {
+      None
+    } else {
+      match input_path.extension() {
+        Some(ext) => {
+          if ext.to_str().unwrap() == "html" {
+            if input_path
+              .file_stem()
+              .unwrap()
+              .to_str()
+              .unwrap()
+              != "index"
+            {
+              Some(PathBuf::from("index.html"))
+            } else {
+              Some(input_path.file_name().unwrap().into())
+            }
+          } else {
+            Some(input_path.file_name().unwrap().into())
+          }
+        }
+        None => {
+          Some(input_path.file_name().unwrap().into())
+        }
+      }
+    }
+  }
 
   //
 }
@@ -75,6 +108,7 @@ impl FileDetails {
 #[derive(Debug, PartialEq)]
 pub enum FileMoveType {
   Copy,
+  Skip,
   Transform,
 }
 
@@ -120,7 +154,7 @@ mod test {
   #[case("no_extension", "no_extension")]
   #[case(".dot-hidden", ".dot-hidden")]
   #[case("_leading_underscore", "_leading_underscore")]
-  fn input_name_test(
+  fn get_input_name_test(
     #[case] input_path: &str,
     #[case] target: &str,
   ) {
@@ -133,7 +167,8 @@ mod test {
 
   #[rstest]
   #[case("sub-dir/index.html", "sub-dir")]
-  fn input_dir_test(
+  #[case("index.html", "")]
+  fn get_input_dir_test(
     #[case] input_path: &str,
     #[case] target: &str,
   ) {
@@ -144,13 +179,72 @@ mod test {
     assert_eq!(expected, got);
   }
 
+  #[rstest]
+  #[case("index.html", "index.html")]
+  #[case("subdir/index.html", "index.html")]
+  #[case("test.json", "test.json")]
+  #[case("subdir/test.json", "test.json")]
+  #[case(".dotfile", ".dotfile")]
+  #[case(".dotdir/test.json", "test.json")]
+  fn dev(
+    #[case] input_path: &str,
+    #[case] output_name: &str,
+  ) {
+    let expected = Some(PathBuf::from(&output_name));
+    let got = FileDetails::get_output_name(
+      &PathBuf::from(input_path),
+    );
+    assert_eq!(expected, got);
+  }
+
+  #[rstest]
+  #[case("about.html", "index.html")]
+  #[case("subdir/about.html", "index.html")]
+  #[case(".subdir/about.html", "index.html")]
+  #[case("subdir/.about.html", "index.html")]
+  fn dev2(
+    #[case] input_path: &str,
+    #[case] output_name: &str,
+  ) {
+    let expected = Some(PathBuf::from(&output_name));
+    let got = FileDetails::get_output_name2(
+      &PathBuf::from(input_path),
+    );
+    assert_eq!(expected, got);
+  }
+
+  #[rstest]
+  #[case("_index.html", None)]
+  #[case("_skip.html", None)]
+  #[case("_skip-dir/index.html", None)]
+  #[case("valid-dir/_index.html", None)]
+  #[case("valid-dir/_skip-sub-dir/index.html", None)]
+  #[case("_skip-dir/.hidden", None)]
+  #[case("_skip-dir/.hidden.html", None)]
+  fn solo_dev3(
+    #[case] input_path: &str,
+    #[case] expected: Option<PathBuf>,
+  ) {
+    let got = FileDetails::get_output_name3(
+      &PathBuf::from(input_path),
+    );
+    assert_eq!(expected, got);
+  }
+
+  // _index.html
+  // _about.html
+  // _underscore_dir/index.html
+  // underscore_dir/_index.html
+  // etc...
+
   // #[rstest]
-  // fn dev(
+  // #[case("about.html", "index.html")]
+  // fn dev2(
   //   #[case] input_path: &str,
-  //   #[case] input_name: &str,
+  //   #[case] output_name: &str,
   // ) {
-  //   let expected = PathBuf::from(&input_name);
-  //   let got = FileDetails::get_input_name_dev(
+  //   let expected = Some(PathBuf::from(&output_name));
+  //   let got = FileDetails::get_output_name2(
   //     &PathBuf::from(input_path),
   //   );
   //   assert_eq!(expected, got);
