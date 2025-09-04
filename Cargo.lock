@@ -171,36 +171,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2261d10cca569e4643e526d8dc2e62e433cc8aba21ab764233731f8d369bf394"
 
 [[package]]
-name = "bs_site_builder"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "axum",
- "chrono",
- "clearscreen",
- "itertools",
- "markdown",
- "minijinja",
- "port_check",
- "pretty_assertions",
- "regex",
- "rstest",
- "serde",
- "serde_json",
- "syntect",
- "tokio",
- "tower-http",
- "tower-livereload",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
- "walkdir",
- "watchexec",
- "watchexec-events",
- "watchexec-signals",
-]
-
-[[package]]
 name = "bumpalo"
 version = "3.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1335,6 +1305,36 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b2a4719bff48cee6b39d12c020eeb490953ad2443b7055bd0b21fca26bd8c28b"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "simple_site_builder"
+version = "0.2.1"
+dependencies = [
+ "anyhow",
+ "axum",
+ "chrono",
+ "clearscreen",
+ "itertools",
+ "markdown",
+ "minijinja",
+ "port_check",
+ "pretty_assertions",
+ "regex",
+ "rstest",
+ "serde",
+ "serde_json",
+ "syntect",
+ "tokio",
+ "tower-http",
+ "tower-livereload",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "walkdir",
+ "watchexec",
+ "watchexec-events",
+ "watchexec-signals",
 ]
 
 [[package]]
