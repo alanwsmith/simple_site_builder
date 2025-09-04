@@ -36,7 +36,7 @@ impl Builder {
   }
 
   pub fn build_site(&self) -> Result<()> {
-    let _ = clearscreen::clear();
+    // let _ = clearscreen::clear();
     info!("Building site");
     let file_list = file_list(&self.config.content_root);
     let _ = &self.transform_html(&file_list)?;
@@ -89,22 +89,6 @@ impl Builder {
     Ok(())
   }
 
-  pub fn tmp_output_dir(&self) -> PathBuf {
-    let dir_name = format!(
-      "{}_tmp",
-      &self
-        .config
-        .output_root
-        .file_name()
-        .unwrap()
-        .display()
-    );
-    PathBuf::from(
-      &self.config.output_root.parent().unwrap(),
-    )
-    .join(dir_name)
-  }
-
   pub fn transform_html(
     &self,
     file_list: &[FileDetails],
@@ -119,7 +103,7 @@ impl Builder {
           .join(&details.input_name)
           .display()
           .to_string();
-        let output_path = &self.tmp_output_dir().join(
+        let output_path = &self.config.output_root.join(
           details
             .output_dir
             .clone()

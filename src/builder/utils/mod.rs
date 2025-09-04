@@ -1,5 +1,6 @@
 pub mod copy_file_with_mkdir;
 pub mod directory_tree;
+pub mod empty_dir;
 pub mod file_details;
 pub mod file_list;
 pub mod get_env;
@@ -10,6 +11,7 @@ pub mod write_file_with_mkdir;
 
 pub use self::copy_file_with_mkdir::*;
 pub use self::directory_tree::*;
+pub use self::empty_dir::*;
 pub use self::file_details::*;
 pub use self::file_list::*;
 pub use self::get_env::*;
