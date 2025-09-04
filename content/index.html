@@ -1,8 +1,11 @@
 [! extends "_includes/wrappers/main.html" !]
 [! block main !]
 
+<pre>
+  [@ content_folders|tojson(true) @]
+</pre>
 [! include "_sections/0010-overview/index.html" !]
-
 [! endblock !]
+
 
 

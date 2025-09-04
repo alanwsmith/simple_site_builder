@@ -1,4 +1,3 @@
-// TODO: Deprecate in favor of get_file_list
 use crate::builder::*;
 use std::path::PathBuf;
 use walkdir::WalkDir;

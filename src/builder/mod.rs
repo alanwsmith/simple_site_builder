@@ -44,7 +44,10 @@ impl Builder {
     info!("Building site");
     self.empty_dir();
     let file_list = file_list(&self.config.content_root);
-    let _ = &self.transform_html(&file_list)?;
+    let content_folders =
+      content_folder_list(&self.config.content_root);
+    let _ = &self
+      .transform_html(&file_list, &content_folders)?;
     let _ = &self.copy_files(&file_list)?;
     info!(
       "Reloading browser for: http://localhost:{}/",
@@ -128,10 +131,13 @@ impl Builder {
   pub fn transform_html(
     &self,
     file_list: &[FileDetails],
+    content_folders_list: &[ContentFolderDetails],
   ) -> Result<()> {
     let env = get_env(&self.config.content_root);
     let file_list_as_value =
       Value::from_serialize(file_list);
+    let content_folders_as_value =
+      Value::from_serialize(content_folders_list);
     file_list.iter().for_each(|details| {
       if details.file_move_type
         == FileMoveType::TransformHtml
@@ -151,7 +157,8 @@ impl Builder {
         match env.get_template(&template_name) {
           Ok(template) => {
             match template.render(context!(
-              file_list => file_list_as_value
+              files => file_list_as_value,
+              content_folders => content_folders_as_value
             )) {
               Ok(content) => {
                 let _ = write_file_with_mkdir(
