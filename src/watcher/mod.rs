@@ -63,6 +63,11 @@ fn filter_paths(events: &Arc<[Event]>) -> Vec<PathBuf> {
           Tag::FileEventKind(FileEventKind::Modify(
             ModifyKind::Data(DataChange::Content,)
           ),)
+        ) || matches!(
+          tag,
+          Tag::FileEventKind(FileEventKind::Create(
+            CreateKind::File
+          ),)
         )
       })
     })
