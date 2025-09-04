@@ -11,12 +11,12 @@ pub enum FileMoveType {
 
 #[derive(Debug, PartialEq)]
 pub struct FileDetails {
-  extension: Option<String>,
-  input_dir: PathBuf,
-  input_name: PathBuf,
-  output_dir: Option<PathBuf>,
-  output_name: Option<PathBuf>,
-  file_move_type: FileMoveType,
+  pub extension: Option<String>,
+  pub input_dir: PathBuf,
+  pub input_name: PathBuf,
+  pub output_dir: Option<PathBuf>,
+  pub output_name: Option<PathBuf>,
+  pub file_move_type: FileMoveType,
 }
 
 impl FileDetails {

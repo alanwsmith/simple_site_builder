@@ -15,37 +15,6 @@
 //   Ok(())
 // }
 
-// pub fn load_data(&self) -> Value {
-//   let mut data_map = BTreeMap::new();
-//   json_file_list(get_files(&self.config.content_root))
-//     .iter()
-//     .for_each(|input_file| {
-//       let input_path =
-//         self.config.content_root.join(input_file);
-//       match fs::read_to_string(&input_path) {
-//         Ok(json) => {
-//           match serde_json::from_str::<Value>(&json) {
-//             Ok(data) => {
-//               data_map.insert(
-//                 input_file.display().to_string(),
-//                 data,
-//               );
-//             }
-//             Err(e) => {
-//               // TODO: Add better error handling here
-//               dbg!(e);
-//             }
-//           }
-//         }
-//         Err(e) => {
-//           // TODO: Add better error messaging here
-//           dbg!(e);
-//         }
-//       }
-//     });
-//   Value::from_serialize(data_map)
-// }
-
 // pub fn load_highlighted_files(&self) -> Value {
 //   let mut files = BTreeMap::new();
 //   highlighted_file_list(get_files(
@@ -83,6 +52,7 @@
 //     dbg!("asdf");
 //   },
 // );
+//
 // let data = self.load_data();
 // let highlighted = self.load_highlighted_files();
 // html_file_list(get_files(&self.config.content_root))

@@ -10,6 +10,7 @@ name = "bs"
 anyhow = "1.0.99"
 axum = "0.8.4"
 chrono = "0.4.41"
+clearscreen = "4.0.2"
 itertools = "0.14.0"
 markdown = "1.0.0"
 minijinja = { version = "2.12.0", features = ["custom_syntax", "json", "loader"] }
