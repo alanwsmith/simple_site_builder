@@ -2,9 +2,9 @@ use crate::builder::*;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 
-pub fn content_folder_list(
+pub fn folder_list(
   content_dir: &PathBuf
-) -> Vec<ContentFolderDetails> {
+) -> Vec<FolderDetails> {
   let mut folders = WalkDir::new(content_dir)
     .into_iter()
     .filter_map(|e| e.ok())
@@ -19,8 +19,8 @@ pub fn content_folder_list(
       .to_path_buf()
     })
     .filter(|pb| pb.file_name().is_some())
-    .map(|pb| ContentFolderDetails::new(&pb))
-    .collect::<Vec<ContentFolderDetails>>();
+    .map(|pb| FolderDetails::new(&pb))
+    .collect::<Vec<FolderDetails>>();
   folders.sort_by_key(|k| k.sort_key());
   folders
 }

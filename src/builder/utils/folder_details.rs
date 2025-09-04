@@ -3,14 +3,14 @@ use std::path::Path;
 use std::path::PathBuf;
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct ContentFolderDetails {
+pub struct FolderDetails {
   pub parent_dir: PathBuf,
   pub name: PathBuf,
 }
 
-impl ContentFolderDetails {
-  pub fn new(input_path: &Path) -> ContentFolderDetails {
-    ContentFolderDetails {
+impl FolderDetails {
+  pub fn new(input_path: &Path) -> FolderDetails {
+    FolderDetails {
       parent_dir: match input_path.parent() {
         Some(path) => PathBuf::from(path),
         None => PathBuf::from(""),
