@@ -56,19 +56,19 @@ impl FileDetails {
     Some(PathBuf::from(""))
   }
 
+  // pub fn get_output_name(
+  //   input_path: &Path
+  // ) -> Option<PathBuf> {
+  //   FileDetails::get_output_name2(input_path)
+  // }
+
+  // pub fn get_output_name2(
+  //   input_path: &Path
+  // ) -> Option<PathBuf> {
+  //   FileDetails::get_output_name3(input_path)
+  // }
+
   pub fn get_output_name(
-    input_path: &Path
-  ) -> Option<PathBuf> {
-    FileDetails::get_output_name2(input_path)
-  }
-
-  pub fn get_output_name2(
-    input_path: &Path
-  ) -> Option<PathBuf> {
-    FileDetails::get_output_name3(input_path)
-  }
-
-  pub fn get_output_name3(
     input_path: &Path
   ) -> Option<PathBuf> {
     if input_path
@@ -186,7 +186,11 @@ mod test {
   #[case("subdir/test.json", "test.json")]
   #[case(".dotfile", ".dotfile")]
   #[case(".dotdir/test.json", "test.json")]
-  fn dev(
+  #[case("about.html", "index.html")]
+  #[case("subdir/about.html", "index.html")]
+  #[case(".subdir/about.html", "index.html")]
+  #[case("subdir/.about.html", "index.html")]
+  fn get_output_name_to_move(
     #[case] input_path: &str,
     #[case] output_name: &str,
   ) {
@@ -197,21 +201,17 @@ mod test {
     assert_eq!(expected, got);
   }
 
-  #[rstest]
-  #[case("about.html", "index.html")]
-  #[case("subdir/about.html", "index.html")]
-  #[case(".subdir/about.html", "index.html")]
-  #[case("subdir/.about.html", "index.html")]
-  fn dev2(
-    #[case] input_path: &str,
-    #[case] output_name: &str,
-  ) {
-    let expected = Some(PathBuf::from(&output_name));
-    let got = FileDetails::get_output_name2(
-      &PathBuf::from(input_path),
-    );
-    assert_eq!(expected, got);
-  }
+  // #[rstest]
+  // fn dev2(
+  //   #[case] input_path: &str,
+  //   #[case] output_name: &str,
+  // ) {
+  //   let expected = Some(PathBuf::from(&output_name));
+  //   let got = FileDetails::get_output_name2(
+  //     &PathBuf::from(input_path),
+  //   );
+  //   assert_eq!(expected, got);
+  // }
 
   #[rstest]
   #[case("_index.html", None)]
@@ -221,21 +221,15 @@ mod test {
   #[case("valid-dir/_skip-sub-dir/index.html", None)]
   #[case("_skip-dir/.hidden", None)]
   #[case("_skip-dir/.hidden.html", None)]
-  fn solo_dev3(
+  fn get_output_name_to_skip(
     #[case] input_path: &str,
     #[case] expected: Option<PathBuf>,
   ) {
-    let got = FileDetails::get_output_name3(
+    let got = FileDetails::get_output_name(
       &PathBuf::from(input_path),
     );
     assert_eq!(expected, got);
   }
-
-  // _index.html
-  // _about.html
-  // _underscore_dir/index.html
-  // underscore_dir/_index.html
-  // etc...
 
   // #[rstest]
   // #[case("about.html", "index.html")]
