@@ -20,6 +20,7 @@ pub struct Builder {
   pub config: Config,
   pub reloader: Reloader,
   pub rx: Receiver<DateTime<Local>>,
+  pub port: u16,
 }
 
 impl Builder {
@@ -27,11 +28,13 @@ impl Builder {
     config: Config,
     reloader: Reloader,
     rx: Receiver<DateTime<Local>>,
+    port: u16,
   ) -> Builder {
     Builder {
       config,
       reloader,
       rx,
+      port,
     }
   }
 
@@ -41,7 +44,10 @@ impl Builder {
     let file_list = file_list(&self.config.content_root);
     let _ = &self.transform_html(&file_list)?;
     // let _ = &self.copy_files()?;
-    info!("Reloading browser");
+    info!(
+      "Reloading browser for: http://localhost:{}/",
+      self.port
+    );
     let _ = &self.reloader.reload();
     Ok(())
   }
