@@ -65,14 +65,13 @@ impl Builder {
           .content_root
           .join(&details.input_dir)
           .join(&details.input_name);
-        dbg!(input_path);
-        dbg!(&details);
-        // let output_path = &self
-        //   .config
-        //   .output_root
-        //   .join(details.output_dir.as_ref().unwrap())
-        //   .join(details.output_name.as_ref().unwrap());
-        // dbg!(output_path);
+        let output_path = &self
+          .config
+          .output_root
+          .join(details.output_dir.as_ref().unwrap())
+          .join(details.output_name.as_ref().unwrap());
+        let _ =
+          copy_file_with_mkdir(input_path, output_path);
       }
     });
     Ok(())
