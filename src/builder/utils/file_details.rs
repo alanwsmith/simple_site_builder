@@ -328,14 +328,20 @@ mod test {
     "valid-dir/_skip-dir/file.html",
     FileMoveType::Skip
   )]
-  // #[case("subdir/index.html", FileMoveType::TransformHtml)]
-  // #[case("about.html", FileMoveType::TransformHtml)]
-  // #[case("subdir/about.html", FileMoveType::TransformHtml)]
+  #[case(
+    "subdir/index.html",
+    FileMoveType::TransformHtml
+  )]
+  #[case("about.html", FileMoveType::TransformHtml)]
+  #[case(
+    "subdir/about.html",
+    FileMoveType::TransformHtml
+  )]
   // #[case("index.md", FileMoveType::TransformMarkdown)]
   // #[case("about.md", FileMoveType::TransformMarkdown)]
   // #[case("subdir/index.md", FileMoveType::TransformMarkdown)]
   // #[case("subdir/about.md", FileMoveType::TransformMarkdown)]
-  fn solo_file_move_type_test(
+  fn file_move_type_test(
     #[case] input_path: &str,
     #[case] expected: FileMoveType,
   ) {
