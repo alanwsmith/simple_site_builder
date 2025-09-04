@@ -1,6 +1,7 @@
-logs/*
 content/*
 docs/*
+docs_tmp/*
+logs/*
 scripts/*
 
 

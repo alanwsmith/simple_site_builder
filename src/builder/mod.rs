@@ -114,8 +114,11 @@ impl Builder {
       if details.file_move_type
         == FileMoveType::TransformHtml
       {
-        let template_name =
-          details.input_dir.join(&details.input_name);
+        let template_name = details
+          .input_dir
+          .join(&details.input_name)
+          .display()
+          .to_string();
         let output_path = &self.tmp_output_dir().join(
           details
             .output_dir
@@ -123,8 +126,24 @@ impl Builder {
             .unwrap()
             .join(details.output_name.clone().unwrap()),
         );
-        dbg!(template_name);
-        dbg!(output_path);
+        match env.get_template(&template_name) {
+          Ok(template) => {
+            match template.render(context!()) {
+              Ok(content) => {
+                let _ = write_file_with_mkdir(
+                  output_path,
+                  &content,
+                );
+              }
+              Err(e) => {
+                println!("{}", e);
+              }
+            }
+          }
+          Err(e) => {
+            dbg!(e);
+          }
+        }
       }
     });
     Ok(())
