@@ -1,41 +1,9 @@
-[! extends "_includes/wrapper.html" !]
+[! extends "_includes/wrappers/main.html" !]
 
 [! block main !]
-<h1>Start: Main block</h1>
-<p>This content is inside the main block from minijinja</p>
 
-<h2>Include a text file</h2>
-<p>[! include "_includes/examples/0010-send-receive/title.txt" !]</p>
+[! include "_sections/0010-overview/index.html" !]
 
-<h2>Data Sets</h2>
-<p>Pulled from JSON data</p>
-<pre>[@ data["data/test.json"].alfa @]</pre>
-
-<h2>View Data Sets</h2>
-<p>data sets can also be output as JSON</p>
-<pre>[@ data["data/test.json"]|tojson(true) @]</pre>
-
-<h2>Code Syntax Highlighting</h2>
-
-<pre><code>
-  [@- highlighted["styles/main.css"]|safe -@]
-</code></pre>
-
-<h2>Markdown Filter</h2>
-
-[! filter markdown|safe !]
-### This is from a markdown section
-
-Here's a paragraph from markdown
-
-- this
-- is 
-- a
-- markdown 
-- list
-[! endfilter !]
-
-<h2>End Main Block</h2>
-<p>This line closes the minijinja main block</p>
 [! endblock !]
+
 
