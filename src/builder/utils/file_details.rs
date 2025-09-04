@@ -110,12 +110,10 @@ impl FileDetails {
               Some(parent_path)
             }
           } else {
-            Some(input_path.file_name().unwrap().into())
+            Some(parent_path)
           }
         }
-        None => {
-          Some(input_path.file_name().unwrap().into())
-        }
+        None => Some(parent_path),
       }
     }
   }
@@ -288,7 +286,24 @@ mod test {
   #[case("sub-dir/index.html", "sub-dir")]
   #[case("about.html", "about")]
   #[case("valid-dir/about.html", "valid-dir/about")]
-  fn get_output_dir_valid_test(
+  fn get_output_dir_valid_test_html(
+    #[case] input_path: &str,
+    #[case] target: &str,
+  ) {
+    let expected = Some(PathBuf::from(target));
+    let got = FileDetails::get_output_dir(
+      &PathBuf::from(input_path),
+    );
+    assert_eq!(expected, got);
+  }
+
+  #[rstest]
+  #[case("data.json", "")]
+  #[case(".data.json", "")]
+  #[case("sub-dir/data.json", "sub-dir")]
+  #[case("sub-dir/.data.json", "sub-dir")]
+  #[case(".sub-dir/data.json", ".sub-dir")]
+  fn solo_get_output_dir_valid_test_non_html(
     #[case] input_path: &str,
     #[case] target: &str,
   ) {

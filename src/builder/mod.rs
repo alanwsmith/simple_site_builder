@@ -42,15 +42,39 @@ impl Builder {
   pub fn build_site(&self) -> Result<()> {
     let _ = clearscreen::clear();
     info!("Building site");
-    &self.empty_dir();
+    self.empty_dir();
     let file_list = file_list(&self.config.content_root);
     let _ = &self.transform_html(&file_list)?;
-    // let _ = &self.copy_files()?;
+    let _ = &self.copy_files(&file_list)?;
     info!(
       "Reloading browser for: http://localhost:{}/",
       self.port
     );
     let _ = &self.reloader.reload();
+    Ok(())
+  }
+
+  pub fn copy_files(
+    &self,
+    file_list: &[FileDetails],
+  ) -> Result<()> {
+    file_list.iter().for_each(|details| {
+      if details.file_move_type == FileMoveType::Copy {
+        let input_path = &self
+          .config
+          .content_root
+          .join(&details.input_dir)
+          .join(&details.input_name);
+        dbg!(input_path);
+        dbg!(&details);
+        // let output_path = &self
+        //   .config
+        //   .output_root
+        //   .join(details.output_dir.as_ref().unwrap())
+        //   .join(details.output_name.as_ref().unwrap());
+        // dbg!(output_path);
+      }
+    });
     Ok(())
   }
 
