@@ -1,20 +1,14 @@
-# bss - build static site
+# ssb - Simple Site Builder 
 
-A personal, bare-bones static site builder that 
-uses jinja style templates.
+A simple static site builder that 
+uses jinja style templates. 
 
-details at [bss.alanwsmith.com](https://bss.alanwsmith.com/)
-
+details at [ssb.alanwsmith.com](https://ssb.alanwsmith.com/)
 
 ## TODO
 
-- rename to sb (site builder)
+- Handle markdown files
 
-## Notes
-
-
-- `content_folders` are from the source content
-dir. There may or may not be an `output_folders`
-variable in the future.
+- Documentation
 
 
