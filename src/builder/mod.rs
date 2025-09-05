@@ -4,6 +4,7 @@ use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
 use chrono::{DateTime, Local};
+use markdown::{CompileOptions, Options};
 use minijinja::Value;
 use minijinja::context;
 use std::collections::BTreeMap;
@@ -181,10 +182,26 @@ impl Builder {
           details.input_dir.join(&details.input_name);
         let md_content =
           fs::read_to_string(content_path).unwrap();
-        markdown_map.insert(
-          key_path.display().to_string(),
-          markdown::to_html(&md_content),
-        );
+        match markdown::to_html_with_options(
+          &md_content,
+          &Options {
+            compile: CompileOptions {
+              allow_dangerous_html: true,
+              ..CompileOptions::default()
+            },
+            ..Options::default()
+          },
+        ) {
+          Ok(parsed) => {
+            markdown_map.insert(
+              key_path.display().to_string(),
+              parsed,
+            );
+          }
+          Err(e) => {
+            dbg!(e);
+          }
+        }
       });
     Value::from_serialize(markdown_map)
   }

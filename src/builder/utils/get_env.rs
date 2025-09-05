@@ -1,11 +1,25 @@
+use markdown::{CompileOptions, Options};
 use minijinja::Environment;
 use minijinja::path_loader;
 use minijinja::syntax::SyntaxConfig;
 use std::path::Path;
 
 pub fn mj_markdown(value: String) -> String {
-  markdown::to_html(&value)
+  match markdown::to_html_with_options(
+    &value,
+    &Options {
+      compile: CompileOptions {
+        allow_dangerous_html: true,
+        ..CompileOptions::default()
+      },
+      ..Options::default()
+    },
+  ) {
+    Ok(parsed) => parsed.to_string(),
+    Err(_e) => "[unable to parse markdown]".to_string(),
+  }
 }
+
 pub fn get_env(
   content_dir: &Path
 ) -> Environment<'static> {
