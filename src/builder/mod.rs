@@ -59,12 +59,12 @@ impl Builder {
         let input_path = &self
           .config
           .content_root
-          .join(&details.input_dir)
-          .join(&details.input_name);
+          .join(&details.folder)
+          .join(&details.name);
         let output_path = &self
           .config
           .output_root
-          .join(details.output_dir.as_ref().unwrap())
+          .join(details.output_folder.as_ref().unwrap())
           .join(details.output_name.as_ref().unwrap());
         let _ =
           copy_file_with_mkdir(input_path, output_path);
@@ -99,10 +99,9 @@ impl Builder {
         let content_path = self
           .config
           .content_root
-          .join(&details.input_dir)
-          .join(&details.input_name);
-        let key_path =
-          details.input_dir.join(&details.input_name);
+          .join(&details.folder)
+          .join(&details.name);
+        let key_path = details.folder.join(&details.name);
         let content =
           fs::read_to_string(content_path).unwrap();
         let highlighted = highlight_code(
@@ -176,10 +175,9 @@ impl Builder {
         let content_path = self
           .config
           .content_root
-          .join(&details.input_dir)
-          .join(&details.input_name);
-        let key_path =
-          details.input_dir.join(&details.input_name);
+          .join(&details.folder)
+          .join(&details.name);
+        let key_path = details.folder.join(&details.name);
         let md_content =
           fs::read_to_string(content_path).unwrap();
         match markdown::to_html_with_options(
@@ -222,13 +220,13 @@ impl Builder {
         == FileMoveType::TransformHtml
       {
         let template_name = details
-          .input_dir
-          .join(&details.input_name)
+          .folder
+          .join(&details.name)
           .display()
           .to_string();
         let output_path = &self.config.output_root.join(
           details
-            .output_dir
+            .output_folder
             .clone()
             .unwrap()
             .join(details.output_name.clone().unwrap()),
@@ -239,7 +237,7 @@ impl Builder {
               files => file_list_as_value,
               folders => folders_as_value,
               markdown => markdown_files,
-              highlighted => highlighted,
+              highlight => highlighted,
             )) {
               Ok(content) => {
                 let _ = write_file_with_mkdir(

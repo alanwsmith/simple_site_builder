@@ -12,9 +12,9 @@ pub enum FileMoveType {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct FileDetails {
   pub extension: Option<String>,
-  pub input_dir: PathBuf,
-  pub input_name: PathBuf,
-  pub output_dir: Option<PathBuf>,
+  pub folder: PathBuf,
+  pub name: PathBuf,
+  pub output_folder: Option<PathBuf>,
   pub output_name: Option<PathBuf>,
   pub file_move_type: FileMoveType,
 }
@@ -23,11 +23,9 @@ impl FileDetails {
   pub fn new(input_path: &Path) -> FileDetails {
     let extension =
       FileDetails::get_extension(input_path);
-    let input_dir =
-      FileDetails::get_input_dir(input_path);
-    let input_name =
-      FileDetails::get_input_name(input_path);
-    let output_dir =
+    let folder = FileDetails::get_input_dir(input_path);
+    let name = FileDetails::get_input_name(input_path);
+    let output_folder =
       FileDetails::get_output_dir(input_path);
     let output_name =
       FileDetails::get_output_name(input_path);
@@ -35,9 +33,9 @@ impl FileDetails {
       FileDetails::get_file_move_type(input_path);
     FileDetails {
       extension,
-      input_dir,
-      input_name,
-      output_dir,
+      folder,
+      name,
+      output_folder,
       output_name,
       file_move_type,
     }
@@ -144,8 +142,8 @@ impl FileDetails {
 
   pub fn sort_key(&self) -> (String, String) {
     (
-      self.input_dir.display().to_string(),
-      self.input_name.display().to_string(),
+      self.folder.display().to_string(),
+      self.name.display().to_string(),
     )
   }
 }
@@ -169,17 +167,17 @@ mod test {
   fn file_details_integration_test(
     #[case] extension: &str,
     #[case] input_path: &str,
-    #[case] input_dir: &str,
-    #[case] input_name: &str,
-    #[case] output_dir: &str,
+    #[case] folder: &str,
+    #[case] name: &str,
+    #[case] output_folder: &str,
     #[case] output_name: &str,
     #[case] file_move_type: FileMoveType,
   ) {
     let left = FileDetails {
       extension: Some(extension.to_string()),
-      input_dir: PathBuf::from(input_dir),
-      input_name: PathBuf::from(input_name),
-      output_dir: Some(PathBuf::from(output_dir)),
+      folder: PathBuf::from(folder),
+      name: PathBuf::from(name),
+      output_folder: Some(PathBuf::from(output_folder)),
       output_name: Some(PathBuf::from(output_name)),
       file_move_type,
     };
