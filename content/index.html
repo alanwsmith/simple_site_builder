@@ -1,12 +1,40 @@
 [! extends "_includes/wrappers/main.html" !]
 [! block main !]
 
-<pre>
-  [@ folders|tojson(true) @]
-</pre>
+<h2>Highlighted</h2>
 
-[! include "_sections/0010-overview/index.html" !]
+
+[! filter markdown|safe !]
+# Simple Site Builder 
+
+## Overview
+
+- This is the tool I use for making simple
+websites. 
+
+- It's more of a personal project right
+now. That said, if you like poking
+around with things it's stable
+enough to use for personal sites. 
+
+- The builder uses Jinja style templates. 
+
+- Markdown can be used inside files
+via a filter. 
+
+- Markdown files can be included
+in other files
+
+- file and directory lists are
+available as data for filtering
+includes, etc...
+
+- The github repo is at
+[https://github.com/alanwsmith/simple_site_builder](https://github.com/alanwsmith/simple_site_builder)
+
+[! endfilter !]
+
+
+
 [! endblock !]
-
-
 

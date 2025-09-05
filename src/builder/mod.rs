@@ -6,7 +6,8 @@ use anyhow::Result;
 use chrono::{DateTime, Local};
 use minijinja::Value;
 use minijinja::context;
-// use std::collections::BTreeMap;
+use std::collections::BTreeMap;
+use std::fs;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -38,8 +39,7 @@ impl Builder {
     info!("Building site");
     let _ = self.empty_dir();
     let file_list = file_list(&self.config.content_root);
-    let folders = folder_list(&self.config.content_root);
-    let _ = &self.transform_html(&file_list, &folders)?;
+    let _ = &self.transform_html(&file_list)?;
     let _ = &self.copy_files(&file_list)?;
     info!(
       "Reloading browser for: http://localhost:{}/",
@@ -76,6 +76,44 @@ impl Builder {
   pub fn empty_dir(&self) -> Result<()> {
     let _ = empty_dir(&self.config.output_root);
     Ok(())
+  }
+
+  pub fn highlight_files(
+    &self,
+    file_list: &[FileDetails],
+  ) -> Value {
+    let mut highlights: BTreeMap<String, String> =
+      BTreeMap::new();
+    file_list
+      .iter()
+      .filter(|details| {
+        details.extension == Some("css".to_string())
+          || details.extension == Some("html".to_string())
+          || details.extension == Some("js".to_string())
+          || details.extension == Some("json".to_string())
+          || details.extension == Some("py".to_string())
+          || details.extension == Some("rs".to_string())
+      })
+      .for_each(|details| {
+        let content_path = self
+          .config
+          .content_root
+          .join(&details.input_dir)
+          .join(&details.input_name);
+        let key_path =
+          details.input_dir.join(&details.input_name);
+        let content =
+          fs::read_to_string(content_path).unwrap();
+        let highlighted = highlight_code(
+          &content,
+          details.extension.as_ref().unwrap().as_str(),
+        );
+        highlights.insert(
+          key_path.display().to_string(),
+          highlighted,
+        );
+      });
+    Value::from_serialize(highlights)
   }
 
   pub fn load_data(&self) -> Value {
@@ -122,16 +160,46 @@ impl Builder {
     Ok(())
   }
 
+  pub fn load_markdown(
+    &self,
+    file_list: &[FileDetails],
+  ) -> Value {
+    let mut markdown_map: BTreeMap<String, String> =
+      BTreeMap::new();
+    file_list
+      .iter()
+      .filter(|details| {
+        details.extension == Some("md".to_string())
+      })
+      .for_each(|details| {
+        let content_path = self
+          .config
+          .content_root
+          .join(&details.input_dir)
+          .join(&details.input_name);
+        let key_path =
+          details.input_dir.join(&details.input_name);
+        let md_content =
+          fs::read_to_string(content_path).unwrap();
+        markdown_map.insert(
+          key_path.display().to_string(),
+          markdown::to_html(&md_content),
+        );
+      });
+    Value::from_serialize(markdown_map)
+  }
+
   pub fn transform_html(
     &self,
     file_list: &[FileDetails],
-    folders_list: &[FolderDetails],
   ) -> Result<()> {
+    let folders = folder_list(&self.config.content_root);
     let env = get_env(&self.config.content_root);
     let file_list_as_value =
       Value::from_serialize(file_list);
-    let folders_as_value =
-      Value::from_serialize(folders_list);
+    let folders_as_value = Value::from_serialize(folders);
+    let markdown_files = self.load_markdown(file_list);
+    let highlighted = self.highlight_files(file_list);
     file_list.iter().for_each(|details| {
       if details.file_move_type
         == FileMoveType::TransformHtml
@@ -152,7 +220,9 @@ impl Builder {
           Ok(template) => {
             match template.render(context!(
               files => file_list_as_value,
-              folders => folders_as_value
+              folders => folders_as_value,
+              markdown => markdown_files,
+              highlighted => highlighted,
             )) {
               Ok(content) => {
                 let _ = write_file_with_mkdir(
