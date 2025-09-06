@@ -17,51 +17,358 @@
 
 <h1>Simple Site Builder</h1>
 <h2>Overview</h2>
-<p>This is <strong>strong text</strong>.</p>
+<p>Simple Site Builder builds websites.
+It's designed for making personal sites that
+use HTML, CSS, Vanilla JavaScript,
+Web Components, and JavaScript Libraries
+without requiring an underlying framework.</p>
+<p>(It's specifically designed to compliment
+<a href="https://bitty-js.alanwsmith.com/">bitty-js</a>)</p>
+<h2>Goals</h2>
 <ul>
 <li>
-<p>This is the tool I use for making simple
-websites.</p>
+<p>[x] Single binary that can be run
+downloaded and run from the command
+line with no other dependencies.</p>
 </li>
 <li>
-<p>It's more of a personal project right
-now. That said, if you like poking
-around with things it's stable
-enough to use for personal sites.</p>
+<p>[x] Built-in preview server.</p>
 </li>
 <li>
-<p>The builder uses Jinja style templates.</p>
+<p>[x] Automatically reload preview pages
+when content changes.</p>
 </li>
 <li>
-<p>Markdown can be used inside files
+<p>[x] Use jinja style templates, but
+with tokens that are easier to read (i.e.
+<code>[! !]</code>,
+<code>[@ @]</code>, and
+<code>[# #]</code> instead of
+<code>{% %}</code>, <code>{{ }}</code>, and <code>{# #}</code>
+)</p>
+</li>
+<li>
+<p>[x] Control what's published and
+what's only used for includes
+by naming convention (i.e. things
+that start with an &quot;_&quot; don't
+get published directly).</p>
+</li>
+<li>
+<p>[x] Apply syntax highlighting to
+full files.</p>
+</li>
+<li>
+<p>[x] Apply syntax highlighting to
+individual code snippets.</p>
+</li>
+<li>
+<p>[x] Markdown can be used inside files
 via a filter.</p>
 </li>
 <li>
-<p>Markdown files can be included
+<p>[x] Markdown files can be included
 in other files</p>
 </li>
 <li>
-<p>file and directory lists are
-available as data for filtering
-includes, etc...</p>
+<p>[x] Provide file listings (e.g. for
+providing links)</p>
 </li>
+<li>
+<p>[x] Provide folder listing (e.g. that
+can be used to include all files in
+a folder)</p>
+</li>
+<li>
+<p>[x] Automatically move .html files that
+aren't <code>index.html</code> into a folder with
+their filename and put the contents in
+a corresponding <code>FOLDER-NAME/index.html</code> file
+(e.g. <code>sub-dir/about.html</code> becomes <code>sub-dir/about/index.html</code>).
+This helps improve portability if the site
+is moved or switched to another builder/framework.</p>
+</li>
+<li>
+<p>[x] Run .html files through minijinja when building
+the site.</p>
+</li>
+<li>
+<p>[] Automatically load .json files to use as
+data across templates.</p>
+</li>
+<li>
+<p>[] Run .md files through minijinja when building
+the site.</p>
+</li>
+<li>
+<p>[] Read optional YAML frontmatter form .md files
+to use as data on the page.</p>
+</li>
+<li>
+<p>[] Use a YAML frontmatter &quot;template&quot; variable
+to set the template used for the page.</p>
+</li>
+<li>
+<p>[] Run anything inside the <code>scripts/pre</code> folder
+prior to building the site.</p>
+</li>
+<li>
+<p>[] Run anything inside the <code>scripts/post</code> folder
+after building the site.</p>
+</li>
+<li>
+<p>[] A GUI front end so the command line
+isn't required.</p>
+</li>
+</ul>
+<h2>Examples</h2>
+<p>These examples cover the basics.
+Check out the source code to see
+the input.</p>
+
+<h3>Inline Syntax Highlighting</h3>
+
+<pre><span class="line-marker"></span><span class="source css"><span class="meta selector css"><span class="entity other attribute-name class css"><span class="punctuation definition entity css">.</span>highlighted-css</span> </span><span class="meta property-list css"><span class="punctuation section property-list css">{</span>
+<span class="line-marker"></span>  <span class="meta property-name css"><span class="support type property-name css">color</span></span><span class="punctuation separator key-value css">:</span><span class="meta property-value css"> </span><span class="meta property-value css"><span class="support constant color w3c-extended-color-keywords css">goldenrod</span></span><span class="punctuation terminator rule css">;</span>
+<span class="line-marker"></span></span><span class="punctuation section property-list css">}</span></span></pre>
+
+<pre><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
+
+<pre><span class="line-marker"></span><span class="source rust"><span class="meta function rust"><span class="meta function rust"><span class="storage type function rust">fn</span> </span><span class="entity name function rust">main</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">(</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters end rust">)</span></span></span></span><span class="meta function rust"> </span><span class="meta function rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+<span class="line-marker"></span>  <span class="support macro rust">println!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>Highlighted rust<span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="line-marker"></span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span></span></pre>
+
+<h3>Current File</h3>
+<pre class="code-block">
+{
+  "extension": "html",
+  "file_move_type": "TransformHtml",
+  "folder": "",
+  "name": "index.html",
+  "output_folder": "",
+  "output_name": "index.html"
+}
+</pre>
+
+<h3>Folders List</h3>
+<pre class="code-block">
+[
+  {
+    "name": "_includes",
+    "parent": ""
+  },
+  {
+    "name": "_release-notes",
+    "parent": ""
+  },
+  {
+    "name": "examples",
+    "parent": ""
+  },
+  {
+    "name": "favicons",
+    "parent": ""
+  },
+  {
+    "name": "styles",
+    "parent": ""
+  },
+  {
+    "name": "wrappers",
+    "parent": "_includes"
+  },
+  {
+    "name": "data",
+    "parent": "examples"
+  }
+]
+</pre>
+
+<h3>Files List</h3>
+<pre class="code-block">
+[
+  {
+    "extension": "js",
+    "file_move_type": "Copy",
+    "folder": "",
+    "name": "bitty-v0.3.0.js",
+    "output_folder": "",
+    "output_name": "bitty-v0.3.0.js"
+  },
+  {
+    "extension": "html",
+    "file_move_type": "TransformHtml",
+    "folder": "",
+    "name": "index.html",
+    "output_folder": "",
+    "output_name": "index.html"
+  },
+  {
+    "extension": "html",
+    "file_move_type": "Skip",
+    "folder": "_includes/wrappers",
+    "name": "main.html",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.3.0.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "json",
+    "file_move_type": "Copy",
+    "folder": "examples/data",
+    "name": "sample-2.json",
+    "output_folder": "examples/data",
+    "output_name": "sample-2.json"
+  },
+  {
+    "extension": "json",
+    "file_move_type": "Copy",
+    "folder": "examples/data",
+    "name": "sample.json",
+    "output_folder": "examples/data",
+    "output_name": "sample.json"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "android-chrome-192x192.png",
+    "output_folder": "favicons",
+    "output_name": "android-chrome-192x192.png"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "android-chrome-512x512.png",
+    "output_folder": "favicons",
+    "output_name": "android-chrome-512x512.png"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "apple-touch-icon.png",
+    "output_folder": "favicons",
+    "output_name": "apple-touch-icon.png"
+  },
+  {
+    "extension": "xml",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "browserconfig.xml",
+    "output_folder": "favicons",
+    "output_name": "browserconfig.xml"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "favicon-16x16.png",
+    "output_folder": "favicons",
+    "output_name": "favicon-16x16.png"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "favicon-32x32.png",
+    "output_folder": "favicons",
+    "output_name": "favicon-32x32.png"
+  },
+  {
+    "extension": "ico",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "favicon.ico",
+    "output_folder": "favicons",
+    "output_name": "favicon.ico"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "mstile-150x150.png",
+    "output_folder": "favicons",
+    "output_name": "mstile-150x150.png"
+  },
+  {
+    "extension": "svg",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "safari-pinned-tab.svg",
+    "output_folder": "favicons",
+    "output_name": "safari-pinned-tab.svg"
+  },
+  {
+    "extension": "webmanifest",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "site.webmanifest",
+    "output_folder": "favicons",
+    "output_name": "site.webmanifest"
+  },
+  {
+    "extension": "css",
+    "file_move_type": "Copy",
+    "folder": "styles",
+    "name": "highlight-base16-ocean-dark.css",
+    "output_folder": "styles",
+    "output_name": "highlight-base16-ocean-dark.css"
+  },
+  {
+    "extension": "css",
+    "file_move_type": "Copy",
+    "folder": "styles",
+    "name": "highlight-base16-ocean-light.css",
+    "output_folder": "styles",
+    "output_name": "highlight-base16-ocean-light.css"
+  },
+  {
+    "extension": "css",
+    "file_move_type": "Copy",
+    "folder": "styles",
+    "name": "main.css",
+    "output_folder": "styles",
+    "output_name": "main.css"
+  }
+]
+</pre>
+
+<h2>Notes</h2>
+<ul>
 <li>
 <p>The github repo is at
 <a href="https://github.com/alanwsmith/simple_site_builder">https://github.com/alanwsmith/simple_site_builder</a></p>
 </li>
+<li>
+<p>This is mainly a personal project.
+That said, it's stable enough to use
+if you're a person who likes to tinker
+with things.</p>
+</li>
 </ul>
 
-<div>Folder: </div>
-<div>File Name: index.html</div>
+<h2>Release Notes</h2>
 
-<pre>
-<span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>
-<span class="line-marker"></span><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>in a pre tag<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
-
-<pre>
-<span class="line-marker"></span><span class="source rust"><span class="meta function rust"><span class="meta function rust"><span class="storage type function rust">fn</span> </span><span class="entity name function rust">main</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">(</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters end rust">)</span></span></span></span><span class="meta function rust"> </span><span class="meta function rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span>
-<span class="line-marker"></span>  <span class="support macro rust">println!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>Highlighted rust<span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
-<span class="line-marker"></span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span></span></pre>
+<h3>Version 0.3.0</h3>
+<p>Sept. 6, 2025</p>
+<ul>
+<li>
+<p>Ready for general personal use</p>
+</li>
+<li>
+<p>See home page for details on
+features and functionality.</p>
+</li>
+</ul>
 
     </main>
   </body>

@@ -237,10 +237,7 @@ impl Builder {
             folders => folders_as_value,
             highlight => highlighted,
             markdown => markdown_files,
-            folder => Value::from(details.folder.to_str().unwrap()),
-            file_name => Value::from(details.name.to_str().unwrap()),
-            output_folder => Value::from(details.output_folder.as_ref().unwrap().to_str().unwrap()),
-            output_file_name => Value::from(details.output_name.as_ref().unwrap().to_str().unwrap()),
+            file => Value::from_serialize(&details),
           )) {
             Ok(content) => {
               let _ = write_file_with_mkdir(
