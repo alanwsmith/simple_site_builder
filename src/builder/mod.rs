@@ -245,7 +245,7 @@ impl Builder {
             folders => folders_as_value,
             highlight => highlighted,
             markdown => markdown_files,
-            file => Value::from_serialize(&details),
+            file => Value::from_serialize(details),
           )) {
             Ok(content) => {
               let _ = write_file_with_mkdir(
