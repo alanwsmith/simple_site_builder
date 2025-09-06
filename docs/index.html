@@ -24,6 +24,9 @@ Web Components, and JavaScript Libraries
 without requiring an underlying framework.</p>
 <p>(It's specifically designed to compliment
 <a href="https://bitty-js.alanwsmith.com/">bitty-js</a>)</p>
+<h2>Download</h2>
+<p>I'm only building for M-series macs until
+I'm better set up to test on other platforms.</p>
 <h2>Goals</h2>
 <ul>
 <li>
@@ -257,6 +260,10 @@ the input.</p>
     "parent": ""
   },
   {
+    "name": "releases",
+    "parent": ""
+  },
+  {
     "name": "styles",
     "parent": ""
   },
@@ -271,6 +278,14 @@ the input.</p>
   {
     "name": "markdown",
     "parent": "examples"
+  },
+  {
+    "name": "aarch64-apple-darwin",
+    "parent": "releases"
+  },
+  {
+    "name": "0.3.0",
+    "parent": "releases/aarch64-apple-darwin"
   }
 ]
 </pre>
@@ -413,6 +428,14 @@ the input.</p>
     "name": "site.webmanifest",
     "output_folder": "favicons",
     "output_name": "site.webmanifest"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.3.0",
+    "name": "ssb",
+    "output_folder": "releases/aarch64-apple-darwin/0.3.0",
+    "output_name": "ssb"
   },
   {
     "extension": "css",
