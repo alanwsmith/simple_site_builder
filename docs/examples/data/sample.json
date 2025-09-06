@@ -1,0 +1,6 @@
+{
+  "dataset": {
+    "alfa": "the quick brown fox",
+    "bravo": ["the", "quick", "brown", "fox"]
+  }
+}

@@ -18,6 +18,10 @@ pub fn file_list(
       .unwrap()
       .to_path_buf()
     })
+    .filter(|pb| {
+      pb.file_name().unwrap().display().to_string()
+        != *".DS_Store".to_string()
+    })
     .map(|pb| FileDetails::new(&pb))
     .collect::<Vec<FileDetails>>();
   file_list.sort_by_key(|f| f.sort_key());

@@ -1,12 +1,258 @@
 [! extends "_includes/wrappers/main.html" !]
 [! block main !]
 
+[! filter markdown|safe !]
+# Simple Site Builder 
+
+## Overview
+
+Simple Site Builder builds websites. 
+It's designed for making personal sites that 
+use HTML, CSS, Vanilla JavaScript, 
+Web Components, and JavaScript Libraries
+without requiring an underlying framework. 
+
+(It's specifically designed to compliment
+[bitty-js](https://bitty-js.alanwsmith.com/))
+
+## Download and Usage
+
+I'm only building for M-series macs until
+I'm better set up to test on other platforms.
+
+- Download:
+[releases/aarch64-apple-darwin/0.3.0/ssb](releases/aarch64-apple-darwin/0.3.0/ssb)
+
+- Either put it on your Path. Or, put
+it inside the directory you want to
+use for your site. 
+
+- Create a "`content`" folder in the directory. 
+with an "`index.html`" file in it. 
+
+- Run `ssb` on the command line. The contents
+of the "`content`" folder will be transformed/copied
+into a "`docs`" folder next to it with
+the constructed site.
+
+Your browser should automatically open a 
+preview of the site. (If not look for the
+"http://localhost:####/" address in the
+output on the command line and open it)
+
+- Add the content to your "content" folder
+that you want to see on your site. 
+
+
+## Goals
+
+- [x] Single binary that can be run
+downloaded and run from the command 
+line with no other dependencies.
+
+- [x] Built-in preview server.
+
+- [x] Automatically reload preview pages 
+when content changes. 
+
+- [x] Use jinja style templates, but 
+with tokens that are easier to read (i.e.
+`[! raw !][! !][! endraw !]`, 
+`[! raw !][@ @][! endraw !]`, and
+`[! raw !][# #][! endraw !]` instead of
+`{% %}`, `{{ }}`, and `{# #}`
+)
+
+- [x] Control what's published and
+what's only used for includes
+by naming convention (i.e. things
+that start with an "_" don't
+get published directly).
+
+- [x] Apply syntax highlighting to 
+full files. 
+
+- [x] Apply syntax highlighting to
+individual code snippets. 
+
+- [x] Markdown can be used inside files
+via a filter. 
+
+- [x] Markdown files can be included
+in other files
+
+- [x] Provide file listings (e.g. for 
+providing links)
+
+- [x] Provide folder listing (e.g. that
+can be used to include all files in
+a folder)
+
+- [x] Automatically move .html files that
+aren't `index.html` into a folder with 
+their filename and put the contents in
+a corresponding `FOLDER-NAME/index.html` file
+(e.g. `sub-dir/about.html` becomes `sub-dir/about/index.html`).
+This helps improve portability if the site
+is moved or switched to another builder/framework.
+
+- [x] Copy non-html and non-md files directly. 
+
+- [x] Run .html files through minijinja when building
+the site. 
+
+- [x] Log to JSON and txt files as well as the command
+line. 
+
+- [] Quality error messages is something goes
+wrong. 
+
+- [] Automatically load .json files to use as
+data across templates. 
+
+- [] Call images by file name stem (i.e. without extension) 
+regardless of where they are in the directory tree. 
+
+- [] Auto generate srcset images and attributes.
+
+- [] Run .md files through minijinja when building
+the site. 
+
+- [] Read optional YAML front matter form .md files 
+to use as data on the page. 
+
+- [] Use a YAML front matter "template" variable 
+to set the template used for the page. 
+
+- [] Run anything inside the `scripts/pre` folder
+prior to building the site. 
+
+- [] Run anything inside the `scripts/post` folder
+after building the site.
+
+- [] Command line options like `--help`
+
+- [] Handle [neopolitan files](https://neopolitan.alanwsmith.com/)
+
+- [] A GUI front end so the command line
+isn't required. 
+
+- [] Auto generate basic directory structure and
+example files if run in an empty directory. 
+
+
+## Examples
+
+These examples cover the basics. 
+Check out the source code to see
+the input. 
+[! endfilter !]
+
+<h3>Automatically Loaded Data</h3>
+
 <pre>
-  [@ folders|tojson(true) @]
+[@ data|tojson(true) @]
 </pre>
 
-[! include "_sections/0010-overview/index.html" !]
-[! endblock !]
+<h3>Inline Syntax Highlighting</h3>
 
+<div>CSS</div>
+<pre>
+[!- filter highlight_css|safe -!]
+.highlighted-css {
+  color: goldenrod;
+}
+[!- endfilter -!]
+</pre>
+
+<div>HTML</div>
+<pre>
+[!- filter highlight_html|safe -!]
+<div>highlighted HTML</div>
+[!- endfilter -!]
+</pre>
+
+<div>JSON</div>
+<pre>
+[!- filter highlight_json|safe -!]
+{ "json_key": "json_value" }
+[!- endfilter -!]
+</pre>
+
+<div>Lua</div>
+<pre>
+[!- filter highlight_lua|safe -!]
+  print('this is lua')
+[!- endfilter -!]
+</pre>
+
+<div>Python</div>
+<pre>
+[!- filter highlight_python|safe -!]
+  print("this is python")
+[!- endfilter -!]
+</pre>
+
+<div>Rust</div>
+<pre>
+[!- filter highlight_rust|safe -!]
+fn main() {
+  println!("Highlighted rust");
+}
+[!- endfilter -!]
+</pre>
+
+<p>
+  Other languages can 
+  be added. It currently requires
+  updating the source code.
+</p>
+
+<h3>File Syntax Highlighting</h3>
+
+<pre>
+[@ highlight["examples/data/sample.json"]|safe @]
+</pre>
+
+<h3>Markdown File Inclusion</h3>
+[@ markdown["examples/markdown/sample.md"]|safe @]
+
+<h3>Current File</h3>
+<pre class="code-block">
+[@ file|tojson(true) @]
+</pre>
+
+<h3>Folders List</h3>
+<pre class="code-block">
+[@ folders|tojson(true) @]
+</pre>
+
+<h3>Files List</h3>
+<pre class="code-block">
+[@ files|tojson(true) @]
+</pre>
+
+[! filter markdown|safe !]
+## Notes
+
+- The github repo is at
+[https://github.com/alanwsmith/simple_site_builder](https://github.com/alanwsmith/simple_site_builder)
+
+- This is mainly a personal project. 
+That said, it's stable enough to use
+if you're a person who likes to tinker
+with things. 
+[! endfilter !]
+
+
+
+<h2>Release Notes</h2>
+
+[! for file in files !]
+[! if file.folder == "_release-notes" !]
+[@ markdown[file.folder + "/" + file.name]|safe @]
+[! endif !]
+[! endfor !]
+[! endblock !]
 
 

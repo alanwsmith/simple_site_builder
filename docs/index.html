@@ -7,184 +7,516 @@
   </head>
   <body>
     <header>
-      <a href="/">home</a> 
-      - <a href="/about/">about</a>
-      - <a href="/ping/about/">ping about</a>
+      made by <a href="https://www.alanwsmith.com/">alan w smith</a>
+      ~
+      <a href="https://socials.alanwsmith.com/">socials</a>
+      ~
+      <a href="https://links.alanwsmith.com/">other projects</a>
     </header>
     <main>
 
+<h1>Simple Site Builder</h1>
+<h2>Overview</h2>
+<p>Simple Site Builder builds websites.
+It's designed for making personal sites that
+use HTML, CSS, Vanilla JavaScript,
+Web Components, and JavaScript Libraries
+without requiring an underlying framework.</p>
+<p>(It's specifically designed to compliment
+<a href="https://bitty-js.alanwsmith.com/">bitty-js</a>)</p>
+<h2>Download and Usage</h2>
+<p>I'm only building for M-series macs until
+I'm better set up to test on other platforms.</p>
+<ul>
+<li>
+<p>Download:
+<a href="releases/aarch64-apple-darwin/0.3.0/ssb">releases/aarch64-apple-darwin/0.3.0/ssb</a></p>
+</li>
+<li>
+<p>Either put it on your Path. Or, put
+it inside the directory you want to
+use for your site.</p>
+</li>
+<li>
+<p>Create a &quot;<code>content</code>&quot; folder in the directory.
+with an &quot;<code>index.html</code>&quot; file in it.</p>
+</li>
+<li>
+<p>Run <code>ssb</code> on the command line. The contents
+of the &quot;<code>content</code>&quot; folder will be transformed/copied
+into a &quot;<code>docs</code>&quot; folder next to it with
+the constructed site.</p>
+</li>
+</ul>
+<p>Your browser should automatically open a
+preview of the site. (If not look for the
+&quot;http://localhost:####/&quot; address in the
+output on the command line and open it)</p>
+<ul>
+<li>
+<p>Add the content to your &quot;content&quot; folder
+that you want to see on your site.</p>
+</li>
+</ul>
+<h2>Goals</h2>
+<ul>
+<li>
+<p>[x] Single binary that can be run
+downloaded and run from the command
+line with no other dependencies.</p>
+</li>
+<li>
+<p>[x] Built-in preview server.</p>
+</li>
+<li>
+<p>[x] Automatically reload preview pages
+when content changes.</p>
+</li>
+<li>
+<p>[x] Use jinja style templates, but
+with tokens that are easier to read (i.e.
+<code>[! !]</code>,
+<code>[@ @]</code>, and
+<code>[# #]</code> instead of
+<code>{% %}</code>, <code>{{ }}</code>, and <code>{# #}</code>
+)</p>
+</li>
+<li>
+<p>[x] Control what's published and
+what's only used for includes
+by naming convention (i.e. things
+that start with an &quot;_&quot; don't
+get published directly).</p>
+</li>
+<li>
+<p>[x] Apply syntax highlighting to
+full files.</p>
+</li>
+<li>
+<p>[x] Apply syntax highlighting to
+individual code snippets.</p>
+</li>
+<li>
+<p>[x] Markdown can be used inside files
+via a filter.</p>
+</li>
+<li>
+<p>[x] Markdown files can be included
+in other files</p>
+</li>
+<li>
+<p>[x] Provide file listings (e.g. for
+providing links)</p>
+</li>
+<li>
+<p>[x] Provide folder listing (e.g. that
+can be used to include all files in
+a folder)</p>
+</li>
+<li>
+<p>[x] Automatically move .html files that
+aren't <code>index.html</code> into a folder with
+their filename and put the contents in
+a corresponding <code>FOLDER-NAME/index.html</code> file
+(e.g. <code>sub-dir/about.html</code> becomes <code>sub-dir/about/index.html</code>).
+This helps improve portability if the site
+is moved or switched to another builder/framework.</p>
+</li>
+<li>
+<p>[x] Copy non-html and non-md files directly.</p>
+</li>
+<li>
+<p>[x] Run .html files through minijinja when building
+the site.</p>
+</li>
+<li>
+<p>[x] Log to JSON and txt files as well as the command
+line.</p>
+</li>
+<li>
+<p>[] Quality error messages is something goes
+wrong.</p>
+</li>
+<li>
+<p>[] Automatically load .json files to use as
+data across templates.</p>
+</li>
+<li>
+<p>[] Call images by file name stem (i.e. without extension)
+regardless of where they are in the directory tree.</p>
+</li>
+<li>
+<p>[] Auto generate srcset images and attributes.</p>
+</li>
+<li>
+<p>[] Run .md files through minijinja when building
+the site.</p>
+</li>
+<li>
+<p>[] Read optional YAML front matter form .md files
+to use as data on the page.</p>
+</li>
+<li>
+<p>[] Use a YAML front matter &quot;template&quot; variable
+to set the template used for the page.</p>
+</li>
+<li>
+<p>[] Run anything inside the <code>scripts/pre</code> folder
+prior to building the site.</p>
+</li>
+<li>
+<p>[] Run anything inside the <code>scripts/post</code> folder
+after building the site.</p>
+</li>
+<li>
+<p>[] Command line options like <code>--help</code></p>
+</li>
+<li>
+<p>[] Handle <a href="https://neopolitan.alanwsmith.com/">neopolitan files</a></p>
+</li>
+<li>
+<p>[] A GUI front end so the command line
+isn't required.</p>
+</li>
+<li>
+<p>[] Auto generate basic directory structure and
+example files if run in an empty directory.</p>
+</li>
+</ul>
+<h2>Examples</h2>
+<p>These examples cover the basics.
+Check out the source code to see
+the input.</p>
+
+<h3>Automatically Loaded Data</h3>
+
 <pre>
-  [
-  {
-    "name": "_examples",
-    "parent_dir": ""
+{
+  "examples/data/sample-2.json": {
+    "anotherSample": "with some data"
   },
+  "examples/data/sample.json": {
+    "dataset": {
+      "alfa": "the quick brown fox",
+      "bravo": [
+        "the",
+        "quick",
+        "brown",
+        "fox"
+      ]
+    }
+  }
+}
+</pre>
+
+<h3>Inline Syntax Highlighting</h3>
+
+<div>CSS</div>
+<pre><span class="line-marker"></span><span class="source css"><span class="meta selector css"><span class="entity other attribute-name class css"><span class="punctuation definition entity css">.</span>highlighted-css</span> </span><span class="meta property-list css"><span class="punctuation section property-list css">{</span>
+<span class="line-marker"></span>  <span class="meta property-name css"><span class="support type property-name css">color</span></span><span class="punctuation separator key-value css">:</span><span class="meta property-value css"> </span><span class="meta property-value css"><span class="support constant color w3c-extended-color-keywords css">goldenrod</span></span><span class="punctuation terminator rule css">;</span>
+<span class="line-marker"></span></span><span class="punctuation section property-list css">}</span></span></pre>
+
+<div>HTML</div>
+<pre><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
+
+<div>JSON</div>
+<pre><span class="line-marker"></span><span class="source json"><span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span> <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_key<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_value<span class="punctuation definition string end json">&quot;</span></span> </span><span class="punctuation section dictionary end json">}</span></span></span></pre>
+
+<div>Lua</div>
+<pre><span class="line-marker"></span><span class="source lua"><span class="support function lua">print</span>(<span class="string quoted single lua"><span class="punctuation definition string begin lua">&#39;</span>this is lua<span class="punctuation definition string end lua">&#39;</span></span>)</span></pre>
+
+<div>Python</div>
+<pre><span class="line-marker"></span><span class="source python"><span class="meta function-call python"><span class="meta qualified-name python"><span class="support function builtin python">print</span></span><span class="punctuation section arguments begin python">(</span><span class="meta function-call arguments python"><span class="meta string python"><span class="string quoted double python"><span class="punctuation definition string begin python">&quot;</span></span></span><span class="meta string python"><span class="string quoted double python">this is python<span class="punctuation definition string end python">&quot;</span></span></span></span><span class="punctuation section arguments end python">)</span></span></span></pre>
+
+<div>Rust</div>
+<pre><span class="line-marker"></span><span class="source rust"><span class="meta function rust"><span class="meta function rust"><span class="storage type function rust">fn</span> </span><span class="entity name function rust">main</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">(</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters end rust">)</span></span></span></span><span class="meta function rust"> </span><span class="meta function rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+<span class="line-marker"></span>  <span class="support macro rust">println!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>Highlighted rust<span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="line-marker"></span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span></span></pre>
+
+<p>
+  Other languages can 
+  be added. It currently requires
+  updating the source code.
+</p>
+
+<h3>File Syntax Highlighting</h3>
+
+<pre>
+<span class="line-marker"></span><span class="source json"><span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span>
+<span class="line-marker"></span>  <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>dataset<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span>
+<span class="line-marker"></span>    <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>alfa<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>the quick brown fox<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator dictionary pair json">,</span></span>
+<span class="line-marker"></span>    <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>bravo<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="meta structure array json"><span class="punctuation section array begin json">[</span><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>the<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>quick<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>brown<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>fox<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation section array end json">]</span></span>
+<span class="line-marker"></span>  </span><span class="punctuation section dictionary end json">}</span></span>
+<span class="line-marker"></span></span><span class="punctuation section dictionary end json">}</span></span></span>
+</pre>
+
+<h3>Markdown File Inclusion</h3>
+<p>This is a sample markdown file</p>
+<ul>
+<li>List item</li>
+<li>Another with <strong>strong text</strong></li>
+<li>etc...</li>
+</ul>
+
+
+<h3>Current File</h3>
+<pre class="code-block">
+{
+  "extension": "html",
+  "file_move_type": "TransformHtml",
+  "folder": "",
+  "name": "index.html",
+  "output_folder": "",
+  "output_name": "index.html"
+}
+</pre>
+
+<h3>Folders List</h3>
+<pre class="code-block">
+[
   {
     "name": "_includes",
-    "parent_dir": ""
+    "parent": ""
   },
   {
-    "name": "_sections",
-    "parent_dir": ""
+    "name": "_release-notes",
+    "parent": ""
   },
   {
-    "name": "data",
-    "parent_dir": ""
+    "name": "examples",
+    "parent": ""
   },
   {
     "name": "favicons",
-    "parent_dir": ""
+    "parent": ""
   },
   {
-    "name": "modules",
-    "parent_dir": ""
+    "name": "releases",
+    "parent": ""
   },
   {
     "name": "styles",
-    "parent_dir": ""
-  },
-  {
-    "name": "basic",
-    "parent_dir": "_examples"
-  },
-  {
-    "name": "0010-send-and-receive",
-    "parent_dir": "_examples/basic"
+    "parent": ""
   },
   {
     "name": "wrappers",
-    "parent_dir": "_includes"
+    "parent": "_includes"
   },
   {
-    "name": "0010-overview",
-    "parent_dir": "_sections"
+    "name": "data",
+    "parent": "examples"
+  },
+  {
+    "name": "markdown",
+    "parent": "examples"
+  },
+  {
+    "name": "aarch64-apple-darwin",
+    "parent": "releases"
+  },
+  {
+    "name": "0.3.0",
+    "parent": "releases/aarch64-apple-darwin"
   }
 ]
 </pre>
 
-<details open >
-  <summary>Overview</summary>
+<h3>Files List</h3>
+<pre class="code-block">
+[
+  {
+    "extension": "html",
+    "file_move_type": "TransformHtml",
+    "folder": "",
+    "name": "index.html",
+    "output_folder": "",
+    "output_name": "index.html"
+  },
+  {
+    "extension": "html",
+    "file_move_type": "Skip",
+    "folder": "_includes/wrappers",
+    "name": "main.html",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.3.0.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "json",
+    "file_move_type": "Copy",
+    "folder": "examples/data",
+    "name": "sample-2.json",
+    "output_folder": "examples/data",
+    "output_name": "sample-2.json"
+  },
+  {
+    "extension": "json",
+    "file_move_type": "Copy",
+    "folder": "examples/data",
+    "name": "sample.json",
+    "output_folder": "examples/data",
+    "output_name": "sample.json"
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Copy",
+    "folder": "examples/markdown",
+    "name": "sample.md",
+    "output_folder": "examples/markdown",
+    "output_name": "sample.md"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "android-chrome-192x192.png",
+    "output_folder": "favicons",
+    "output_name": "android-chrome-192x192.png"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "android-chrome-512x512.png",
+    "output_folder": "favicons",
+    "output_name": "android-chrome-512x512.png"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "apple-touch-icon.png",
+    "output_folder": "favicons",
+    "output_name": "apple-touch-icon.png"
+  },
+  {
+    "extension": "xml",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "browserconfig.xml",
+    "output_folder": "favicons",
+    "output_name": "browserconfig.xml"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "favicon-16x16.png",
+    "output_folder": "favicons",
+    "output_name": "favicon-16x16.png"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "favicon-32x32.png",
+    "output_folder": "favicons",
+    "output_name": "favicon-32x32.png"
+  },
+  {
+    "extension": "ico",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "favicon.ico",
+    "output_folder": "favicons",
+    "output_name": "favicon.ico"
+  },
+  {
+    "extension": "png",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "mstile-150x150.png",
+    "output_folder": "favicons",
+    "output_name": "mstile-150x150.png"
+  },
+  {
+    "extension": "svg",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "safari-pinned-tab.svg",
+    "output_folder": "favicons",
+    "output_name": "safari-pinned-tab.svg"
+  },
+  {
+    "extension": "webmanifest",
+    "file_move_type": "Copy",
+    "folder": "favicons",
+    "name": "site.webmanifest",
+    "output_folder": "favicons",
+    "output_name": "site.webmanifest"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.3.0",
+    "name": "ssb",
+    "output_folder": "releases/aarch64-apple-darwin/0.3.0",
+    "output_name": "ssb"
+  },
+  {
+    "extension": "css",
+    "file_move_type": "Copy",
+    "folder": "styles",
+    "name": "highlight-base16-ocean-dark.css",
+    "output_folder": "styles",
+    "output_name": "highlight-base16-ocean-dark.css"
+  },
+  {
+    "extension": "css",
+    "file_move_type": "Copy",
+    "folder": "styles",
+    "name": "highlight-base16-ocean-light.css",
+    "output_folder": "styles",
+    "output_name": "highlight-base16-ocean-light.css"
+  },
+  {
+    "extension": "css",
+    "file_move_type": "Copy",
+    "folder": "styles",
+    "name": "main.css",
+    "output_folder": "styles",
+    "output_name": "main.css"
+  }
+]
+</pre>
 
-  <p><strong>bitty-js</strong> is a web component. It makes reactive web pages. 
-  For example:</p>
-
-  <div
-    class="make-two-columns warning-border-faded default-radius xxlarge-inline-margin"
-  >
-
-<bitty-js data-module="modules/timestamp-demo.js">
-  <button data-send="update">
-    Display Milliseond Timestamp
-  </button>
-  <div data-receive="update">
-    Waiting for click
-  </div>
-</bitty-js>
-
-
-<script type="module" src="bitty-v0.3.0.js"></script>
-
-
-  </div>
-
-  <p>
-    The <strong>bitty-js API</strong> uses <strong>data-*</strong> attributes:
-  </p>
-
-  <pre class="code-block large-block-margin"><code>
-</code></pre>
-
-  <ul>
-    <li>
-      <strong>data-module</strong> 
-      connects to the file responsible for functionality.
-    </li>
-
-    <li>
-      <strong>data-send</strong> tells the 
-      <strong>button</strong> to send an <strong>update</strong> signal.
-    </li>
-
-    <li>
-      <strong>data-receive</strong> registers
-      the <strong>div</strong> to react to <strong>update</strong> signals.
-    </li>
-  </ul>
-
-  <h4>Functionality</h4>
-
-  <p>
-    <strong>bitty-js</strong> uses the values from 
-    <strong>data-send</strong> and <strong>data-receive</strong>
-    to map to functions with the same name.
-  </p>
-
-  <pre class="code-block large-block-margin"><code>
-  </code></pre>
-
-  <ul>
-    <li>
-      The <strong>update</strong> function handles signals from 
-      elements with <strong>data-send=&quot;update&quot;</strong>.
-    </li>
-    <li>
-      Elements with <strong>data-receive=&quot;update&quot;</strong>
-      are processed by the <strong>update</strong> function.
-    </li>
-  </ul>
-
-  <p>The two arguments passed to a <strong>bitty-js function</strong> are:</p>
-  <ol>
-    <li>
-      The element to update
-    </li>
-    <li>
-      The event that triggered the update
-    </li>
-  </ol>
-
-  <p>
-    The event is ignored in the timestamp demo. The 
-    <strong>div</strong> element has its <strong>innerHTML</strong> updated 
-    with the timestamp.
-  </p>
-
-  <h4>As Simple As I Can Make It</h4>
-
-  <p>
-    The goal of <strong>bitty-js</strong> is to make
-    reactive pages with as little friction as possible. To wit,
-    <strong>bitty-js</strong> is:
-  </p>
-
-  <ul>
-    <li>A single file web component</li>
-    <li>Written in vanilla JavaScript</li>
-    <li>Powered by standard HTML attributes</li>
-    <li>Designed for both progressive enhancement and API based content loading</li>
-    <li>Stylable via the light DOM</li>
-  </ul>
-
-  <h4>Feedback Requested</h4>
-  <p>
-    <strong>bitty-js</strong> is curently <strong>beta version 0.3.0</strong>. 
-    The API is stable. Aside from bug fixes, it will become <strong>version 1.0</strong>. 
-    Play around with it. Let me know if you find bugs or show-stoppers.
-  </p>
-
-  <h4>Happy Coding</h4>
-
-  <p>
-    I put a lot of thought and effort into <strong>bitty-js</strong>. All
-    of it aimed at making things simpler. I'm really proud of where it ended up.
-    I hope it helps you enjoy making things for the web.
-  </p>
-
-  <p>-a</p>
+<h2>Notes</h2>
+<ul>
+<li>
+<p>The github repo is at
+<a href="https://github.com/alanwsmith/simple_site_builder">https://github.com/alanwsmith/simple_site_builder</a></p>
+</li>
+<li>
+<p>This is mainly a personal project.
+That said, it's stable enough to use
+if you're a person who likes to tinker
+with things.</p>
+</li>
+</ul>
 
 
 
+<h2>Release Notes</h2>
 
-</details>    </main>
+<h3>Version 0.3.0</h3>
+<p>Sept. 6, 2025</p>
+<ul>
+<li>
+<p>Ready for general personal use</p>
+</li>
+<li>
+<p>See home page for details on
+features and functionality.</p>
+</li>
+</ul>
+
+    </main>
   </body>
 </html>
