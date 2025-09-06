@@ -232,24 +232,26 @@ impl Builder {
             .join(details.output_name.clone().unwrap()),
         );
         match env.get_template(&template_name) {
-          Ok(template) => {
-            match template.render(context!(
-              files => file_list_as_value,
-              folders => folders_as_value,
-              markdown => markdown_files,
-              highlight => highlighted,
-            )) {
-              Ok(content) => {
-                let _ = write_file_with_mkdir(
-                  output_path,
-                  &content,
-                );
-              }
-              Err(e) => {
-                println!("{}", e);
-              }
+          Ok(template) => match template.render(context!(
+            files => file_list_as_value,
+            folders => folders_as_value,
+            highlight => highlighted,
+            markdown => markdown_files,
+            folder => Value::from(details.folder.to_str().unwrap()),
+            file_name => Value::from(details.name.to_str().unwrap()),
+            output_folder => Value::from(details.output_folder.as_ref().unwrap().to_str().unwrap()),
+            output_file_name => Value::from(details.output_name.as_ref().unwrap().to_str().unwrap()),
+          )) {
+            Ok(content) => {
+              let _ = write_file_with_mkdir(
+                output_path,
+                &content,
+              );
             }
-          }
+            Err(e) => {
+              println!("{}", e);
+            }
+          },
           Err(e) => {
             dbg!(e);
           }
