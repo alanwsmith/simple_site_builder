@@ -116,39 +116,45 @@ impl Builder {
     Value::from_serialize(highlights)
   }
 
-  pub fn load_data(&self) -> Value {
-    // let mut data_map: BTreeMap<String, Value> =
-    //   BTreeMap::new();
+  pub fn load_data(
+    &self,
+    file_list: &[FileDetails],
+  ) -> Value {
+    let mut data_map: BTreeMap<String, Value> =
+      BTreeMap::new();
 
-    // json_file_list(get_files(&self.config.content_root))
-    //   .iter()
-    //   .for_each(|input_file| {
-    //     let input_path =
-    //       self.config.content_root.join(input_file);
-    //     match fs::read_to_string(&input_path) {
-    //       Ok(json) => {
-    //         match serde_json::from_str::<Value>(&json) {
-    //           Ok(data) => {
-    //             data_map.insert(
-    //               input_file.display().to_string(),
-    //               data,
-    //             );
-    //           }
-    //           Err(e) => {
-    //             // TODO: Add better error handling here
-    //             dbg!(e);
-    //           }
-    //         }
-    //       }
-    //       Err(e) => {
-    //         // TODO: Add better error messaging here
-    //         dbg!(e);
-    //       }
-    //     }
-    //   });
+    file_list
+      .iter()
+      .filter(|details| {
+        details.extension == Some("json".to_string())
+      })
+      .for_each(|details| {
+        let key = details.folder.join(&details.name);
+        let input_path =
+          self.config.content_root.join(&key);
+        match fs::read_to_string(&input_path) {
+          Ok(json) => {
+            match serde_json::from_str::<Value>(&json) {
+              Ok(data) => {
+                data_map.insert(
+                  key.display().to_string(),
+                  data,
+                );
+              }
+              Err(e) => {
+                // TODO: Add better error handling here
+                dbg!(e);
+              }
+            }
+          }
+          Err(e) => {
+            // TODO: Add better error messaging here
+            dbg!(e);
+          }
+        }
+      });
 
-    //Value::from_serialize(data_map)
-    Value::from("")
+    Value::from_serialize(data_map)
   }
 
   pub async fn start(&mut self) -> Result<()> {
@@ -215,6 +221,7 @@ impl Builder {
     let folders_as_value = Value::from_serialize(folders);
     let markdown_files = self.load_markdown(file_list);
     let highlighted = self.highlight_files(file_list);
+    let data = self.load_data(file_list);
     file_list.iter().for_each(|details| {
       if details.file_move_type
         == FileMoveType::TransformHtml
@@ -233,6 +240,7 @@ impl Builder {
         );
         match env.get_template(&template_name) {
           Ok(template) => match template.render(context!(
+            data => data,
             files => file_list_as_value,
             folders => folders_as_value,
             highlight => highlighted,

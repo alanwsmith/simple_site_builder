@@ -72,6 +72,9 @@ is moved or switched to another builder/framework.
 - [x] Run .html files through minijinja when building
 the site. 
 
+- [x] Log to JSON and txt files as well as the command
+line. 
+
 - [] Quality error messages is something goes
 wrong. 
 
@@ -115,6 +118,12 @@ These examples cover the basics.
 Check out the source code to see
 the input. 
 [! endfilter !]
+
+<h3>Automatically Loaded Data</h3>
+
+<pre>
+[@ data|tojson(true) @]
+</pre>
 
 <h3>Inline Syntax Highlighting</h3>
 

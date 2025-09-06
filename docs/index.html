@@ -96,6 +96,10 @@ is moved or switched to another builder/framework.</p>
 the site.</p>
 </li>
 <li>
+<p>[x] Log to JSON and txt files as well as the command
+line.</p>
+</li>
+<li>
 <p>[] Quality error messages is something goes
 wrong.</p>
 </li>
@@ -149,6 +153,27 @@ example files if run in an empty directory.</p>
 <p>These examples cover the basics.
 Check out the source code to see
 the input.</p>
+
+<h3>Automatically Loaded Data</h3>
+
+<pre>
+{
+  "examples/data/sample-2.json": {
+    "anotherSample": "with some data"
+  },
+  "examples/data/sample.json": {
+    "dataset": {
+      "alfa": "the quick brown fox",
+      "bravo": [
+        "the",
+        "quick",
+        "brown",
+        "fox"
+      ]
+    }
+  }
+}
+</pre>
 
 <h3>Inline Syntax Highlighting</h3>
 
