@@ -24,9 +24,40 @@ Web Components, and JavaScript Libraries
 without requiring an underlying framework.</p>
 <p>(It's specifically designed to compliment
 <a href="https://bitty-js.alanwsmith.com/">bitty-js</a>)</p>
-<h2>Download</h2>
+<h2>Download and Usage</h2>
 <p>I'm only building for M-series macs until
 I'm better set up to test on other platforms.</p>
+<ul>
+<li>
+<p>Download:
+<a href="releases/aarch64-apple-darwin/0.3.0/ssb">releases/aarch64-apple-darwin/0.3.0/ssb</a></p>
+</li>
+<li>
+<p>Either put it on your Path. Or, put
+it inside the directory you want to
+use for your site.</p>
+</li>
+<li>
+<p>Create a &quot;<code>content</code>&quot; folder in the directory.
+with an &quot;<code>index.html</code>&quot; file in it.</p>
+</li>
+<li>
+<p>Run <code>ssb</code> on the command line. The contents
+of the &quot;<code>content</code>&quot; folder will be transformed/copied
+into a &quot;<code>docs</code>&quot; folder next to it with
+the constructed site.</p>
+</li>
+</ul>
+<p>Your browser should automatically open a
+preview of the site. (If not look for the
+&quot;http://localhost:####/&quot; address in the
+output on the command line and open it)</p>
+<ul>
+<li>
+<p>Add the content to your &quot;content&quot; folder
+that you want to see on your site.</p>
+</li>
+</ul>
 <h2>Goals</h2>
 <ul>
 <li>
@@ -293,14 +324,6 @@ the input.</p>
 <h3>Files List</h3>
 <pre class="code-block">
 [
-  {
-    "extension": "js",
-    "file_move_type": "Copy",
-    "folder": "",
-    "name": "bitty-v0.3.0.js",
-    "output_folder": "",
-    "output_name": "bitty-v0.3.0.js"
-  },
   {
     "extension": "html",
     "file_move_type": "TransformHtml",
