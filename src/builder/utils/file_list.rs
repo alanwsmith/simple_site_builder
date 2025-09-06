@@ -20,7 +20,7 @@ pub fn file_list(
     })
     .filter(|pb| {
       pb.file_name().unwrap().display().to_string()
-        != ".DS_Store".to_string()
+        != *".DS_Store".to_string()
     })
     .map(|pb| FileDetails::new(&pb))
     .collect::<Vec<FileDetails>>();
