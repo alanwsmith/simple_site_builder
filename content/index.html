@@ -36,5 +36,20 @@ includes, etc...
 <div>Folder: [@ folder @]</div>
 <div>File Name: [@ file_name @]</div>
 
+<pre>
+[! filter highlight_html|safe !]
+<div>highlighted HTML</div>
+<div>in a pre tag</div>
+[! endfilter !]
+</pre>
+
+<pre>
+[! filter highlight_rust|safe !]
+fn main() {
+  println!("Highlighted rust");
+}
+[! endfilter !]
+</pre>
+
 [! endblock !]
 
