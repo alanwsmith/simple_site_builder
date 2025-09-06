@@ -67,19 +67,29 @@ a corresponding `FOLDER-NAME/index.html` file
 This helps improve portability if the site
 is moved or switched to another builder/framework.
 
+- [x] Copy non-html and non-md files directly. 
+
 - [x] Run .html files through minijinja when building
 the site. 
+
+- [] Quality error messages is something goes
+wrong. 
 
 - [] Automatically load .json files to use as
 data across templates. 
 
+- [] Call images by file name stem (i.e. without extension) 
+regardless of where they are in the directory tree. 
+
+- [] Auto generate srcset images and attributes.
+
 - [] Run .md files through minijinja when building
 the site. 
 
-- [] Read optional YAML frontmatter form .md files 
+- [] Read optional YAML front matter form .md files 
 to use as data on the page. 
 
-- [] Use a YAML frontmatter "template" variable 
+- [] Use a YAML front matter "template" variable 
 to set the template used for the page. 
 
 - [] Run anything inside the `scripts/pre` folder
@@ -88,8 +98,16 @@ prior to building the site.
 - [] Run anything inside the `scripts/post` folder
 after building the site.
 
+- [] Command line options like `--help`
+
+- [] Handle [neopolitan files](https://neopolitan.alanwsmith.com/)
+
 - [] A GUI front end so the command line
 isn't required. 
+
+- [] Auto generate basic directory structure and
+example files if run in an empty directory. 
+
 
 ## Examples
 
@@ -100,6 +118,7 @@ the input.
 
 <h3>Inline Syntax Highlighting</h3>
 
+<div>CSS</div>
 <pre>
 [!- filter highlight_css|safe -!]
 .highlighted-css {
@@ -108,12 +127,35 @@ the input.
 [!- endfilter -!]
 </pre>
 
+<div>HTML</div>
 <pre>
 [!- filter highlight_html|safe -!]
 <div>highlighted HTML</div>
 [!- endfilter -!]
 </pre>
 
+<div>JSON</div>
+<pre>
+[!- filter highlight_json|safe -!]
+{ "json_key": "json_value" }
+[!- endfilter -!]
+</pre>
+
+<div>Lua</div>
+<pre>
+[!- filter highlight_lua|safe -!]
+  print('this is lua')
+[!- endfilter -!]
+</pre>
+
+<div>Python</div>
+<pre>
+[!- filter highlight_python|safe -!]
+  print("this is python")
+[!- endfilter -!]
+</pre>
+
+<div>Rust</div>
 <pre>
 [!- filter highlight_rust|safe -!]
 fn main() {
@@ -121,6 +163,21 @@ fn main() {
 }
 [!- endfilter -!]
 </pre>
+
+<p>
+  Other languages can 
+  be added. It currently requires
+  updating the source code.
+</p>
+
+<h3>File Syntax Highlighting</h3>
+
+<pre>
+[@ highlight["examples/data/sample.json"]|safe @]
+</pre>
+
+<h3>Markdown File Inclusion</h3>
+[@ markdown["examples/markdown/sample.md"]|safe @]
 
 <h3>Current File</h3>
 <pre class="code-block">
@@ -147,8 +204,9 @@ fn main() {
 That said, it's stable enough to use
 if you're a person who likes to tinker
 with things. 
-
 [! endfilter !]
+
+
 
 <h2>Release Notes</h2>
 
@@ -158,4 +216,5 @@ with things.
 [! endif !]
 [! endfor !]
 [! endblock !]
+
 
