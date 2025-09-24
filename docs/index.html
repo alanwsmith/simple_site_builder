@@ -42,8 +42,8 @@ explore and tinker with things.</p>
 for M-series macs since that's what I use.
 TBD about other platforms in the future.</p>
 <ul>
-<li>Download: <a href="/releases/aarch64-apple-darwin/0.3.0/ssb" download="ssb">
-releases/aarch64-apple-darwin/0.3.0/ssb</li>
+<li>Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb">
+releases/aarch64-apple-darwin/0.4.0/ssb</li>
 </ul>
 </a>
 <ul>
@@ -147,6 +147,9 @@ the site.</p>
 <li>
 <p>[x] Log to JSON and txt files as well as the command
 line.</p>
+</li>
+<li>
+<p>[] Automatically make minified version of .js files</p>
 </li>
 <li>
 <p>[] Quality error messages is something goes
@@ -310,6 +313,10 @@ the input.</p>
     "parent": ""
   },
   {
+    "name": "scripts",
+    "parent": ""
+  },
+  {
     "name": "styles",
     "parent": ""
   },
@@ -360,6 +367,14 @@ the input.</p>
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "name": "v0.3.0.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.4.0.md",
     "output_folder": null,
     "output_name": null
   },
@@ -476,6 +491,22 @@ the input.</p>
     "output_name": "ssb"
   },
   {
+    "extension": "js",
+    "file_move_type": "CopyAndMinifyJavaScript",
+    "folder": "scripts",
+    "name": "bitty-v0.3.0--beta-3.js",
+    "output_folder": "scripts",
+    "output_name": "bitty-v0.3.0--beta-3.js"
+  },
+  {
+    "extension": "js",
+    "file_move_type": "CopyAndMinifyJavaScript",
+    "folder": "scripts",
+    "name": "bitty-v0.3.0--beta-3.min.js",
+    "output_folder": "scripts",
+    "output_name": "bitty-v0.3.0--beta-3.min.js"
+  },
+  {
     "extension": "css",
     "file_move_type": "Copy",
     "folder": "styles",
@@ -502,10 +533,28 @@ the input.</p>
 ]
 </pre>
 
+<h2>Deprecation Messages</h2>
 
+<ul>
+  <li>highlight: [minijinja: `highlight` is deprecated. use `highlight_file`]</li>
+  <li>markdown: [minijinja: `markdown` is deprecated. use `markdown_file` instead]</li>
+</ul>
 
 
 <h2>Release Notes</h2>
+
+<h3>Version 0.4.0</h3>
+<p>Sept. 24, 2025</p>
+<ul>
+<li>
+<p>renamed <code>highlight</code> to <code>highlight_file</code>
+(<code>highlight</code> shows a deprecation message)</p>
+</li>
+<li>
+<p>renamed <code>markdown</code> to <code>markdown_file</code>
+(<code>markdown</code> shows a deprecation message)</p>
+</li>
+</ul>
 
 <h3>Version 0.3.0</h3>
 <p>Sept. 6, 2025</p>
