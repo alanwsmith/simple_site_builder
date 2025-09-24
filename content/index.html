@@ -32,8 +32,8 @@ I'm only building the app binary
 for M-series macs since that's what I use. 
 TBD about other platforms in the future. 
 
-- Download: <a href="/releases/aarch64-apple-darwin/0.3.0/ssb" download="ssb">
-releases/aarch64-apple-darwin/0.3.0/ssb
+- Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb">
+releases/aarch64-apple-darwin/0.4.0/ssb
 </a>
 
 - Either put it on your Path. Or, put
@@ -116,6 +116,8 @@ the site.
 
 - [x] Log to JSON and txt files as well as the command
 line. 
+
+- [] Automatically make minified version of .js files
 
 - [] Quality error messages is something goes
 wrong. 
@@ -224,11 +226,11 @@ fn main() {
 <h3>File Syntax Highlighting</h3>
 
 <pre>
-[@ highlight["examples/data/sample.json"]|safe @]
+[@ highlight_file["examples/data/sample.json"]|safe @]
 </pre>
 
 <h3>Markdown File Inclusion</h3>
-[@ markdown["examples/markdown/sample.md"]|safe @]
+[@ markdown_file["examples/markdown/sample.md"]|safe @]
 
 <h3>Current File</h3>
 <pre class="code-block">
@@ -245,14 +247,19 @@ fn main() {
 [@ files|tojson(true) @]
 </pre>
 
+<h2>Deprecation Messages</h2>
 
+<ul>
+  <li>highlight: [@ highlight["index.html"] @]</li>
+  <li>markdown: [@ markdown["examples/markdown/sample.md"] @]</li>
+</ul>
 
 
 <h2>Release Notes</h2>
 
-[! for file in files !]
+[! for file in files|reverse !]
 [! if file.folder == "_release-notes" !]
-[@ markdown[file.folder + "/" + file.name]|safe @]
+[@ markdown_file[file.folder + "/" + file.name]|safe @]
 [! endif !]
 [! endfor !]
 [! endblock !]

@@ -7,6 +7,7 @@ pub enum FileMoveType {
   Copy,
   Skip,
   TransformHtml,
+  CopyAndMinifyJavaScript,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -70,6 +71,8 @@ impl FileDetails {
         Some(ext) => {
           if ext == "html" {
             FileMoveType::TransformHtml
+          } else if ext == "js" {
+            FileMoveType::CopyAndMinifyJavaScript
           } else {
             FileMoveType::Copy
           }
