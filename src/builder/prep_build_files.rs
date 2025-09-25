@@ -2,14 +2,14 @@ use super::*;
 use anyhow::Result;
 use itertools::Itertools;
 use std::fs;
-use std::path::PathBuf;
+use std::path::Path;
 use walkdir::WalkDir;
 
 impl Builder {
   pub fn prep_build_files(
     &self,
-    source_dir: &PathBuf,
-    dest_dir: &PathBuf,
+    source_dir: &Path,
+    dest_dir: &Path,
   ) -> Result<()> {
     let file_prep_scripts: Vec<String> =
       get_files_in_dir(

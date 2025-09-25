@@ -53,7 +53,7 @@ impl Builder {
     let _ = &self.copy_files(&file_list)?;
     let _ = &self.copy_js(&file_list)?;
     empty_dir(&self.config.build_files_dir())?;
-    info!("Reloading browser on port {}/", self.port);
+    info!("Reloading browser on port {}", self.port);
     let _ = &self.reloader.reload();
     Ok(())
   }

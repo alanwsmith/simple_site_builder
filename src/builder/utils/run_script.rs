@@ -6,7 +6,7 @@ use std::process::{Command, Stdio};
 
 pub fn run_script(
   script: &String,
-  data: &Vec<u8>,
+  data: &[u8],
 ) -> Result<String> {
   let file = fs::File::open(script)?;
   let bit_update = 0o700;
