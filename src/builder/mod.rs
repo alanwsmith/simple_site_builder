@@ -1,5 +1,7 @@
+pub mod prep_build_files;
 pub mod utils;
 
+// use self::prep_build_files::*;
 use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
@@ -9,7 +11,7 @@ use minijinja::Value;
 use minijinja::context;
 use std::collections::BTreeMap;
 use std::fs;
-use std::io::Write;
+// use std::io::Write;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -39,16 +41,22 @@ impl Builder {
   pub fn build_site(&self) -> Result<()> {
     let _ = clearscreen::clear();
     info!("Building site");
-    let _ = self.empty_dir();
-    let file_list = file_list(&self.config.content_root);
-    let _ = &self.transform_html(&file_list)?;
-    let _ = &self.copy_files(&file_list)?;
-    let _ = &self.copy_js(&file_list)?;
-    info!(
-      "Reloading browser for: http://localhost:{}/",
-      self.port
-    );
-    let _ = &self.reloader.reload();
+    let _ = self.empty_dirs();
+    self.prep_build_files(
+      &self.config.content_root,
+      &self.config.build_files_dir(),
+    )?;
+
+    // let file_list = file_list(&self.config.content_root);
+    // let _ = &self.transform_html(&file_list)?;
+    // let _ = &self.copy_files(&file_list)?;
+    // let _ = &self.copy_js(&file_list)?;
+    // info!(
+    //   "Reloading browser for: http://localhost:{}/",
+    //   self.port
+    // );
+    // let _ = &self.reloader.reload();
+
     Ok(())
   }
 
@@ -100,9 +108,9 @@ impl Builder {
     Ok(())
   }
 
-  // TODO: set this up so the names aren't the same
-  pub fn empty_dir(&self) -> Result<()> {
+  pub fn empty_dirs(&self) -> Result<()> {
     let _ = empty_dir(&self.config.output_root);
+    let _ = empty_dir(&self.config.build_files_dir());
     Ok(())
   }
 

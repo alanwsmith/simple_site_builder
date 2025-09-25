@@ -3,5 +3,6 @@ docs/*
 docs_tmp/*
 logs/*
 scripts/*
+.build-files/*
 
 

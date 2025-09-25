@@ -5,7 +5,9 @@ pub mod file_list;
 pub mod folder_details;
 pub mod folder_list;
 pub mod get_env;
+pub mod get_files_in_dir;
 pub mod highlight_code;
+pub mod run_script;
 pub mod trim_empty_leading_lines;
 pub mod write_file_with_mkdir;
 
@@ -16,6 +18,8 @@ pub use self::file_list::*;
 pub use self::folder_details::*;
 pub use self::folder_list::*;
 pub use self::get_env::*;
+pub use self::get_files_in_dir::*;
 pub use self::highlight_code::*;
+pub use self::run_script::*;
 pub use self::trim_empty_leading_lines::*;
 pub use self::write_file_with_mkdir::*;
