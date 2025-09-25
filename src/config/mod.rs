@@ -28,6 +28,10 @@ impl Config {
     PathBuf::from(".build-files")
   }
 
+  pub fn config_dir(&self) -> PathBuf {
+    PathBuf::from("config")
+  }
+
   pub fn json_logs(&self) -> PathBuf {
     self.logs_root.join("json")
   }
@@ -40,14 +44,6 @@ impl Config {
     .iter()
     .map(|ext| ext.to_string())
     .collect()
-  }
-
-  pub fn file_prep_scripts_dir(&self) -> PathBuf {
-    self.scripts_dir().join("file-prep")
-  }
-
-  pub fn scripts_dir(&self) -> PathBuf {
-    PathBuf::from("scripts")
   }
 
   pub fn txt_logs(&self) -> PathBuf {

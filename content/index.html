@@ -22,10 +22,8 @@ so that if multiple changes occur
 within like 100ms it only triggers
 one build. 
 
-- [x] Watch scripts dir for changes and
-run updates when they happen there 
-as well as when the content dir
-sees changes. 
+- [] Document the `config/find-replace.txt`
+directory
 
 ## Notes
 
@@ -266,22 +264,15 @@ fn main() {
   <li>markdown: [@ markdown["examples/markdown/sample.md"] @]</li>
 </ul>
 
-<h2>Running `file-prep` dir</h2>
+<h2>find-replace.txt file</h2>
 
-<p>If this says: output_from_test_var_1
-  script in the file-prep dir are running
-  prior to the build process running. 
+<p>
+This should say `output_from_test_var_2`
 </p>
 
 <p>
-<code>TEST_VAR_1</code>
+TEST_VAR_2
 </p>
-
-<p>If it says `TEST` followed
-  by `_VAR_`, the file-prep
-  dir didn't run properly
-</p>
-
 
 
 
@@ -294,5 +285,4 @@ fn main() {
 [! endif !]
 [! endfor !]
 [! endblock !]
-
 
