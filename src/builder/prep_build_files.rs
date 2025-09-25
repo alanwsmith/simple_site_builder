@@ -27,7 +27,6 @@ impl Builder {
         fs::create_dir_all(dest_path)?;
       } else {
         let data = std::fs::read(&source_path)?;
-        dbg!("-----------------");
         if let Some(ext) = &source_path.extension() {
           if self
             .config
@@ -41,12 +40,19 @@ impl Builder {
               // script fails.
               let prepped_content =
                 run_script(script, &data)?;
-              dbg!(prepped_content);
+              std::fs::write(
+                &dest_path,
+                &prepped_content,
+              )?;
             }
+          } else {
+            // For files with other extensions
+            std::fs::write(dest_path, &data)?;
           }
+        } else {
+          // For files without extensions
+          std::fs::write(dest_path, &data)?;
         }
-
-        std::fs::write(dest_path, &data)?;
       }
     }
     Ok(())

@@ -33,10 +33,13 @@ impl Config {
   }
 
   pub fn file_prep_extensions(&self) -> Vec<String> {
-    vec!["html", "md", "json", "js", "txt", "data"]
-      .iter()
-      .map(|ext| ext.to_string())
-      .collect()
+    vec![
+      "css", "data", "html", "js", "json", "md", "neo",
+      "neoj", "txt", "xml",
+    ]
+    .iter()
+    .map(|ext| ext.to_string())
+    .collect()
   }
 
   pub fn file_prep_scripts_dir(&self) -> PathBuf {

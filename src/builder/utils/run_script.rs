@@ -13,9 +13,6 @@ pub fn run_script(
   let mut permissions = file.metadata()?.permissions();
   permissions.set_mode(permissions.mode() | bit_update);
   file.set_permissions(permissions)?;
-
-  dbg!("qqqqqqqqqqqqq");
-  dbg!(&script);
   let mut cmd = Command::new(script)
     .stdin(Stdio::piped())
     .stdout(Stdio::piped())
