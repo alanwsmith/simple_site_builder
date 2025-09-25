@@ -13,7 +13,19 @@ Web Components, and JavaScript Libraries
 without requiring an underlying framework. 
 
 It's specifically designed to compliment
-[bitty-js](https://bitty-js.alanwsmith.com/).
+[bitty](https://bitty.alanwsmith.com/).
+
+## TODO
+
+- [] Put in a little buffer/throttle/debounce
+so that if multiple changes occur
+within like 100ms it only triggers
+one build. 
+
+- [x] Watch scripts dir for changes and
+run updates when they happen there 
+as well as when the content dir
+sees changes. 
 
 ## Notes
 
@@ -253,6 +265,25 @@ fn main() {
   <li>highlight: [@ highlight["index.html"] @]</li>
   <li>markdown: [@ markdown["examples/markdown/sample.md"] @]</li>
 </ul>
+
+<h2>Running `file-prep` dir</h2>
+
+<p>If this says: output_from_test_var_1
+  script in the file-prep dir are running
+  prior to the build process running. 
+</p>
+
+<p>
+<code>TEST_VAR_1</code>
+</p>
+
+<p>If it says `TEST` followed
+  by `_VAR_`, the file-prep
+  dir didn't run properly
+</p>
+
+
+
 
 
 <h2>Release Notes</h2>

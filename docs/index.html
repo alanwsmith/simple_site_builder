@@ -1,191 +1,224 @@
 <!DOCTYPE html>
 
+
+
 <html  lang="en">
+
   <head>
+
     <link rel="stylesheet" href="/styles/main.css">
+
     <link rel="stylesheet" href="/styles/highlight-base16-ocean-dark.css">
+
   </head>
+
   <body>
+
     <header>
+
       made by <a href="https://www.alanwsmith.com/">alan w smith</a>
+
       ~
+
       <a href="https://socials.alanwsmith.com/">socials</a>
+
       ~
+
       <a href="https://links.alanwsmith.com/">other projects</a>
+
     </header>
+
     <main>
+
+
+
 
 <h1>Simple Site Builder</h1>
 <h2>Overview</h2>
-<p>Simple Site Builder is my latest
-static site builder for my personal sites.
-It uses HTML, CSS, Vanilla JavaScript,
-Web Components, and JavaScript Libraries
-without requiring an underlying framework.</p>
-<p>It's specifically designed to compliment
-<a href="https://bitty-js.alanwsmith.com/">bitty-js</a>.</p>
+<p>Simple Site Builder is my latest</p>
+<p>static site builder for my personal sites.</p>
+<p>It uses HTML, CSS, Vanilla JavaScript,</p>
+<p>Web Components, and JavaScript Libraries</p>
+<p>without requiring an underlying framework.</p>
+<p>It's specifically designed to compliment</p>
+<p><a href="https://bitty.alanwsmith.com/">bitty</a>.</p>
+<h2>TODO</h2>
+<ul>
+<li>[] Put in a little buffer/throttle/debounce</li>
+</ul>
+<p>so that if multiple changes occur</p>
+<p>within like 100ms it only triggers</p>
+<p>one build.</p>
+<ul>
+<li>[x] Watch scripts dir for changes and</li>
+</ul>
+<p>run updates when they happen there</p>
+<p>as well as when the content dir</p>
+<p>sees changes.</p>
 <h2>Notes</h2>
 <ul>
-<li>
-<p>This is mainly a personal project.
-That said, it's stable enough to use
-if you're a person who likes to
-explore and tinker with things.</p>
-</li>
-<li>
-<p>The github repo is at
-<a href="https://github.com/alanwsmith/simple_site_builder">https://github.com/alanwsmith/simple_site_builder</a></p>
-</li>
+<li>This is mainly a personal project.</li>
 </ul>
-<h2>Download and Usage</h2>
-<p>I'm only building the app binary
-for M-series macs since that's what I use.
-TBD about other platforms in the future.</p>
+<p>That said, it's stable enough to use</p>
+<p>if you're a person who likes to</p>
+<p>explore and tinker with things.</p>
 <ul>
-<li>Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb">
-releases/aarch64-apple-darwin/0.4.0/ssb</li>
+<li>The github repo is at</li>
 </ul>
+<p><a href="https://github.com/alanwsmith/simple_site_builder">https://github.com/alanwsmith/simple_site_builder</a></p>
+<h2>Download and Usage</h2>
+<p>I'm only building the app binary</p>
+<p>for M-series macs since that's what I use.</p>
+<p>TBD about other platforms in the future.</p>
+<ul>
+<li>Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb"></li>
+</ul>
+<p>releases/aarch64-apple-darwin/0.4.0/ssb</p>
 </a>
 <ul>
-<li>
-<p>Either put it on your Path. Or, put
-it inside the directory you want to
-use for your site.</p>
-</li>
-<li>
-<p>Create a &quot;<code>content</code>&quot; folder in the directory.
-with an &quot;<code>index.html</code>&quot; file in it.</p>
-</li>
-<li>
-<p>Run <code>ssb</code> on the command line. The contents
-of the &quot;<code>content</code>&quot; folder will be transformed/copied
-into a &quot;<code>docs</code>&quot; folder next to it with
-the constructed site.</p>
-</li>
+<li>Either put it on your Path. Or, put</li>
 </ul>
-<p>Your browser should automatically open a
-preview of the site. (If not look for the
-&quot;http://localhost:####/&quot; address in the
-output on the command line and open it)</p>
+<p>it inside the directory you want to</p>
+<p>use for your site.</p>
 <ul>
-<li>
-<p>Add the content to your &quot;content&quot; folder
-that you want to see on your site.</p>
-</li>
+<li>Create a &quot;<code>content</code>&quot; folder in the directory.</li>
 </ul>
+<p>with an &quot;<code>index.html</code>&quot; file in it.</p>
+<ul>
+<li>Run <code>ssb</code> on the command line. The contents</li>
+</ul>
+<p>of the &quot;<code>content</code>&quot; folder will be transformed/copied</p>
+<p>into a &quot;<code>docs</code>&quot; folder next to it with</p>
+<p>the constructed site.</p>
+<p>Your browser should automatically open a</p>
+<p>preview of the site. (If not look for the</p>
+<p>&quot;http://localhost:####/&quot; address in the</p>
+<p>output on the command line and open it)</p>
+<ul>
+<li>Add the content to your &quot;content&quot; folder</li>
+</ul>
+<p>that you want to see on your site.</p>
 <h2>Goals</h2>
 <ul>
-<li>
-<p>[x] Single binary that can be run
-downloaded and run from the command
-line with no other dependencies.</p>
-</li>
+<li>[x] Single binary that can be run</li>
+</ul>
+<p>downloaded and run from the command</p>
+<p>line with no other dependencies.</p>
+<ul>
 <li>
 <p>[x] Built-in preview server.</p>
 </li>
 <li>
-<p>[x] Automatically reload preview pages
-when content changes.</p>
+<p>[x] Automatically reload preview pages</p>
 </li>
-<li>
-<p>[x] Use jinja style templates, but
-with tokens that are easier to read (i.e.
-<code>[! !]</code>,
-<code>[@ @]</code>, and
-<code>[# #]</code> instead of
-<code>{% %}</code>, <code>{{ }}</code>, and <code>{# #}</code>
-)</p>
-</li>
-<li>
-<p>[x] Control what's published and
-what's only used for includes
-by naming convention (i.e. things
-that start with an &quot;_&quot; don't
-get published directly).</p>
-</li>
-<li>
-<p>[x] Apply syntax highlighting to
-full files.</p>
-</li>
-<li>
-<p>[x] Apply syntax highlighting to
-individual code snippets.</p>
-</li>
-<li>
-<p>[x] Markdown can be used inside files
-via a filter.</p>
-</li>
-<li>
-<p>[x] Markdown files can be included
-in other files</p>
-</li>
-<li>
-<p>[x] Provide file listings (e.g. for
-providing links)</p>
-</li>
-<li>
-<p>[x] Provide folder listing (e.g. that
-can be used to include all files in
-a folder)</p>
-</li>
-<li>
-<p>[x] Automatically move .html files that
-aren't <code>index.html</code> into a folder with
-their filename and put the contents in
-a corresponding <code>FOLDER-NAME/index.html</code> file
-(e.g. <code>sub-dir/about.html</code> becomes <code>sub-dir/about/index.html</code>).
-This helps improve portability if the site
-is moved or switched to another builder/framework.</p>
-</li>
+</ul>
+<p>when content changes.</p>
+<ul>
+<li>[x] Use jinja style templates, but</li>
+</ul>
+<p>with tokens that are easier to read (i.e.</p>
+<p><code>[! !]</code>,</p>
+<p><code>[@ @]</code>, and</p>
+<p><code>[# #]</code> instead of</p>
+<p><code>{% %}</code>, <code>{{ }}</code>, and <code>{# #}</code></p>
+<p>)</p>
+<ul>
+<li>[x] Control what's published and</li>
+</ul>
+<p>what's only used for includes</p>
+<p>by naming convention (i.e. things</p>
+<p>that start with an &quot;_&quot; don't</p>
+<p>get published directly).</p>
+<ul>
+<li>[x] Apply syntax highlighting to</li>
+</ul>
+<p>full files.</p>
+<ul>
+<li>[x] Apply syntax highlighting to</li>
+</ul>
+<p>individual code snippets.</p>
+<ul>
+<li>[x] Markdown can be used inside files</li>
+</ul>
+<p>via a filter.</p>
+<ul>
+<li>[x] Markdown files can be included</li>
+</ul>
+<p>in other files</p>
+<ul>
+<li>[x] Provide file listings (e.g. for</li>
+</ul>
+<p>providing links)</p>
+<ul>
+<li>[x] Provide folder listing (e.g. that</li>
+</ul>
+<p>can be used to include all files in</p>
+<p>a folder)</p>
+<ul>
+<li>[x] Automatically move .html files that</li>
+</ul>
+<p>aren't <code>index.html</code> into a folder with</p>
+<p>their filename and put the contents in</p>
+<p>a corresponding <code>FOLDER-NAME/index.html</code> file</p>
+<p>(e.g. <code>sub-dir/about.html</code> becomes <code>sub-dir/about/index.html</code>).</p>
+<p>This helps improve portability if the site</p>
+<p>is moved or switched to another builder/framework.</p>
+<ul>
 <li>
 <p>[x] Copy non-html and non-md files directly.</p>
 </li>
 <li>
-<p>[x] Run .html files through minijinja when building
-the site.</p>
+<p>[x] Run .html files through minijinja when building</p>
 </li>
-<li>
-<p>[x] Log to JSON and txt files as well as the command
-line.</p>
-</li>
+</ul>
+<p>the site.</p>
+<ul>
+<li>[x] Log to JSON and txt files as well as the command</li>
+</ul>
+<p>line.</p>
+<ul>
 <li>
 <p>[] Automatically make minified version of .js files</p>
 </li>
 <li>
-<p>[] Quality error messages is something goes
-wrong.</p>
+<p>[] Quality error messages is something goes</p>
 </li>
-<li>
-<p>[] Automatically load .json files to use as
-data across templates.</p>
-</li>
-<li>
-<p>[] Call images by file name stem (i.e. without extension)
-regardless of where they are in the directory tree.</p>
-</li>
+</ul>
+<p>wrong.</p>
+<ul>
+<li>[] Automatically load .json files to use as</li>
+</ul>
+<p>data across templates.</p>
+<ul>
+<li>[] Call images by file name stem (i.e. without extension)</li>
+</ul>
+<p>regardless of where they are in the directory tree.</p>
+<ul>
 <li>
 <p>[] Auto generate srcset images and attributes.</p>
 </li>
 <li>
-<p>[] Run .md files through minijinja when building
-the site.</p>
+<p>[] Run .md files through minijinja when building</p>
 </li>
-<li>
-<p>[] Read optional YAML front matter form .md files
-to use as data on the page.</p>
-</li>
-<li>
-<p>[] Use a YAML front matter &quot;template&quot; variable
-to set the template used for the page.</p>
-</li>
-<li>
-<p>[] Run anything inside the <code>scripts/pre</code> folder
-prior to building the site.</p>
-</li>
-<li>
-<p>[] Run anything inside the <code>scripts/post</code> folder
-after building the site.</p>
-</li>
+</ul>
+<p>the site.</p>
+<ul>
+<li>[] Read optional YAML front matter form .md files</li>
+</ul>
+<p>to use as data on the page.</p>
+<ul>
+<li>[] Use a YAML front matter &quot;template&quot; variable</li>
+</ul>
+<p>to set the template used for the page.</p>
+<ul>
+<li>[] Run anything inside the <code>scripts/pre</code> folder</li>
+</ul>
+<p>prior to building the site.</p>
+<ul>
+<li>[] Run anything inside the <code>scripts/post</code> folder</li>
+</ul>
+<p>after building the site.</p>
+<ul>
 <li>
 <p>[] Command line options like <code>--help</code></p>
 </li>
@@ -193,22 +226,27 @@ after building the site.</p>
 <p>[] Handle <a href="https://neopolitan.alanwsmith.com/">neopolitan files</a></p>
 </li>
 <li>
-<p>[] A GUI front end so the command line
-isn't required.</p>
-</li>
-<li>
-<p>[] Auto generate basic directory structure and
-example files if run in an empty directory.</p>
+<p>[] A GUI front end so the command line</p>
 </li>
 </ul>
+<p>isn't required.</p>
+<ul>
+<li>[] Auto generate basic directory structure and</li>
+</ul>
+<p>example files if run in an empty directory.</p>
 <h2>Examples</h2>
-<p>These examples cover the basics.
-Check out the source code to see
-the input.</p>
+<p>These examples cover the basics.</p>
+<p>Check out the source code to see</p>
+<p>the input.</p>
+
+
 
 <h3>Automatically Loaded Data</h3>
 
+
+
 <pre>
+
 {
   "examples/data/sample-2.json": {
     "anotherSample": "with some data"
@@ -225,60 +263,115 @@ the input.</p>
     }
   }
 }
+
 </pre>
+
+
 
 <h3>Inline Syntax Highlighting</h3>
 
+
+
 <div>CSS</div>
+
 <pre><span class="line-marker"></span><span class="source css"><span class="meta selector css"><span class="entity other attribute-name class css"><span class="punctuation definition entity css">.</span>highlighted-css</span> </span><span class="meta property-list css"><span class="punctuation section property-list css">{</span>
+<span class="line-marker"></span>
 <span class="line-marker"></span>  <span class="meta property-name css"><span class="support type property-name css">color</span></span><span class="punctuation separator key-value css">:</span><span class="meta property-value css"> </span><span class="meta property-value css"><span class="support constant color w3c-extended-color-keywords css">goldenrod</span></span><span class="punctuation terminator rule css">;</span>
+<span class="line-marker"></span>
 <span class="line-marker"></span></span><span class="punctuation section property-list css">}</span></span></pre>
 
+
+
 <div>HTML</div>
+
 <pre><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
 
+
+
 <div>JSON</div>
+
 <pre><span class="line-marker"></span><span class="source json"><span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span> <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_key<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_value<span class="punctuation definition string end json">&quot;</span></span> </span><span class="punctuation section dictionary end json">}</span></span></span></pre>
 
+
+
 <div>Lua</div>
+
 <pre><span class="line-marker"></span><span class="source lua"><span class="support function lua">print</span>(<span class="string quoted single lua"><span class="punctuation definition string begin lua">&#39;</span>this is lua<span class="punctuation definition string end lua">&#39;</span></span>)</span></pre>
 
+
+
 <div>Python</div>
+
 <pre><span class="line-marker"></span><span class="source python"><span class="meta function-call python"><span class="meta qualified-name python"><span class="support function builtin python">print</span></span><span class="punctuation section arguments begin python">(</span><span class="meta function-call arguments python"><span class="meta string python"><span class="string quoted double python"><span class="punctuation definition string begin python">&quot;</span></span></span><span class="meta string python"><span class="string quoted double python">this is python<span class="punctuation definition string end python">&quot;</span></span></span></span><span class="punctuation section arguments end python">)</span></span></span></pre>
 
+
+
 <div>Rust</div>
+
 <pre><span class="line-marker"></span><span class="source rust"><span class="meta function rust"><span class="meta function rust"><span class="storage type function rust">fn</span> </span><span class="entity name function rust">main</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters begin rust">(</span></span><span class="meta function rust"><span class="meta function parameters rust"><span class="punctuation section parameters end rust">)</span></span></span></span><span class="meta function rust"> </span><span class="meta function rust"><span class="meta block rust"><span class="punctuation section block begin rust">{</span>
+<span class="line-marker"></span>
 <span class="line-marker"></span>  <span class="support macro rust">println!</span><span class="meta group rust"><span class="punctuation section group begin rust">(</span></span><span class="meta group rust"><span class="string quoted double rust"><span class="punctuation definition string begin rust">&quot;</span>Highlighted rust<span class="punctuation definition string end rust">&quot;</span></span></span><span class="meta group rust"><span class="punctuation section group end rust">)</span></span><span class="punctuation terminator rust">;</span>
+<span class="line-marker"></span>
 <span class="line-marker"></span></span><span class="meta block rust"><span class="punctuation section block end rust">}</span></span></span></span></pre>
 
+
+
 <p>
+
   Other languages can 
+
   be added. It currently requires
+
   updating the source code.
+
 </p>
+
+
 
 <h3>File Syntax Highlighting</h3>
 
+
+
 <pre>
+
 <span class="line-marker"></span><span class="source json"><span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span>
+<span class="line-marker"></span>
 <span class="line-marker"></span>  <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>dataset<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span>
+<span class="line-marker"></span>
 <span class="line-marker"></span>    <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>alfa<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>the quick brown fox<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator dictionary pair json">,</span></span>
+<span class="line-marker"></span>
 <span class="line-marker"></span>    <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>bravo<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="meta structure array json"><span class="punctuation section array begin json">[</span><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>the<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>quick<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>brown<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>fox<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation section array end json">]</span></span>
+<span class="line-marker"></span>
 <span class="line-marker"></span>  </span><span class="punctuation section dictionary end json">}</span></span>
+<span class="line-marker"></span>
 <span class="line-marker"></span></span><span class="punctuation section dictionary end json">}</span></span></span>
+
 </pre>
 
+
+
 <h3>Markdown File Inclusion</h3>
+
 <p>This is a sample markdown file</p>
 <ul>
-<li>List item</li>
-<li>Another with <strong>strong text</strong></li>
-<li>etc...</li>
+<li>
+<p>List item</p>
+</li>
+<li>
+<p>Another with <strong>strong text</strong></p>
+</li>
+<li>
+<p>etc...</p>
+</li>
 </ul>
 
 
+
+
 <h3>Current File</h3>
+
 <pre class="code-block">
+
 {
   "extension": "html",
   "file_move_type": "TransformHtml",
@@ -287,10 +380,15 @@ the input.</p>
   "output_folder": "",
   "output_name": "index.html"
 }
+
 </pre>
 
+
+
 <h3>Folders List</h3>
+
 <pre class="code-block">
+
 [
   {
     "name": "_includes",
@@ -298,6 +396,10 @@ the input.</p>
   },
   {
     "name": "_release-notes",
+    "parent": ""
+  },
+  {
+    "name": "components",
     "parent": ""
   },
   {
@@ -339,12 +441,25 @@ the input.</p>
   {
     "name": "0.3.0",
     "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "name": "0.4.0",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "name": "0.5.0",
+    "parent": "releases/aarch64-apple-darwin"
   }
 ]
+
 </pre>
 
+
+
 <h3>Files List</h3>
+
 <pre class="code-block">
+
 [
   {
     "extension": "html",
@@ -375,6 +490,14 @@ the input.</p>
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "name": "v0.4.0.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.5.0.md",
     "output_folder": null,
     "output_name": null
   },
@@ -491,20 +614,20 @@ the input.</p>
     "output_name": "ssb"
   },
   {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "scripts",
-    "name": "bitty-v0.3.0--beta-3.js",
-    "output_folder": "scripts",
-    "output_name": "bitty-v0.3.0--beta-3.js"
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.4.0",
+    "name": "ssb",
+    "output_folder": "releases/aarch64-apple-darwin/0.4.0",
+    "output_name": "ssb"
   },
   {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "scripts",
-    "name": "bitty-v0.3.0--beta-3.min.js",
-    "output_folder": "scripts",
-    "output_name": "bitty-v0.3.0--beta-3.min.js"
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.5.0",
+    "name": "ssb",
+    "output_folder": "releases/aarch64-apple-darwin/0.5.0",
+    "output_name": "ssb"
   },
   {
     "extension": "css",
@@ -531,30 +654,144 @@ the input.</p>
     "output_name": "main.css"
   }
 ]
+
 </pre>
+
+
 
 <h2>Deprecation Messages</h2>
 
+
+
 <ul>
+
   <li>highlight: [minijinja: `highlight` is deprecated. use `highlight_file`]</li>
+
   <li>markdown: [minijinja: `markdown` is deprecated. use `markdown_file` instead]</li>
+
 </ul>
+
+
+
+<h2>Running `file-prep` dir</h2>
+
+
+
+<p>If this says: output_from_test_var_1
+
+  script in the file-prep dir are running
+
+  prior to the build process running. 
+
+</p>
+
+
+
+<p>
+
+<code>output_from_test_var_1</code>
+
+</p>
+
+
+
+<p>If it says `TEST` followed
+
+  by `_VAR_`, the file-prep
+
+  dir didn't run properly
+
+</p>
+
+
+
+
+
+
+
+
+
 
 
 <h2>Release Notes</h2>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>Version 0.5.0</h3>
+<ul>
+<li>The content tree is moved</li>
+</ul>
+<p>to a <code>.build-files</code> directory</p>
+<p>and the build occurs from those</p>
+<p>files.</p>
+<ul>
+<li>Scripts inside the <code>scripts/file-prep</code></li>
+</ul>
+<p>directory are run over txt files</p>
+<p>during the move to the <code>.build-files</code></p>
+<p>directory to do things like</p>
+<p>find and replace or any other</p>
+<p>pre-processing work that needs</p>
+<p>to be done.</p>
+
+
+
+
+
 <h3>Version 0.4.0</h3>
 <p>Sept. 24, 2025</p>
 <ul>
-<li>
-<p>renamed <code>highlight</code> to <code>highlight_file</code>
-(<code>highlight</code> shows a deprecation message)</p>
-</li>
-<li>
-<p>renamed <code>markdown</code> to <code>markdown_file</code>
-(<code>markdown</code> shows a deprecation message)</p>
-</li>
+<li>renamed <code>highlight</code> to <code>highlight_file</code></li>
 </ul>
+<p>(<code>highlight</code> shows a deprecation message)</p>
+<ul>
+<li>renamed <code>markdown</code> to <code>markdown_file</code></li>
+</ul>
+<p>(<code>markdown</code> shows a deprecation message)</p>
+
+
+
+
 
 <h3>Version 0.3.0</h3>
 <p>Sept. 6, 2025</p>
@@ -563,11 +800,23 @@ the input.</p>
 <p>Ready for general personal use</p>
 </li>
 <li>
-<p>See home page for details on
-features and functionality.</p>
+<p>See home page for details on</p>
 </li>
 </ul>
+<p>features and functionality.</p>
+
+
+
+
+
+
+
+
 
     </main>
+
   </body>
+
 </html>
+
+

@@ -16,6 +16,7 @@ impl Config {
     debug: bool,
   ) -> Config {
     Config {
+      // TODO: Move directories over to methods
       content_root,
       logs_root,
       output_root,
@@ -23,8 +24,30 @@ impl Config {
     }
   }
 
+  pub fn build_files_dir(&self) -> PathBuf {
+    PathBuf::from(".build-files")
+  }
+
   pub fn json_logs(&self) -> PathBuf {
     self.logs_root.join("json")
+  }
+
+  pub fn file_prep_extensions(&self) -> Vec<String> {
+    [
+      "css", "data", "html", "js", "json", "md", "neo",
+      "neoj", "txt", "xml",
+    ]
+    .iter()
+    .map(|ext| ext.to_string())
+    .collect()
+  }
+
+  pub fn file_prep_scripts_dir(&self) -> PathBuf {
+    self.scripts_dir().join("file-prep")
+  }
+
+  pub fn scripts_dir(&self) -> PathBuf {
+    PathBuf::from("scripts")
   }
 
   pub fn txt_logs(&self) -> PathBuf {

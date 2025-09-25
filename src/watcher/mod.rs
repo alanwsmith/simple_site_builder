@@ -28,8 +28,10 @@ impl Watcher {
     let wx = Watchexec::default();
     wx.config.pathset(vec![
       self.config.content_root.display().to_string(),
+      self.config.scripts_dir().display().to_string(),
     ]);
     let tx2 = self.tx.clone();
+
     wx.config.on_action(move |mut action| {
       let paths = filter_paths(&action.events);
       if !paths.is_empty() {

@@ -1,5 +1,7 @@
+pub mod prep_build_files;
 pub mod utils;
 
+// use self::prep_build_files::*;
 use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
@@ -9,7 +11,7 @@ use minijinja::Value;
 use minijinja::context;
 use std::collections::BTreeMap;
 use std::fs;
-use std::io::Write;
+// use std::io::Write;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -38,16 +40,20 @@ impl Builder {
 
   pub fn build_site(&self) -> Result<()> {
     let _ = clearscreen::clear();
-    info!("Building site");
-    let _ = self.empty_dir();
-    let file_list = file_list(&self.config.content_root);
+    info!("Building site on port {}", &self.port);
+    empty_dir(&self.config.build_files_dir())?;
+    empty_dir(&self.config.output_root)?;
+    self.prep_build_files(
+      &self.config.content_root,
+      &self.config.build_files_dir(),
+    )?;
+    let file_list =
+      file_list(&self.config.build_files_dir());
     let _ = &self.transform_html(&file_list)?;
     let _ = &self.copy_files(&file_list)?;
     let _ = &self.copy_js(&file_list)?;
-    info!(
-      "Reloading browser for: http://localhost:{}/",
-      self.port
-    );
+    empty_dir(&self.config.build_files_dir())?;
+    info!("Reloading browser on port {}", self.port);
     let _ = &self.reloader.reload();
     Ok(())
   }
@@ -60,7 +66,7 @@ impl Builder {
       if details.file_move_type == FileMoveType::Copy {
         let input_path = &self
           .config
-          .content_root
+          .build_files_dir()
           .join(&details.folder)
           .join(&details.name);
         let output_path = &self
@@ -85,7 +91,7 @@ impl Builder {
       {
         let input_path = &self
           .config
-          .content_root
+          .build_files_dir()
           .join(&details.folder)
           .join(&details.name);
         let output_path = &self
@@ -97,12 +103,6 @@ impl Builder {
           copy_file_with_mkdir(input_path, output_path);
       }
     });
-    Ok(())
-  }
-
-  // TODO: set this up so the names aren't the same
-  pub fn empty_dir(&self) -> Result<()> {
-    let _ = empty_dir(&self.config.output_root);
     Ok(())
   }
 
@@ -125,7 +125,7 @@ impl Builder {
       .for_each(|details| {
         let content_path = self
           .config
-          .content_root
+          .build_files_dir()
           .join(&details.folder)
           .join(&details.name);
         let key_path = details.folder.join(&details.name);
@@ -162,7 +162,7 @@ impl Builder {
       .for_each(|details| {
         // let content_path = self
         //   .config
-        //   .content_root
+        //   .build_files_dir()
         //   .join(&details.folder)
         //   .join(&details.name);
         let key_path = details.folder.join(&details.name);
@@ -195,7 +195,7 @@ impl Builder {
       .for_each(|details| {
         let key = details.folder.join(&details.name);
         let input_path =
-          self.config.content_root.join(&key);
+          self.config.build_files_dir().join(&key);
         match fs::read_to_string(&input_path) {
           Ok(json) => {
             match serde_json::from_str::<Value>(&json) {
@@ -235,7 +235,7 @@ impl Builder {
   //     {
   //       let input_path = &self
   //         .config
-  //         .content_root
+  //         .build_files_root()
   //         .join(&details.folder)
   //         .join(&details.name);
   //       let file_stem = &details
@@ -299,7 +299,7 @@ impl Builder {
       .for_each(|details| {
         let content_path = self
           .config
-          .content_root
+          .build_files_dir()
           .join(&details.folder)
           .join(&details.name);
         let key_path = details.folder.join(&details.name);
@@ -343,7 +343,7 @@ impl Builder {
       .for_each(|details| {
         let content_path = self
           .config
-          .content_root
+          .build_files_dir()
           .join(&details.folder)
           .join(&details.name);
         let key_path = details.folder.join(&details.name);
@@ -377,8 +377,9 @@ impl Builder {
     &self,
     file_list: &[FileDetails],
   ) -> Result<()> {
-    let folders = folder_list(&self.config.content_root);
-    let env = get_env(&self.config.content_root);
+    let folders =
+      folder_list(&self.config.build_files_dir());
+    let env = get_env(&self.config.build_files_dir());
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
