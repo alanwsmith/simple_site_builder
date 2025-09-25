@@ -8,11 +8,12 @@ pub fn run_script(
   script: &String,
   data: &[u8],
 ) -> Result<String> {
-  let file = fs::File::open(script)?;
-  let bit_update = 0o700;
-  let mut permissions = file.metadata()?.permissions();
-  permissions.set_mode(permissions.mode() | bit_update);
-  file.set_permissions(permissions)?;
+  // let file = fs::File::open(script)?;
+  // let bit_update = 0o700;
+  // let mut permissions = file.metadata()?.permissions();
+  // permissions.set_mode(permissions.mode() | bit_update);
+  // file.set_permissions(permissions)?;
+
   let mut cmd = Command::new(script)
     .stdin(Stdio::piped())
     .stdout(Stdio::piped())

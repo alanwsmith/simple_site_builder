@@ -33,15 +33,21 @@ impl Config {
   }
 
   pub fn file_prep_extensions(&self) -> Vec<String> {
-    ["css", "data", "html", "js", "json", "md", "neo",
-      "neoj", "txt", "xml"]
+    [
+      "css", "data", "html", "js", "json", "md", "neo",
+      "neoj", "txt", "xml",
+    ]
     .iter()
     .map(|ext| ext.to_string())
     .collect()
   }
 
   pub fn file_prep_scripts_dir(&self) -> PathBuf {
-    PathBuf::from("scripts/file-prep")
+    self.scripts_dir().join("file-prep")
+  }
+
+  pub fn scripts_dir(&self) -> PathBuf {
+    PathBuf::from("scripts")
   }
 
   pub fn txt_logs(&self) -> PathBuf {
