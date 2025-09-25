@@ -41,8 +41,8 @@ impl Builder {
   pub fn build_site(&self) -> Result<()> {
     let _ = clearscreen::clear();
     info!("Building site on port {}", &self.port);
-    let _ = empty_dir(&self.config.build_files_dir())?;
-    let _ = empty_dir(&self.config.output_root)?;
+    empty_dir(&self.config.build_files_dir())?;
+    empty_dir(&self.config.output_root)?;
     self.prep_build_files(
       &self.config.content_root,
       &self.config.build_files_dir(),
@@ -52,7 +52,7 @@ impl Builder {
     let _ = &self.transform_html(&file_list)?;
     let _ = &self.copy_files(&file_list)?;
     let _ = &self.copy_js(&file_list)?;
-    let _ = empty_dir(&self.config.build_files_dir())?;
+    empty_dir(&self.config.build_files_dir())?;
     info!("Reloading browser on port {}/", self.port);
     let _ = &self.reloader.reload();
     Ok(())
