@@ -40,7 +40,7 @@ impl Builder {
 
   pub fn build_site(&self) -> Result<()> {
     let _ = clearscreen::clear();
-    info!("Building site on port {}", &self.port);
+    info!("Building site on port {}.", &self.port);
     empty_dir(&self.config.build_files_dir())?;
     empty_dir(&self.config.output_root)?;
     self.prep_build_files(
@@ -49,12 +49,27 @@ impl Builder {
     )?;
     let file_list =
       file_list(&self.config.build_files_dir());
+    info!("Transforming HTML.");
     let _ = &self.transform_html(&file_list)?;
+    info!("Copying files.");
     let _ = &self.copy_files(&file_list)?;
     let _ = &self.copy_js(&file_list)?;
     // empty_dir(&self.config.build_files_dir())?;
-    info!("Reloading browser on port {}", self.port);
+    info!(
+      r#"Build complete. Reloading browser on port {}.
+
+NOTE: No markdown or highlight includes are available
+in this build. They are being moved to explicit
+functions instead of doing everything ahead of
+time to improve performance.
+
+NOTE: Find and replace is not availabe in this
+build. It's being migrated to the support directory. 
+"#,
+      self.port
+    );
     let _ = &self.reloader.reload();
+
     Ok(())
   }
 
@@ -85,7 +100,11 @@ impl Builder {
     &self,
     file_list: &[FileDetails],
   ) -> Result<()> {
+    // TODO: Set up a minifier at some point
+    // when you get one that works (the rust one
+    // broke on import statements).
     file_list.iter().for_each(|details| {
+      // dbg!(&details);
       if details.file_move_type
         == FileMoveType::CopyAndMinifyJavaScript
       {
@@ -103,8 +122,109 @@ impl Builder {
           copy_file_with_mkdir(input_path, output_path);
       }
     });
+
+    // This was originally passing .js through MiniJinja
+    // but that's fruaght. Just use config/find-replace.txt
+    // if you need to change stuff.
+
+    let folders =
+      folder_list(&self.config.build_files_dir());
+    // TODO: Hoist get_env so you only call it
+    // once per build (e.g. not again in the copy
+    // other files stuff)
+    let env = get_env(&self.config.build_files_dir());
+    let file_list_as_value =
+      Value::from_serialize(file_list);
+    let folders_as_value = Value::from_serialize(folders);
+    // let markdown_deprecated =
+    //   self.load_markdown_deprecated(file_list);
+    // let markdown_files = self.load_markdown(file_list);
+    // let highlight_deprecated =
+    //   self.highlight_files_deprecated(file_list);
+    // let highlighted_files =
+    //   self.highlight_files(file_list);
+    let data = self.load_data(file_list);
+    file_list.iter().for_each(|details| {
+      if details.file_move_type
+        == FileMoveType::CopyAndMinifyJavaScript
+      {
+        let template_name = details
+          .folder
+          .join(&details.name)
+          .display()
+          .to_string();
+        let output_path = &self.config.output_root.join(
+          details
+            .output_folder
+            .clone()
+            .unwrap()
+            .join(details.output_name.clone().unwrap()),
+        );
+        match env.get_template(&template_name) {
+          Ok(template) => match template.render(context!(
+            data => data,
+            files => file_list_as_value,
+            folders => folders_as_value,
+            // highlight_file => highlighted_files,
+            // highlight => highlight_deprecated,
+            // markdown_file => markdown_files,
+            // markdown => markdown_deprecated,
+            file => Value::from_serialize(details),
+          )) {
+            Ok(content) => {
+              let _ = write_file_with_mkdir(
+                output_path,
+                &content,
+              );
+            }
+            Err(e) => {
+              println!("{}", e);
+              let _ = write_file_with_mkdir(
+                output_path,
+                format!(r#"// A MiniJinja error occurred /* {} */"#, e).as_str()
+              );
+            }
+          },
+          Err(e) => {
+              println!("{}", e);
+              let _ = write_file_with_mkdir(
+                output_path,
+                format!(r#"// A MiniJinja error occurred /* {} */"#, e).as_str()
+              );
+          }
+        }
+      }
+    });
+
     Ok(())
   }
+
+  // // TODO: Deprecated. Remove in favor of new
+  // // on next time you see this.
+  // pub fn copy_js(
+  //   &self,
+  //   file_list: &[FileDetails],
+  // ) -> Result<()> {
+  //   file_list.iter().for_each(|details| {
+  //     if details.file_move_type
+  //       == FileMoveType::CopyAndMinifyJavaScript
+  //     {
+  //       let input_path = &self
+  //         .config
+  //         .build_files_dir()
+  //         .join(&details.folder)
+  //         .join(&details.name);
+  //       let output_path = &self
+  //         .config
+  //         .output_root
+  //         .join(details.output_folder.as_ref().unwrap())
+  //         .join(details.output_name.as_ref().unwrap());
+  //       let _ =
+  //         copy_file_with_mkdir(input_path, output_path);
+  //     }
+  //   });
+  //   Ok(())
+  // }
 
   pub fn highlight_files(
     &self,
@@ -379,19 +499,27 @@ impl Builder {
   ) -> Result<()> {
     let folders =
       folder_list(&self.config.build_files_dir());
+    // TODO: Hoist get_env so you only call it
+    // once per build (e.g. not again in the copy
+    // javascript or other files stuff)
     let env = get_env(&self.config.build_files_dir());
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
-    let markdown_deprecated =
-      self.load_markdown_deprecated(file_list);
-    let markdown_files = self.load_markdown(file_list);
-    let highlight_deprecated =
-      self.highlight_files_deprecated(file_list);
-    let highlighted_files =
-      self.highlight_files(file_list);
+
+    // let markdown_deprecated =
+    //   self.load_markdown_deprecated(file_list);
+    // let markdown_files = self.load_markdown(file_list);
+    // let highlight_deprecated =
+    //   self.highlight_files_deprecated(file_list);
+    // info!("Highlighting files.");
+    // let highlighted_files =
+    //   self.highlight_files(file_list);
+
+    info!("Loading data.");
     let data = self.load_data(file_list);
     file_list.iter().for_each(|details| {
+      // dbg!(&details.file_move_type);
       if details.file_move_type
         == FileMoveType::TransformHtml
       {
@@ -412,10 +540,12 @@ impl Builder {
             data => data,
             files => file_list_as_value,
             folders => folders_as_value,
-            highlight_file => highlighted_files,
-            highlight => highlight_deprecated,
-            markdown_file => markdown_files,
-            markdown => markdown_deprecated,
+
+            // highlight_file => highlighted_files,
+            // highlight => highlight_deprecated,
+            // markdown_file => markdown_files,
+            // markdown => markdown_deprecated,
+
             file => Value::from_serialize(details),
           )) {
             Ok(content) => {
@@ -426,10 +556,19 @@ impl Builder {
             }
             Err(e) => {
               println!("{}", e);
+              let _ = write_file_with_mkdir(
+                output_path,
+                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{}</pre></body></html>"#, e).as_str()
+              );
             }
           },
           Err(e) => {
-            dbg!(e);
+            println!("{}", e);
+              let _ = write_file_with_mkdir(
+                output_path,
+                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{}</pre></body></html>"#, e).as_str()
+              );
+
           }
         }
       }

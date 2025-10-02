@@ -1,4 +1,4 @@
-[! extends "_includes/wrappers/main.html" !]
+[! extends "_wrappers/main.html" !]
 [! block main !]
 
 [! filter markdown|safe !]
@@ -127,6 +127,12 @@ the site.
 - [x] Log to JSON and txt files as well as the command
 line. 
 
+- [] Set up a way to do JavaScript includes
+ with a JavaScript comment so you can do them 
+inside existing JS files and still get formatters
+to work (which they don't if you do a MiniJinja
+style include)
+
 - [] Automatically make minified version of .js files
 
 - [] Quality error messages is something goes
@@ -235,12 +241,19 @@ fn main() {
 
 <h3>File Syntax Highlighting</h3>
 
+<p>TODO: Reimplement file syntax highlighting</p>
+[#
 <pre>
 [@ highlight_file["examples/data/sample.json"]|safe @]
 </pre>
+#]
 
 <h3>Markdown File Inclusion</h3>
+<p>TODO: Reimplement file markdown file transformation</p>
+
+[#
 [@ markdown_file["examples/markdown/sample.md"]|safe @]
+#]
 
 <h3>Current File</h3>
 <pre class="code-block">
@@ -257,12 +270,14 @@ fn main() {
 [@ files|tojson(true) @]
 </pre>
 
+[#
 <h2>Deprecation Messages</h2>
-
 <ul>
   <li>highlight: [@ highlight["index.html"] @]</li>
   <li>markdown: [@ markdown["examples/markdown/sample.md"] @]</li>
 </ul>
+#]
+
 
 <h2>find-replace.txt file</h2>
 
@@ -275,14 +290,24 @@ TEST_VAR_2
 </p>
 
 
+<h2>Bitty Test</h2>
 
+<button data-send="jsIncludeTest">Click Me</button>
+<div data-receive="jsIncludeTest">Waiting for click</div>
 
 <h2>Release Notes</h2>
 
+
+<p>TODO: Put Release Notes back in place when 
+  markdown file processing is re-implemented</p>
+
+[#
 [! for file in files|reverse !]
 [! if file.folder == "_release-notes" !]
 [@ markdown_file[file.folder + "/" + file.name]|safe @]
 [! endif !]
 [! endfor !]
-[! endblock !]
+#]
 
+
+[! endblock !]
