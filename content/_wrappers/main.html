@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/highlight-base16-ocean-dark.css">
+
+    <script>
+    window.bittyClasses = {
+      BittyTest: class {
+        jsIncludeTest(_event, el) {
+          el.innerHTML = "Got a click"
+        }
+      }
+    };
+    </script>
+
+  </head>
+  <body>
+
+    <bitty-v1-rc4 data-connect="BittyTest">
+      <header>
+        made by <a href="https://www.alanwsmith.com/">alan w smith</a>
+        ~
+        <a href="https://socials.alanwsmith.com/">socials</a>
+        ~
+        <a href="https://links.alanwsmith.com/">other projects</a>
+      </header>
+      <main>
+        [! block main !][! endblock !]
+
+      </main>
+      <footer>
+      </footer>
+    </bitty-v1-rc4>
+    <script src="/components/bitty-1.0.0-rc4.full.js" type="module"></script>
+  </body>
+</html>
+
+

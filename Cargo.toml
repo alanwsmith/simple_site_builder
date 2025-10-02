@@ -1,10 +1,10 @@
 [package]
 name = "simple_site_builder"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2024"
 
 [[bin]]
-name = "ssb"
+name = "ssb-0-6-x"
 
 [dependencies]
 anyhow = "1.0.99"

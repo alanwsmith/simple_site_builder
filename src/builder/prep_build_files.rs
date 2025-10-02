@@ -1,6 +1,5 @@
 use super::*;
 use anyhow::Result;
-use itertools::Itertools;
 use std::fs;
 use std::path::Path;
 use walkdir::WalkDir;
@@ -11,13 +10,18 @@ impl Builder {
     source_dir: &Path,
     dest_dir: &Path,
   ) -> Result<()> {
-    let file_prep_scripts: Vec<String> =
-      get_files_in_dir(
-        &self.config.file_prep_scripts_dir(),
-      )?
-      .iter()
-      .map(|p| p.to_string_lossy().to_string())
-      .collect();
+    // let replacements_path =
+    //   self.config.config_dir().join("find-replace.txt");
+    // let replacements_string =
+    //   fs::read_to_string(replacements_path)?;
+    // let replacements: Vec<Vec<String>> =
+    //   replacements_string
+    //     .lines()
+    //     .map(|line| {
+    //       line.split("|").map(|p| p.to_string()).collect()
+    //     })
+    //     .collect();
+
     for entry in WalkDir::new(source_dir) {
       let source_path = entry?.into_path();
       let dest_path = dest_dir.join(
@@ -33,18 +37,17 @@ impl Builder {
             .file_prep_extensions()
             .contains(&ext.to_string_lossy().to_string())
           {
-            for script in
-              file_prep_scripts.iter().sorted()
-            {
-              // TODO: Show error message if
-              // script fails.
-              let prepped_content =
-                run_script(script, &data)?;
-              std::fs::write(
-                &dest_path,
-                &prepped_content,
-              )?;
-            }
+            let output_string =
+              String::from_utf8(data.clone())?;
+
+            // for r in replacements.iter() {
+            //   if r.len() >= 2 {
+            //     output_string = output_string
+            //       .replace(r[0].trim(), r[1].trim());
+            //   }
+            // }
+
+            std::fs::write(&dest_path, &output_string)?;
           } else {
             // For files with other extensions
             std::fs::write(dest_path, &data)?;
