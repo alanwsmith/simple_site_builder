@@ -6,7 +6,6 @@ use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
 use chrono::{DateTime, Local};
-use markdown::{CompileOptions, Options};
 use minijinja::Value;
 use minijinja::context;
 use std::collections::BTreeMap;
@@ -131,13 +130,6 @@ build. It's being migrated to the support directory.
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
-    // let markdown_deprecated =
-    //   self.load_markdown_deprecated(file_list);
-    // let markdown_files = self.load_markdown(file_list);
-    // let highlight_deprecated =
-    //   self.highlight_files_deprecated(file_list);
-    // let highlighted_files =
-    //   self.highlight_files(file_list);
     let data = self.load_data(file_list);
     file_list.iter().for_each(|details| {
       if details.file_move_type
@@ -160,10 +152,6 @@ build. It's being migrated to the support directory.
             data => data,
             files => file_list_as_value,
             folders => folders_as_value,
-            // highlight_file => highlighted_files,
-            // highlight => highlight_deprecated,
-            // markdown_file => markdown_files,
-            // markdown => markdown_deprecated,
             file => Value::from_serialize(details),
           )) {
             Ok(content) => {
@@ -190,110 +178,7 @@ build. It's being migrated to the support directory.
         }
       }
     });
-
     Ok(())
-  }
-
-  // // TODO: Deprecated. Remove in favor of new
-  // // on next time you see this.
-  // pub fn copy_js(
-  //   &self,
-  //   file_list: &[FileDetails],
-  // ) -> Result<()> {
-  //   file_list.iter().for_each(|details| {
-  //     if details.file_move_type
-  //       == FileMoveType::CopyAndMinifyJavaScript
-  //     {
-  //       let input_path = &self
-  //         .config
-  //         .build_files_dir()
-  //         .join(&details.folder)
-  //         .join(&details.name);
-  //       let output_path = &self
-  //         .config
-  //         .output_root
-  //         .join(details.output_folder.as_ref().unwrap())
-  //         .join(details.output_name.as_ref().unwrap());
-  //       let _ =
-  //         copy_file_with_mkdir(input_path, output_path);
-  //     }
-  //   });
-  //   Ok(())
-  // }
-
-  pub fn highlight_files(
-    &self,
-    file_list: &[FileDetails],
-  ) -> Value {
-    let mut highlights: BTreeMap<String, String> =
-      BTreeMap::new();
-    file_list
-      .iter()
-      .filter(|details| {
-        details.extension == Some("css".to_string())
-          || details.extension == Some("html".to_string())
-          || details.extension == Some("js".to_string())
-          || details.extension == Some("json".to_string())
-          || details.extension == Some("py".to_string())
-          || details.extension == Some("rs".to_string())
-      })
-      .for_each(|details| {
-        let content_path = self
-          .config
-          .build_files_dir()
-          .join(&details.folder)
-          .join(&details.name);
-        let key_path = details.folder.join(&details.name);
-        let content =
-          fs::read_to_string(content_path).unwrap();
-        let highlighted = highlight_code(
-          &content,
-          details.extension.as_ref().unwrap().as_str(),
-        );
-        highlights.insert(
-          key_path.display().to_string(),
-          highlighted,
-        );
-      });
-    Value::from_serialize(highlights)
-  }
-
-  pub fn highlight_files_deprecated(
-    &self,
-    file_list: &[FileDetails],
-  ) -> Value {
-    let mut highlights: BTreeMap<String, String> =
-      BTreeMap::new();
-    file_list
-      .iter()
-      .filter(|details| {
-        details.extension == Some("css".to_string())
-          || details.extension == Some("html".to_string())
-          || details.extension == Some("js".to_string())
-          || details.extension == Some("json".to_string())
-          || details.extension == Some("py".to_string())
-          || details.extension == Some("rs".to_string())
-      })
-      .for_each(|details| {
-        // let content_path = self
-        //   .config
-        //   .build_files_dir()
-        //   .join(&details.folder)
-        //   .join(&details.name);
-        let key_path = details.folder.join(&details.name);
-        // let content =
-        //   fs::read_to_string(content_path).unwrap();
-        // let highlighted = highlight_code(
-        //   &content,
-        //   details.extension.as_ref().unwrap().as_str(),
-        // );
-        highlights.insert(
-          key_path.display().to_string(),
-          "[minijinja: `highlight` is deprecated. use `highlight_file`]"
-            .to_string(),
-        );
-      });
-    Value::from_serialize(highlights)
   }
 
   pub fn load_data(
@@ -335,62 +220,6 @@ build. It's being migrated to the support directory.
     Value::from_serialize(data_map)
   }
 
-  // TODO: The minify_js crate doesn't work
-  // with certain types of imports including
-  // the ones that bitty uses. So, This is
-  // off until a suitable replacement is found
-  //
-  // pub fn minify_js(
-  //   &self,
-  //   file_list: &[FileDetails],
-  // ) -> Result<()> {
-  //   file_list.iter().for_each(|details| {
-  //     if details.file_move_type
-  //       == FileMoveType::CopyAndMinifyJavaScript
-  //     {
-  //       let input_path = &self
-  //         .config
-  //         .build_files_root()
-  //         .join(&details.folder)
-  //         .join(&details.name);
-  //       let file_stem = &details
-  //         .output_name
-  //         .as_ref()
-  //         .unwrap()
-  //         .file_stem()
-  //         .unwrap();
-  //       let file_name = format!(
-  //         "{}.min.js",
-  //         file_stem.to_string_lossy()
-  //       );
-  //       let input_js =
-  //         fs::read_to_string(input_path).unwrap();
-  //       let code: &[u8] = input_js.as_bytes();
-  //       let session = Session::new();
-  //       let mut out = Vec::new();
-  //       minify(
-  //         &session,
-  //         TopLevelMode::Global,
-  //         code,
-  //         &mut out,
-  //       )
-  //       .unwrap();
-  //       dbg!(out.as_slice());
-  //       let output_path = &self
-  //         .config
-  //         .output_root
-  //         .join(details.output_folder.as_ref().unwrap())
-  //         .join(file_name);
-  //       let mut file =
-  //         fs::File::create(output_path).unwrap();
-  //       file.write_all(out.as_slice());
-  //       // let _ =
-  //       //   copy_file_with_mkdir(input_path, output_path);
-  //     }
-  //   });
-  //   Ok(())
-  // }
-
   pub async fn start(&mut self) -> Result<()> {
     info!("Starting builder");
     let _ = &self.build_site();
@@ -398,94 +227,6 @@ build. It's being migrated to the support directory.
       let _ = &self.build_site();
     }
     Ok(())
-  }
-
-  pub fn load_markdown(
-    &self,
-    file_list: &[FileDetails],
-  ) -> Value {
-    let mut markdown_map: BTreeMap<String, String> =
-      BTreeMap::new();
-    file_list
-      .iter()
-      .filter(|details| {
-        details.extension == Some("md".to_string())
-      })
-      .for_each(|details| {
-        let content_path = self
-          .config
-          .build_files_dir()
-          .join(&details.folder)
-          .join(&details.name);
-        let key_path = details.folder.join(&details.name);
-        let md_content =
-          fs::read_to_string(content_path).unwrap();
-        match markdown::to_html_with_options(
-          &md_content,
-          &Options {
-            compile: CompileOptions {
-              allow_dangerous_html: true,
-              ..CompileOptions::default()
-            },
-            ..Options::default()
-          },
-        ) {
-          Ok(parsed) => {
-            markdown_map.insert(
-              key_path.display().to_string(),
-              parsed,
-            );
-          }
-          Err(e) => {
-            dbg!(e);
-          }
-        }
-      });
-    Value::from_serialize(markdown_map)
-  }
-
-  pub fn load_markdown_deprecated(
-    &self,
-    file_list: &[FileDetails],
-  ) -> Value {
-    let mut markdown_map: BTreeMap<String, String> =
-      BTreeMap::new();
-    file_list
-      .iter()
-      .filter(|details| {
-        details.extension == Some("md".to_string())
-      })
-      .for_each(|details| {
-        let content_path = self
-          .config
-          .build_files_dir()
-          .join(&details.folder)
-          .join(&details.name);
-        let key_path = details.folder.join(&details.name);
-        let md_content =
-          fs::read_to_string(content_path).unwrap();
-        match markdown::to_html_with_options(
-          &md_content,
-          &Options {
-            compile: CompileOptions {
-              allow_dangerous_html: true,
-              ..CompileOptions::default()
-            },
-            ..Options::default()
-          },
-        ) {
-          Ok(_parsed) => {
-            markdown_map.insert(
-              key_path.display().to_string(),
-              "[minijinja: `markdown` is deprecated. use `markdown_file` instead]".to_string()
-            );
-          }
-          Err(e) => {
-            dbg!(e);
-          }
-        }
-      });
-    Value::from_serialize(markdown_map)
   }
 
   pub fn transform_html(
@@ -499,19 +240,10 @@ build. It's being migrated to the support directory.
     // javascript or other files stuff)
     let mut env = get_env(&self.config.build_files_dir());
     env.add_function("highlight_file", highlight_file);
+    env.add_function("markdown_file", markdown_file);
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
-
-    // let markdown_deprecated =
-    //   self.load_markdown_deprecated(file_list);
-    // let markdown_files = self.load_markdown(file_list);
-    // let highlight_deprecated =
-    //   self.highlight_files_deprecated(file_list);
-    // info!("Highlighting files.");
-    // let highlighted_files =
-    //   self.highlight_files(file_list);
-
     info!("Loading data.");
     let data = self.load_data(file_list);
     file_list.iter().for_each(|details| {
@@ -536,12 +268,6 @@ build. It's being migrated to the support directory.
             data => data,
             files => file_list_as_value,
             folders => folders_as_value,
-
-            // highlight_file => highlighted_files,
-            // highlight => highlight_deprecated,
-            // markdown_file => markdown_files,
-            // markdown => markdown_deprecated,
-
             file => Value::from_serialize(details),
           )) {
             Ok(content) => {
@@ -564,7 +290,6 @@ build. It's being migrated to the support directory.
                 output_path,
                 format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{}</pre></body></html>"#, e).as_str()
               );
-
           }
         }
       }

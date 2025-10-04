@@ -11,9 +11,11 @@ pub fn highlight_file(file_path: &str) -> String {
     None => "txt".to_string(),
   };
   if let Ok(code) = std::fs::read_to_string(path) {
-    let highlighted = highlight_code(&code, &lang);
-    highlighted
+    highlight_code(&code, &lang)
   } else {
-    "no output".to_string()
+    format!(
+      "Could not load file to highlight: {}",
+      file_path
+    )
   }
 }
