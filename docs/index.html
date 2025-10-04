@@ -318,22 +318,27 @@ the input.</p>
 </ul>
 
 
-
 <h2>Find and Replace from: support/find-replace/*.txt</h2>
 
 <p>
-This should say `output_from_test_var_2`
+This should say `TEST_VAR_2_WORKED`: TEST_VAR_2_WORKED
 </p>
 
-<p>
-output_from_test_var_2
-</p>
+<h2>Confirm Find and Replace works in included files</h2>
 
+<div>
+This should say `TEST_VAR_3_WORKED` in the array:
+  <pre><code>
+<span class="line-marker"></span><span class="source js"><span class="storage type js">const</span> <span class="variable other readwrite js">tmp</span> <span class="keyword operator assignment js">=</span> <span class="meta sequence js"><span class="punctuation section brackets js">[</span>
+<span class="line-marker"></span>  <span class="string quoted double js"><span class="punctuation definition string begin js">&quot;</span>This is a test to see if find/replace works<span class="punctuation definition string end js">&quot;</span></span><span class="punctuation separator comma js">,</span>
+<span class="line-marker"></span>  <span class="string quoted double js"><span class="punctuation definition string begin js">&quot;</span>TEST_VAR_3_WORKED<span class="punctuation definition string end js">&quot;</span></span><span class="punctuation separator comma js">,</span>
+<span class="line-marker"></span><span class="punctuation section brackets js">]</span></span><span class="punctuation terminator statement js">;</span></span>
+  </code></pre>
+</div>
 
 <h2>Bitty Test</h2>
 <button data-send="jsIncludeTest">Click Me</button>
 <div data-receive="jsIncludeTest">Waiting for click</div>
-
 
 <h2>Current File</h2>
 <pre class="code-block">
@@ -347,11 +352,14 @@ output_from_test_var_2
 }
 </pre>
 
-
 <h2>Folders List</h2>
 <details>
 <pre class="code-block">
 [
+  {
+    "name": "_includes",
+    "parent": ""
+  },
   {
     "name": "_release-notes",
     "parent": ""
@@ -428,7 +436,6 @@ output_from_test_var_2
 </pre>
 </details>
 
-
 <h2>File List</h2>
 <details>
 <pre class="code-block">
@@ -448,6 +455,14 @@ output_from_test_var_2
     "name": "index.html",
     "output_folder": "",
     "output_name": "index.html"
+  },
+  {
+    "extension": "js",
+    "file_move_type": "Skip",
+    "folder": "_includes",
+    "name": "test-highlight-with-find-replace.js",
+    "output_folder": null,
+    "output_name": null
   },
   {
     "extension": "md",
@@ -486,6 +501,14 @@ output_from_test_var_2
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "name": "v0.6.1.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.6.2.md",
     "output_folder": null,
     "output_name": null
   },
@@ -733,11 +756,17 @@ output_from_test_var_2
 </pre>
 </details>
 
-
 <h2>Release Notes</h2>
 
-<p>TODO: Put Release Notes back in place when 
-  markdown file processing is re-implemented</p>
+<details>
+<h3>Version 0.6.2</h3>
+<p>Oct. 4, 2025</p>
+<ul>
+<li>Set up find/replace to work
+with files that get highlighted or
+processed by markdown by doing the
+prep in the <code>.build-files</code> dir</li>
+</ul>
 
 <h3>Version 0.6.1</h3>
 <p>Oct. 4, 2025</p>
@@ -848,8 +877,7 @@ features and functionality.</p>
 </li>
 </ul>
 
-
-
+</details>
 
 
       </main>

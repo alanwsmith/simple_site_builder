@@ -253,28 +253,29 @@ fn main() {
 <h2>Markdown File Inclusion</h2>
 [@ markdown_file("examples/markdown/sample.md")|safe @]
 
-
 <h2>Find and Replace from: support/find-replace/*.txt</h2>
 
 <p>
-This should say `output_from_test_var_2`
+This should say `TEST_VAR_2_WORKED`: TEST_VAR_2_DID_NOT_WORK
 </p>
 
-<p>
-TEST_VAR_2
-</p>
+<h2>Confirm Find and Replace works in included files</h2>
 
+<div>
+This should say `TEST_VAR_3_WORKED` in the array:
+  <pre><code>
+[@ highlight_file("_includes/test-highlight-with-find-replace.js")|safe @]
+  </code></pre>
+</div>
 
 <h2>Bitty Test</h2>
 <button data-send="jsIncludeTest">Click Me</button>
 <div data-receive="jsIncludeTest">Waiting for click</div>
 
-
 <h2>Current File</h2>
 <pre class="code-block">
 [@ file|tojson(true) @]
 </pre>
-
 
 <h2>Folders List</h2>
 <details>
@@ -283,7 +284,6 @@ TEST_VAR_2
 </pre>
 </details>
 
-
 <h2>File List</h2>
 <details>
 <pre class="code-block">
@@ -291,18 +291,14 @@ TEST_VAR_2
 </pre>
 </details>
 
-
 <h2>Release Notes</h2>
 
-<p>TODO: Put Release Notes back in place when 
-  markdown file processing is re-implemented</p>
-
+<details>
 [! for file in files|reverse !]
 [! if file.folder == "_release-notes" !]
 [@ markdown_file(file.folder + "/" + file.name)|safe @]
 [! endif !]
 [! endfor !]
-
-
+</details>
 
 [! endblock !]
