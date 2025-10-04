@@ -340,6 +340,7 @@ This should say `TEST_VAR_3_WORKED` in the array:
 <button data-send="jsIncludeTest">Click Me</button>
 <div data-receive="jsIncludeTest">Waiting for click</div>
 
+
 <h2>Current File</h2>
 <pre class="code-block">
 {
@@ -433,6 +434,10 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "parent": "releases/aarch64-apple-darwin"
   },
   {
+    "name": "0.6.3",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
     "name": "p5",
     "parent": "scripts"
   }
@@ -513,6 +518,14 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "name": "v0.6.2.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.6.3.md",
     "output_folder": null,
     "output_name": null
   },
@@ -701,6 +714,14 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "output_name": "ssb-0-6-x"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.6.3",
+    "name": "ssb-0-6-x",
+    "output_folder": "releases/aarch64-apple-darwin/0.6.3",
+    "output_name": "ssb-0-6-x"
+  },
+  {
     "extension": "js",
     "file_move_type": "CopyAndMinifyJavaScript",
     "folder": "scripts/p5",
@@ -771,6 +792,22 @@ This should say `TEST_VAR_3_WORKED` in the array:
 <h2>Release Notes</h2>
 
 <details>
+<h3>Version 0.6.3</h3>
+<p>Oct. 4. 2025</p>
+<ul>
+<li>
+<p>Removed deprecated message about find
+and replace not being included (it was
+added back in 0.6.2)</p>
+</li>
+<li>
+<p>Removed deprecated JavaScript highlighting
+for all .js files (highlighting is
+done on a per file/pre request basis
+from the templates)</p>
+</li>
+</ul>
+
 <h3>Version 0.6.2</h3>
 <p>Oct. 4, 2025</p>
 <ul>

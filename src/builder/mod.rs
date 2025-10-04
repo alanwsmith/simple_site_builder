@@ -1,7 +1,6 @@
 pub mod prep_build_files;
 pub mod utils;
 
-// use self::prep_build_files::*;
 use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
@@ -10,7 +9,6 @@ use minijinja::Value;
 use minijinja::context;
 use std::collections::BTreeMap;
 use std::fs;
-// use std::io::Write;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -52,14 +50,14 @@ impl Builder {
     let _ = &self.transform_html(&file_list)?;
     info!("Copying files.");
     let _ = &self.copy_files(&file_list)?;
+    info!("Copying JavaScript Files.");
     let _ = &self.copy_js(&file_list)?;
+    // NOTE: Keeping the .build-files directory
+    // around for now to help with debugging
+    // the builder.
     // empty_dir(&self.config.build_files_dir())?;
     info!(
-      r#"Build complete. Reloading browser on port {}.
-
-NOTE: Find and replace is not availabe in this
-build. It's being migrated to the support directory. 
-"#,
+      r#"Build complete. Reloading browser on port {}."#,
       self.port
     );
     let _ = &self.reloader.reload();
@@ -98,7 +96,6 @@ build. It's being migrated to the support directory.
     // when you get one that works (the rust one
     // broke on import statements).
     file_list.iter().for_each(|details| {
-      // dbg!(&details);
       if details.file_move_type
         == FileMoveType::CopyAndMinifyJavaScript
       {
@@ -114,68 +111,6 @@ build. It's being migrated to the support directory.
           .join(details.output_name.as_ref().unwrap());
         let _ =
           copy_file_with_mkdir(input_path, output_path);
-      }
-    });
-
-    // This was originally passing .js through MiniJinja
-    // but that's fruaght. Just use config/find-replace.txt
-    // if you need to change stuff.
-
-    let folders =
-      folder_list(&self.config.build_files_dir());
-    // TODO: Hoist get_env so you only call it
-    // once per build (e.g. not again in the copy
-    // other files stuff)
-    let env = get_env(&self.config.build_files_dir());
-    let file_list_as_value =
-      Value::from_serialize(file_list);
-    let folders_as_value = Value::from_serialize(folders);
-    let data = self.load_data(file_list);
-    file_list.iter().for_each(|details| {
-      if details.file_move_type
-        == FileMoveType::CopyAndMinifyJavaScript
-      {
-        let template_name = details
-          .folder
-          .join(&details.name)
-          .display()
-          .to_string();
-        let output_path = &self.config.output_root.join(
-          details
-            .output_folder
-            .clone()
-            .unwrap()
-            .join(details.output_name.clone().unwrap()),
-        );
-        match env.get_template(&template_name) {
-          Ok(template) => match template.render(context!(
-            data => data,
-            files => file_list_as_value,
-            folders => folders_as_value,
-            file => Value::from_serialize(details),
-          )) {
-            Ok(content) => {
-              let _ = write_file_with_mkdir(
-                output_path,
-                &content,
-              );
-            }
-            Err(e) => {
-              println!("{}", e);
-              let _ = write_file_with_mkdir(
-                output_path,
-                format!(r#"// A MiniJinja error occurred /* {} */"#, e).as_str()
-              );
-            }
-          },
-          Err(e) => {
-              println!("{}", e);
-              let _ = write_file_with_mkdir(
-                output_path,
-                format!(r#"// A MiniJinja error occurred /* {} */"#, e).as_str()
-              );
-          }
-        }
       }
     });
     Ok(())
