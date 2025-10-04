@@ -30,7 +30,9 @@ impl Config {
 
   // Which file extensions have find and replace
   // run over them.
-  pub fn file_prep_extensions(&self) -> Vec<String> {
+  pub fn find_and_replce_file_extensions(
+    &self
+  ) -> Vec<String> {
     [
       "css", "data", "html", "js", "json", "md", "neo",
       "neoj", "txt", "xml",
@@ -38,6 +40,10 @@ impl Config {
     .iter()
     .map(|ext| ext.to_string())
     .collect()
+  }
+
+  pub fn find_and_replace_dir(&self) -> PathBuf {
+    self.support_dir().join("find-replace")
   }
 
   pub fn json_logs(&self) -> PathBuf {

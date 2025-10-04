@@ -1309,7 +1309,7 @@ dependencies = [
 
 [[package]]
 name = "simple_site_builder"
-version = "0.6.0"
+version = "0.6.2"
 dependencies = [
  "anyhow",
  "axum",

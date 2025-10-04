@@ -16,6 +16,7 @@
     };
     </script>
 
+
   </head>
   <body>
 
@@ -28,6 +29,7 @@
         <a href="https://links.alanwsmith.com/">other projects</a>
       </header>
       <main>
+
 
 <h1>Simple Site Builder</h1>
 <h2>Overview</h2>
@@ -131,11 +133,11 @@ that start with an &quot;_&quot; don't
 get published directly).</p>
 </li>
 <li>
-<p>[x] Apply syntax highlighting to
+<p>[x] Provide syntax highlighting to
 full files.</p>
 </li>
 <li>
-<p>[x] Apply syntax highlighting to
+<p>[x] Provide syntax highlighting to
 individual code snippets.</p>
 </li>
 <li>
@@ -144,7 +146,7 @@ via a filter.</p>
 </li>
 <li>
 <p>[x] Markdown files can be included
-in other files</p>
+in other files.</p>
 </li>
 <li>
 <p>[x] Provide file listings (e.g. for
@@ -176,6 +178,10 @@ the site.</p>
 line.</p>
 </li>
 <li>
+<p>[x] Provide a pre-build find/replace to change
+out basic string matches.</p>
+</li>
+<li>
 <p>[] Set up a way to do JavaScript includes
 with a JavaScript comment so you can do them
 inside existing JS files and still get formatters
@@ -183,15 +189,15 @@ to work (which they don't if you do a MiniJinja
 style include)</p>
 </li>
 <li>
+<p>[] Automatically load .json files to use as
+data across templates.</p>
+</li>
+<li>
 <p>[] Automatically make minified version of .js files</p>
 </li>
 <li>
 <p>[] Quality error messages is something goes
 wrong.</p>
-</li>
-<li>
-<p>[] Automatically load .json files to use as
-data across templates.</p>
 </li>
 <li>
 <p>[] Call images by file name stem (i.e. without extension)
@@ -240,7 +246,7 @@ example files if run in an empty directory.</p>
 Check out the source code to see
 the input.</p>
 
-<h3>Automatically Loaded Data</h3>
+<h2>Automatically Loaded Data</h2>
 
 <pre>
 {
@@ -261,7 +267,7 @@ the input.</p>
 }
 </pre>
 
-<h3>Inline Syntax Highlighting</h3>
+<h2>Inline Syntax Highlighting</h2>
 
 <div>CSS</div>
 <pre><span class="line-marker"></span><span class="source css"><span class="meta selector css"><span class="entity other attribute-name class css"><span class="punctuation definition entity css">.</span>highlighted-css</span> </span><span class="meta property-list css"><span class="punctuation section property-list css">{</span>
@@ -291,15 +297,50 @@ the input.</p>
   updating the source code.
 </p>
 
-<h3>File Syntax Highlighting</h3>
 
-<p>TODO: Reimplement file syntax highlighting</p>
+<h2>File Syntax Highlighting</h2>
+<pre><code>
+<span class="line-marker"></span><span class="source json"><span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span>
+<span class="line-marker"></span>  <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>dataset<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span>
+<span class="line-marker"></span>    <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>alfa<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>the quick brown fox<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator dictionary pair json">,</span></span>
+<span class="line-marker"></span>    <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>bravo<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="meta structure array json"><span class="punctuation section array begin json">[</span><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>the<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>quick<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>brown<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation separator array json">,</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>fox<span class="punctuation definition string end json">&quot;</span></span><span class="punctuation section array end json">]</span></span>
+<span class="line-marker"></span>  </span><span class="punctuation section dictionary end json">}</span></span>
+<span class="line-marker"></span></span><span class="punctuation section dictionary end json">}</span></span></span>
+</code></pre>
 
-<h3>Markdown File Inclusion</h3>
-<p>TODO: Reimplement file markdown file transformation</p>
+
+<h2>Markdown File Inclusion</h2>
+<p>This is a sample markdown file</p>
+<ul>
+<li>List item</li>
+<li>Another with <strong>strong text</strong></li>
+<li>etc...</li>
+</ul>
 
 
-<h3>Current File</h3>
+<h2>Find and Replace from: support/find-replace/*.txt</h2>
+
+<p>
+This should say `TEST_VAR_2_WORKED`: TEST_VAR_2_WORKED
+</p>
+
+<h2>Confirm Find and Replace works in included files</h2>
+
+<div>
+This should say `TEST_VAR_3_WORKED` in the array:
+  <pre><code>
+<span class="line-marker"></span><span class="source js"><span class="storage type js">const</span> <span class="variable other readwrite js">tmp</span> <span class="keyword operator assignment js">=</span> <span class="meta sequence js"><span class="punctuation section brackets js">[</span>
+<span class="line-marker"></span>  <span class="string quoted double js"><span class="punctuation definition string begin js">&quot;</span>This is a test to see if find/replace works<span class="punctuation definition string end js">&quot;</span></span><span class="punctuation separator comma js">,</span>
+<span class="line-marker"></span>  <span class="string quoted double js"><span class="punctuation definition string begin js">&quot;</span>TEST_VAR_3_WORKED<span class="punctuation definition string end js">&quot;</span></span><span class="punctuation separator comma js">,</span>
+<span class="line-marker"></span><span class="punctuation section brackets js">]</span></span><span class="punctuation terminator statement js">;</span></span>
+  </code></pre>
+</div>
+
+<h2>Bitty Test</h2>
+<button data-send="jsIncludeTest">Click Me</button>
+<div data-receive="jsIncludeTest">Waiting for click</div>
+
+<h2>Current File</h2>
 <pre class="code-block">
 {
   "extension": "html",
@@ -311,9 +352,14 @@ the input.</p>
 }
 </pre>
 
-<h3>Folders List</h3>
+<h2>Folders List</h2>
+<details>
 <pre class="code-block">
 [
+  {
+    "name": "_includes",
+    "parent": ""
+  },
   {
     "name": "_release-notes",
     "parent": ""
@@ -375,13 +421,23 @@ the input.</p>
     "parent": "releases/aarch64-apple-darwin"
   },
   {
+    "name": "0.6.0",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "name": "0.6.1",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
     "name": "p5",
     "parent": "scripts"
   }
 ]
 </pre>
+</details>
 
-<h3>Files List</h3>
+<h2>File List</h2>
+<details>
 <pre class="code-block">
 [
   {
@@ -399,6 +455,14 @@ the input.</p>
     "name": "index.html",
     "output_folder": "",
     "output_name": "index.html"
+  },
+  {
+    "extension": "js",
+    "file_move_type": "Skip",
+    "folder": "_includes",
+    "name": "test-highlight-with-find-replace.js",
+    "output_folder": null,
+    "output_name": null
   },
   {
     "extension": "md",
@@ -429,6 +493,22 @@ the input.</p>
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "name": "v0.6.0.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.6.1.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.6.2.md",
     "output_folder": null,
     "output_name": null
   },
@@ -593,6 +673,22 @@ the input.</p>
     "output_name": "ssb"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.6.0",
+    "name": "ssb-0-6-x",
+    "output_folder": "releases/aarch64-apple-darwin/0.6.0",
+    "output_name": "ssb-0-6-x"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.6.1",
+    "name": "ssb-0-6-x",
+    "output_folder": "releases/aarch64-apple-darwin/0.6.1",
+    "output_name": "ssb-0-6-x"
+  },
+  {
     "extension": "js",
     "file_move_type": "CopyAndMinifyJavaScript",
     "folder": "scripts/p5",
@@ -658,32 +754,130 @@ the input.</p>
   }
 ]
 </pre>
-
-
-
-<h2>find-replace.txt file</h2>
-
-<p>
-This should say `output_from_test_var_2`
-</p>
-
-<p>
-TEST_VAR_2
-</p>
-
-
-<h2>Bitty Test</h2>
-
-<button data-send="jsIncludeTest">Click Me</button>
-<div data-receive="jsIncludeTest">Waiting for click</div>
+</details>
 
 <h2>Release Notes</h2>
 
+<details>
+<h3>Version 0.6.2</h3>
+<p>Oct. 4, 2025</p>
+<ul>
+<li>Set up find/replace to work
+with files that get highlighted or
+processed by markdown by doing the
+prep in the <code>.build-files</code> dir</li>
+</ul>
 
-<p>TODO: Put Release Notes back in place when 
-  markdown file processing is re-implemented</p>
+<h3>Version 0.6.1</h3>
+<p>Oct. 4, 2025</p>
+<ul>
+<li>
+<p>Added highlight_file(&quot;file_path&quot;) function to
+replace original highlight_file[&quot;file_path&quot;]</p>
+</li>
+<li>
+<p>Added markdown_file(&quot;file_path&quot;) function to replace
+original markdown_file[&quot;file_path&quot;]</p>
+</li>
+<li>
+<p>Moved <code>config/find-replace.txt</code> to <code>support/find-replace/*.txt</code>
+directory that supports multiple text files.</p>
+</li>
+</ul>
 
+<h3>Version 0.6.0</h3>
+<ul>
+<li>
+<p>Added basic MiniJinja errors if
+something freaks out.</p>
+</li>
+<li>
+<p>Starting to include the version numbers
+in the binary output for now so that
+older versions can hang around and be
+used on sites that are built with them
+and not have to worry about making
+breaking changes.</p>
+<p>Names are like <code>ssb-0.6.x</code> so that
+that non-breaking patches can
+be applied without changing the
+base number (for now, the second number
+(e.g. <code>.6</code> is the major version that
+changes when breaking changes occur.
+Eventually it'll move to full semantic
+numbering with Major/Minor/Patch, but
+things need to stabilize more before
+a <code>1.0.0</code> is set)</p>
+</li>
+<li>
+<p>Looked at Updating so that <code>.js</code> files are
+treated as templates (e.g. can do include stuff
+from minijinja), but took it back out
+as it's to possible that the <code>.js</code> will
+have something that fights with MiniJinja.</p>
+</li>
+<li>
+<p>Removed <code>scripts/file-prep</code> that ran
+against every file as a pre-processor.
+It bogged down on a moderately sized
+site. Might add it back in at some
+point since the issue is really the
+speed of the script/process that's
+being called out to.</p>
+</li>
+<li>
+<p>Renamed <code>scripts</code> dir to <code>support</code>
+which will contain scripts as well
+as plugins, find replace files, and
+data files.</p>
+</li>
+</ul>
 
+<h3>Version 0.5.0</h3>
+<ul>
+<li>
+<p>The content tree is moved
+to a <code>.build-files</code> directory
+and the build occurs from those
+files.</p>
+</li>
+<li>
+<p>Scripts inside the <code>scripts/file-prep</code>
+directory are run over txt files
+during the move to the <code>.build-files</code>
+directory to do things like
+find and replace or any other
+pre-processing work that needs
+to be done.</p>
+</li>
+</ul>
+
+<h3>Version 0.4.0</h3>
+<p>Sept. 24, 2025</p>
+<ul>
+<li>
+<p>renamed <code>highlight</code> to <code>highlight_file</code>
+(<code>highlight</code> shows a deprecation message)</p>
+</li>
+<li>
+<p>renamed <code>markdown</code> to <code>markdown_file</code>
+(<code>markdown</code> shows a deprecation message)</p>
+</li>
+</ul>
+
+<h3>Version 0.3.0</h3>
+<p>Sept. 6, 2025</p>
+<ul>
+<li>
+<p>Ready for general personal use</p>
+</li>
+<li>
+<p>See home page for details on
+features and functionality.</p>
+</li>
+</ul>
+
+</details>
 
 
       </main>
