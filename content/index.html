@@ -1,16 +1,6 @@
 [! extends "_wrappers/main.html" !]
 [! block main !]
 
-<h2>START TESTING</h2>
-
-<pre><code>
-[@- highlight_file("examples/data/sample.json")|safe -@]
-</code></pre>
-
-<hr />
-[@ markdown_file("test-files/README.md")|safe @]
-
-<h2>END TESTING</h2>
 
 [! filter markdown|safe !]
 # Simple Site Builder 
@@ -103,17 +93,17 @@ by naming convention (i.e. things
 that start with an "_" don't
 get published directly).
 
-- [x] Apply syntax highlighting to 
+- [x] Provide syntax highlighting to 
 full files. 
 
-- [x] Apply syntax highlighting to
+- [x] Provide syntax highlighting to
 individual code snippets. 
 
 - [x] Markdown can be used inside files
 via a filter. 
 
 - [x] Markdown files can be included
-in other files
+in other files.
 
 - [x] Provide file listings (e.g. for 
 providing links)
@@ -138,19 +128,22 @@ the site.
 - [x] Log to JSON and txt files as well as the command
 line. 
 
+- [x] Provide a pre-build find/replace to change
+out basic string matches. 
+
 - [] Set up a way to do JavaScript includes
  with a JavaScript comment so you can do them 
 inside existing JS files and still get formatters
 to work (which they don't if you do a MiniJinja
 style include)
 
+- [] Automatically load .json files to use as
+data across templates. 
+
 - [] Automatically make minified version of .js files
 
 - [] Quality error messages is something goes
 wrong. 
-
-- [] Automatically load .json files to use as
-data across templates. 
 
 - [] Call images by file name stem (i.e. without extension) 
 regardless of where they are in the directory tree. 
@@ -190,13 +183,13 @@ Check out the source code to see
 the input. 
 [! endfilter !]
 
-<h3>Automatically Loaded Data</h3>
+<h2>Automatically Loaded Data</h2>
 
 <pre>
 [@ data|tojson(true) @]
 </pre>
 
-<h3>Inline Syntax Highlighting</h3>
+<h2>Inline Syntax Highlighting</h2>
 
 <div>CSS</div>
 <pre>
@@ -250,45 +243,18 @@ fn main() {
   updating the source code.
 </p>
 
-<h3>File Syntax Highlighting</h3>
 
-<p>TODO: Reimplement file syntax highlighting</p>
-<pre>
-[@ highlight_file("examples/data/sample.json") @]
-</pre>
-
-<h3>Markdown File Inclusion</h3>
-<p>TODO: Reimplement file markdown file transformation</p>
-
-[#
-[@ markdown_file["examples/markdown/sample.md"]|safe @]
-#]
-
-<h3>Current File</h3>
-<pre class="code-block">
-[@ file|tojson(true) @]
-</pre>
-
-<h3>Folders List</h3>
-<pre class="code-block">
-[@ folders|tojson(true) @]
-</pre>
-
-<h3>Files List</h3>
-<pre class="code-block">
-[@ files|tojson(true) @]
-</pre>
-
-[#
-<h2>Deprecation Messages</h2>
-<ul>
-  <li>highlight: [@ highlight["index.html"] @]</li>
-  <li>markdown: [@ markdown["examples/markdown/sample.md"] @]</li>
-</ul>
-#]
+<h2>File Syntax Highlighting</h2>
+<pre><code>
+[@ highlight_file("examples/data/sample.json")|safe @]
+</code></pre>
 
 
-<h2>find-replace.txt file</h2>
+<h2>Markdown File Inclusion</h2>
+[@ markdown_file("examples/markdown/sample.md")|safe @]
+
+
+<h2>Find and Replace from: support/find-replace/*.txt</h2>
 
 <p>
 This should say `output_from_test_var_2`
@@ -299,28 +265,43 @@ TEST_VAR_2
 </p>
 
 
-
-
-
-
 <h2>Bitty Test</h2>
-
 <button data-send="jsIncludeTest">Click Me</button>
 <div data-receive="jsIncludeTest">Waiting for click</div>
 
-<h2>Release Notes</h2>
 
+<h2>Current File</h2>
+<pre class="code-block">
+[@ file|tojson(true) @]
+</pre>
+
+
+<h2>Folders List</h2>
+<details>
+<pre class="code-block">
+[@ folders|tojson(true) @]
+</pre>
+</details>
+
+
+<h2>File List</h2>
+<details>
+<pre class="code-block">
+[@ files|tojson(true) @]
+</pre>
+</details>
+
+
+<h2>Release Notes</h2>
 
 <p>TODO: Put Release Notes back in place when 
   markdown file processing is re-implemented</p>
 
-[#
 [! for file in files|reverse !]
 [! if file.folder == "_release-notes" !]
-[@ markdown_file[file.folder + "/" + file.name]|safe @]
+[@ markdown_file(file.folder + "/" + file.name)|safe @]
 [! endif !]
 [! endfor !]
-#]
 
 
 

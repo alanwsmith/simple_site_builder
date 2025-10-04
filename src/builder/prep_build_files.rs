@@ -1,7 +1,7 @@
 use super::*;
 use anyhow::Result;
-use std::fs;
 use std::path::Path;
+use std::{fs, vec};
 use walkdir::WalkDir;
 
 impl Builder {
@@ -10,18 +10,24 @@ impl Builder {
     source_dir: &Path,
     dest_dir: &Path,
   ) -> Result<()> {
-    // let replacements_path =
-    //   self.config.config_dir().join("find-replace.txt");
-    // let replacements_string =
-    //   fs::read_to_string(replacements_path)?;
-    // let replacements: Vec<Vec<String>> =
-    //   replacements_string
-    //     .lines()
-    //     .map(|line| {
-    //       line.split("|").map(|p| p.to_string()).collect()
-    //     })
-    //     .collect();
-
+    let mut replacements: Vec<Vec<String>> = vec![];
+    for file in get_files_with_extension(
+      &self.config.find_and_replace_dir(),
+      "txt",
+    )
+    .iter()
+    {
+      fs::read_to_string(file)?.lines().for_each(
+        |line| {
+          replacements.push(
+            line
+              .split("|")
+              .map(|part| part.to_string())
+              .collect(),
+          )
+        },
+      );
+    }
     for entry in WalkDir::new(source_dir) {
       let source_path = entry?.into_path();
       let dest_path = dest_dir.join(
@@ -34,19 +40,17 @@ impl Builder {
         if let Some(ext) = &source_path.extension() {
           if self
             .config
-            .file_prep_extensions()
+            .find_and_replce_file_extensions()
             .contains(&ext.to_string_lossy().to_string())
           {
-            let output_string =
+            let mut output_string =
               String::from_utf8(data.clone())?;
-
-            // for r in replacements.iter() {
-            //   if r.len() >= 2 {
-            //     output_string = output_string
-            //       .replace(r[0].trim(), r[1].trim());
-            //   }
-            // }
-
+            for r in replacements.iter() {
+              if r.len() >= 2 {
+                output_string = output_string
+                  .replace(r[0].trim(), r[1].trim());
+              }
+            }
             std::fs::write(&dest_path, &output_string)?;
           } else {
             // For files with other extensions
