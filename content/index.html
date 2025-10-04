@@ -1,6 +1,14 @@
 [! extends "_wrappers/main.html" !]
 [! block main !]
 
+<h2>START TESTING</h2>
+
+<pre><code>
+[@- highlight_file("examples/data/sample.json")|safe -@]
+</code></pre>
+
+<h2>END TESTING</h2>
+
 [! filter markdown|safe !]
 # Simple Site Builder 
 
@@ -242,11 +250,9 @@ fn main() {
 <h3>File Syntax Highlighting</h3>
 
 <p>TODO: Reimplement file syntax highlighting</p>
-[#
 <pre>
-[@ highlight_file["examples/data/sample.json"]|safe @]
+[@ highlight_file("examples/data/sample.json") @]
 </pre>
-#]
 
 <h3>Markdown File Inclusion</h3>
 <p>TODO: Reimplement file markdown file transformation</p>
@@ -290,6 +296,10 @@ TEST_VAR_2
 </p>
 
 
+
+
+
+
 <h2>Bitty Test</h2>
 
 <button data-send="jsIncludeTest">Click Me</button>
@@ -308,6 +318,7 @@ TEST_VAR_2
 [! endif !]
 [! endfor !]
 #]
+
 
 
 [! endblock !]

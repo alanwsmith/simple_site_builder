@@ -58,11 +58,6 @@ impl Builder {
     info!(
       r#"Build complete. Reloading browser on port {}.
 
-NOTE: No markdown or highlight includes are available
-in this build. They are being moved to explicit
-functions instead of doing everything ahead of
-time to improve performance.
-
 NOTE: Find and replace is not availabe in this
 build. It's being migrated to the support directory. 
 "#,
@@ -502,7 +497,8 @@ build. It's being migrated to the support directory.
     // TODO: Hoist get_env so you only call it
     // once per build (e.g. not again in the copy
     // javascript or other files stuff)
-    let env = get_env(&self.config.build_files_dir());
+    let mut env = get_env(&self.config.build_files_dir());
+    env.add_function("highlight_file", highlight_file);
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
