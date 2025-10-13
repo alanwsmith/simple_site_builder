@@ -1,5 +1,6 @@
 use super::highlight_code;
 use markdown::{CompileOptions, Options};
+use minijinja::AutoEscape;
 use minijinja::Environment;
 use minijinja::path_loader;
 use minijinja::syntax::SyntaxConfig;
@@ -22,6 +23,16 @@ pub fn get_env(
   env.set_loader(path_loader(
     content_dir.display().to_string(),
   ));
+  env.set_auto_escape_callback(|name| {
+    if matches!(
+      name.rsplit('.').next().unwrap_or(""),
+      "html" | "htm"
+    ) {
+      AutoEscape::Html
+    } else {
+      AutoEscape::None
+    }
+  });
   env.add_filter("highlight_css", highlight_css);
   env.add_filter("highlight_html", highlight_html);
   env.add_filter(
