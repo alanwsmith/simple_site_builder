@@ -45,6 +45,9 @@ if you want to check it out or tinker with it.</p>
 <h2>TODO/Goals:</h2>
 <ul>
 <li>
+<p>[] Add automated tests</p>
+</li>
+<li>
 <p>[x] Single binary that can be run
 downloaded and run from the command
 line with no other dependencies.</p>
@@ -207,9 +210,6 @@ cache them if you do? The process bogs
 down on things like p5.min.js.</p>
 </li>
 <li>
-<p>[] Add tests</p>
-</li>
-<li>
 <p>[] Set up the builder to restart itself if
 it crashes.</p>
 </li>
@@ -268,40 +268,42 @@ set up find and replace strings to do in
 files.</p>
 </li>
 </ul>
-<h2>Download and Usage</h2>
-<p>I'm only building the app binary
-for M-series macs since that's what I use.
-TBD about other platforms in the future.</p>
-<ul>
-<li>Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb">
-releases/aarch64-apple-darwin/0.4.0/ssb</li>
-</ul>
-</a>
+<h2>Release Build Process</h2>
 <ul>
 <li>
-<p>Either put it on your Path. Or, put
-it inside the directory you want to
-use for your site.</p>
+<p>First off, don't use <code>cargo install --path .</code>
+Build a release file and drop it on your path
+next to the prior versions. Process for
+that is as follows:</p>
 </li>
 <li>
-<p>Create a &quot;<code>content</code>&quot; folder in the directory.
-with an &quot;<code>index.html</code>&quot; file in it.</p>
+<p>Get the prior version number by looking in
+the releases dir.</p>
 </li>
 <li>
-<p>Run <code>ssb</code> on the command line. The contents
-of the &quot;<code>content</code>&quot; folder will be transformed/copied
-into a &quot;<code>docs</code>&quot; folder next to it with
-the constructed site.</p>
+<p>Bump the version number in the Cargo.toml file
+(Everything starts with <code>0</code> right now. The
+second number is the &quot;Major&quot; version slot which
+indicates breaking changes. The third number
+is for both Minor and Patch bumps. Once a
+1.0.0 is release it'll move to regular
+semantic versioning.)</p>
 </li>
-</ul>
-<p>Your browser should automatically open a
-preview of the site. (If not look for the
-&quot;http://localhost:####/&quot; address in the
-output on the command line and open it)</p>
-<ul>
 <li>
-<p>Add the content to your &quot;content&quot; folder
-that you want to see on your site.</p>
+<p>If it's a breaking change, bump the version
+number of the <code>src/bin/ssb-x-x-x.rs</code> file.</p>
+</li>
+<li>
+<p>Run the <code>build-release</code> script.</p>
+</li>
+<li>
+<p>Copy the built artifact onto your path.
+(I'm currently using <code>~/binaries</code> which
+I've added to my zsh config file.</p>
+</li>
+<li>
+<p>Make a commit on the <code>main</code> git branch
+that includes the release binary file.</p>
 </li>
 </ul>
 <h2>Examples</h2>

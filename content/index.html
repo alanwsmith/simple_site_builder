@@ -20,6 +20,8 @@ if you want to check it out or tinker with it.
 
 ## TODO/Goals:
 
+- [] Add automated tests
+
 - [x] Single binary that can be run
 downloaded and run from the command 
 line with no other dependencies.
@@ -145,7 +147,6 @@ from being processed as templates.
 cache them if you do? The process bogs
 down on things like p5.min.js. 
 
-- [] Add tests
 
 - [] Set up the builder to restart itself if
 it crashes.
@@ -194,36 +195,36 @@ to avoid collisions)
 set up find and replace strings to do in
 files. 
 
+## Release Build Process
 
-## Download and Usage
+- First off, don't use `cargo install --path .`
+Build a release file and drop it on your path
+next to the prior versions. Process for
+that is as follows:
 
-I'm only building the app binary 
-for M-series macs since that's what I use. 
-TBD about other platforms in the future. 
+- Get the prior version number by looking in
+the releases dir. 
 
-- Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb">
-releases/aarch64-apple-darwin/0.4.0/ssb
-</a>
+- Bump the version number in the Cargo.toml file
+(Everything starts with `0` right now. The
+second number is the "Major" version slot which
+indicates breaking changes. The third number
+is for both Minor and Patch bumps. Once a 
+1.0.0 is release it'll move to regular
+semantic versioning.)
 
-- Either put it on your Path. Or, put
-it inside the directory you want to
-use for your site. 
+- If it's a breaking change, bump the version
+number of the `src/bin/ssb-x-x-x.rs` file.
 
-- Create a "`content`" folder in the directory. 
-with an "`index.html`" file in it. 
+- Run the `build-release` script. 
 
-- Run `ssb` on the command line. The contents
-of the "`content`" folder will be transformed/copied
-into a "`docs`" folder next to it with
-the constructed site.
+- Copy the built artifact onto your path. 
+(I'm currently using `~/binaries` which 
+I've added to my zsh config file. 
 
-Your browser should automatically open a 
-preview of the site. (If not look for the
-"http://localhost:####/" address in the
-output on the command line and open it)
+- Make a commit on the `main` git branch
+that includes the release binary file. 
 
-- Add the content to your "content" folder
-that you want to see on your site. 
 
 
 
