@@ -1,7 +1,6 @@
 [! extends "_wrappers/main.html" !]
 [! block main !]
 
-
 [! filter markdown|safe !]
 # Simple Site Builder 
 
@@ -12,63 +11,16 @@ static site builder for my personal sites.
 It uses HTML, CSS, Vanilla JavaScript, 
 Web Components, and JavaScript Libraries
 without requiring an underlying framework. 
-
 It's specifically designed to compliment
 [bitty](https://bitty.alanwsmith.com/).
 
-## TODO
-
-- [] Put in a little buffer/throttle/debounce
-so that if multiple changes occur
-within like 100ms it only triggers
-one build. 
-
-- [] Document the `config/find-replace.txt`
-directory
-
-## Notes
-
-- This is mainly a personal project. 
-That said, it's stable enough to use
-if you're a person who likes to 
-explore and tinker with things. 
-
-- The github repo is at
+The repo is at: 
 [https://github.com/alanwsmith/simple_site_builder](https://github.com/alanwsmith/simple_site_builder)
+if you want to check it out or tinker with it. 
 
+## TODO/Goals:
 
-## Download and Usage
-
-I'm only building the app binary 
-for M-series macs since that's what I use. 
-TBD about other platforms in the future. 
-
-- Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb">
-releases/aarch64-apple-darwin/0.4.0/ssb
-</a>
-
-- Either put it on your Path. Or, put
-it inside the directory you want to
-use for your site. 
-
-- Create a "`content`" folder in the directory. 
-with an "`index.html`" file in it. 
-
-- Run `ssb` on the command line. The contents
-of the "`content`" folder will be transformed/copied
-into a "`docs`" folder next to it with
-the constructed site.
-
-Your browser should automatically open a 
-preview of the site. (If not look for the
-"http://localhost:####/" address in the
-output on the command line and open it)
-
-- Add the content to your "content" folder
-that you want to see on your site. 
-
-
-## Goals
+- [] Add automated tests
 
 - [x] Single binary that can be run
 downloaded and run from the command 
@@ -175,6 +127,106 @@ isn't required.
 - [] Auto generate basic directory structure and
 example files if run in an empty directory. 
 
+- [] Put in a little buffer/throttle/debounce
+so that if multiple changes occur
+within like 100ms it only triggers
+one build. 
+
+- [] Document the `config/find-replace.txt`
+directory
+
+- [] Move these TODOs into the index.html file
+
+- [x] Process `.js` files as templates. 
+
+- [] Maybe: Provide for a comment at the top
+of `.js` files that prevents then
+from being processed as templates. 
+
+- [x] Don't pre-highlight files. Or, maybe
+cache them if you do? The process bogs
+down on things like p5.min.js. 
+
+
+- [] Set up the builder to restart itself if
+it crashes.
+
+- [] Auto run scripts in `support/pre` 
+and `support/post` before and after each
+build. 
+
+- [] Split out build process from server process
+and use a command line flag to do just the build
+(e.g. to make testing easier). 
+
+- [] Add a JavaScript Minifier. 
+
+- [] Documentation
+
+- [] Image optimization where raw files are stored
+wherever in the `content` dir, but an output
+dir with each file available based on name
+the same way you do it in Neopoligen is
+made available (make it a `.images` dir name
+or some other dot directory to hide it? 
+not sure that matters, but the other key
+is to let templates call any image with
+something like `[` `@ image(NAME) @` `]`)
+
+- [] Ability to include files. (need
+to think through security, but maybe
+it's that you have an `includes` directory
+that has sym links out to the files
+you want to include? Is that safe?)
+
+- [x] Load any `.json` file in the content
+directory so it's data can be accessed
+in templates via `data.["FILENAME"].whatever`
+
+- [x] Run basic find/replace over files
+to update text strings. (Note that there's
+no escaping. Changing names is the way
+to avoid collisions)
+
+- [] Set up a function to call out to
+`support/plugins` processes. 
+
+- [x] Use the `support/find-replace` dir to 
+set up find and replace strings to do in
+files. 
+
+## Release Build Process
+
+- First off, don't use `cargo install --path .`
+Build a release file and drop it on your path
+next to the prior versions. Process for
+that is as follows:
+
+- Get the prior version number by looking in
+the releases dir. 
+
+- Bump the version number in the Cargo.toml file
+(Everything starts with `0` right now. The
+second number is the "Major" version slot which
+indicates breaking changes. The third number
+is for both Minor and Patch bumps. Once a 
+1.0.0 is release it'll move to regular
+semantic versioning.)
+
+- If it's a breaking change, bump the version
+number of the `src/bin/ssb-x-x-x.rs` file.
+
+- Run the `build-release` script. 
+
+- Copy the built artifact onto your path. 
+(I'm currently using `~/binaries` which 
+I've added to my zsh config file. 
+
+- Make a commit on the `main` git branch
+that includes the release binary file. 
+
+
+
 
 ## Examples
 
@@ -188,6 +240,7 @@ the input.
 <pre>
 [@ data|tojson(true) @]
 </pre>
+
 
 <h2>Inline Syntax Highlighting</h2>
 
@@ -291,6 +344,18 @@ This should say `TEST_VAR_3_WORKED` in the array:
 [@ files|tojson(true) @]
 </pre>
 </details>
+
+<h2>Tests</h2>
+<p>
+  Not sure how to automate testing yet. For now, 
+  manually look at: 
+<div>
+  [! include "tests/0010-js-is-processed/target.js" !]
+</div>
+<div>
+  [! include "tests/0010-js-is-processed/got.js" !]
+</div>
+</p>
 
 <h2>Release Notes</h2>
 

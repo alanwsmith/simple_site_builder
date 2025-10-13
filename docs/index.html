@@ -30,80 +30,23 @@
       </header>
       <main>
 
-
 <h1>Simple Site Builder</h1>
 <h2>Overview</h2>
 <p>Simple Site Builder is my latest
 static site builder for my personal sites.
 It uses HTML, CSS, Vanilla JavaScript,
 Web Components, and JavaScript Libraries
-without requiring an underlying framework.</p>
-<p>It's specifically designed to compliment
+without requiring an underlying framework.
+It's specifically designed to compliment
 <a href="https://bitty.alanwsmith.com/">bitty</a>.</p>
-<h2>TODO</h2>
+<p>The repo is at:
+<a href="https://github.com/alanwsmith/simple_site_builder">https://github.com/alanwsmith/simple_site_builder</a>
+if you want to check it out or tinker with it.</p>
+<h2>TODO/Goals:</h2>
 <ul>
 <li>
-<p>[] Put in a little buffer/throttle/debounce
-so that if multiple changes occur
-within like 100ms it only triggers
-one build.</p>
+<p>[] Add automated tests</p>
 </li>
-<li>
-<p>[] Document the <code>config/find-replace.txt</code>
-directory</p>
-</li>
-</ul>
-<h2>Notes</h2>
-<ul>
-<li>
-<p>This is mainly a personal project.
-That said, it's stable enough to use
-if you're a person who likes to
-explore and tinker with things.</p>
-</li>
-<li>
-<p>The github repo is at
-<a href="https://github.com/alanwsmith/simple_site_builder">https://github.com/alanwsmith/simple_site_builder</a></p>
-</li>
-</ul>
-<h2>Download and Usage</h2>
-<p>I'm only building the app binary
-for M-series macs since that's what I use.
-TBD about other platforms in the future.</p>
-<ul>
-<li>Download: <a href="/releases/aarch64-apple-darwin/0.4.0/ssb" download="ssb">
-releases/aarch64-apple-darwin/0.4.0/ssb</li>
-</ul>
-</a>
-<ul>
-<li>
-<p>Either put it on your Path. Or, put
-it inside the directory you want to
-use for your site.</p>
-</li>
-<li>
-<p>Create a &quot;<code>content</code>&quot; folder in the directory.
-with an &quot;<code>index.html</code>&quot; file in it.</p>
-</li>
-<li>
-<p>Run <code>ssb</code> on the command line. The contents
-of the &quot;<code>content</code>&quot; folder will be transformed/copied
-into a &quot;<code>docs</code>&quot; folder next to it with
-the constructed site.</p>
-</li>
-</ul>
-<p>Your browser should automatically open a
-preview of the site. (If not look for the
-&quot;http://localhost:####/&quot; address in the
-output on the command line and open it)</p>
-<ul>
-<li>
-<p>Add the content to your &quot;content&quot; folder
-that you want to see on your site.</p>
-</li>
-</ul>
-<h2>Goals</h2>
-<ul>
 <li>
 <p>[x] Single binary that can be run
 downloaded and run from the command
@@ -240,6 +183,128 @@ isn't required.</p>
 <p>[] Auto generate basic directory structure and
 example files if run in an empty directory.</p>
 </li>
+<li>
+<p>[] Put in a little buffer/throttle/debounce
+so that if multiple changes occur
+within like 100ms it only triggers
+one build.</p>
+</li>
+<li>
+<p>[] Document the <code>config/find-replace.txt</code>
+directory</p>
+</li>
+<li>
+<p>[] Move these TODOs into the index.html file</p>
+</li>
+<li>
+<p>[x] Process <code>.js</code> files as templates.</p>
+</li>
+<li>
+<p>[] Maybe: Provide for a comment at the top
+of <code>.js</code> files that prevents then
+from being processed as templates.</p>
+</li>
+<li>
+<p>[x] Don't pre-highlight files. Or, maybe
+cache them if you do? The process bogs
+down on things like p5.min.js.</p>
+</li>
+<li>
+<p>[] Set up the builder to restart itself if
+it crashes.</p>
+</li>
+<li>
+<p>[] Auto run scripts in <code>support/pre</code>
+and <code>support/post</code> before and after each
+build.</p>
+</li>
+<li>
+<p>[] Split out build process from server process
+and use a command line flag to do just the build
+(e.g. to make testing easier).</p>
+</li>
+<li>
+<p>[] Add a JavaScript Minifier.</p>
+</li>
+<li>
+<p>[] Documentation</p>
+</li>
+<li>
+<p>[] Image optimization where raw files are stored
+wherever in the <code>content</code> dir, but an output
+dir with each file available based on name
+the same way you do it in Neopoligen is
+made available (make it a <code>.images</code> dir name
+or some other dot directory to hide it?
+not sure that matters, but the other key
+is to let templates call any image with
+something like <code>[</code> <code>@ image(NAME) @</code> <code>]</code>)</p>
+</li>
+<li>
+<p>[] Ability to include files. (need
+to think through security, but maybe
+it's that you have an <code>includes</code> directory
+that has sym links out to the files
+you want to include? Is that safe?)</p>
+</li>
+<li>
+<p>[x] Load any <code>.json</code> file in the content
+directory so it's data can be accessed
+in templates via <code>data.[&quot;FILENAME&quot;].whatever</code></p>
+</li>
+<li>
+<p>[x] Run basic find/replace over files
+to update text strings. (Note that there's
+no escaping. Changing names is the way
+to avoid collisions)</p>
+</li>
+<li>
+<p>[] Set up a function to call out to
+<code>support/plugins</code> processes.</p>
+</li>
+<li>
+<p>[x] Use the <code>support/find-replace</code> dir to
+set up find and replace strings to do in
+files.</p>
+</li>
+</ul>
+<h2>Release Build Process</h2>
+<ul>
+<li>
+<p>First off, don't use <code>cargo install --path .</code>
+Build a release file and drop it on your path
+next to the prior versions. Process for
+that is as follows:</p>
+</li>
+<li>
+<p>Get the prior version number by looking in
+the releases dir.</p>
+</li>
+<li>
+<p>Bump the version number in the Cargo.toml file
+(Everything starts with <code>0</code> right now. The
+second number is the &quot;Major&quot; version slot which
+indicates breaking changes. The third number
+is for both Minor and Patch bumps. Once a
+1.0.0 is release it'll move to regular
+semantic versioning.)</p>
+</li>
+<li>
+<p>If it's a breaking change, bump the version
+number of the <code>src/bin/ssb-x-x-x.rs</code> file.</p>
+</li>
+<li>
+<p>Run the <code>build-release</code> script.</p>
+</li>
+<li>
+<p>Copy the built artifact onto your path.
+(I'm currently using <code>~/binaries</code> which
+I've added to my zsh config file.</p>
+</li>
+<li>
+<p>Make a commit on the <code>main</code> git branch
+that includes the release binary file.</p>
+</li>
 </ul>
 <h2>Examples</h2>
 <p>These examples cover the basics.
@@ -263,9 +328,13 @@ the input.</p>
         "fox"
       ]
     }
+  },
+  "tests/0010-js-is-processed/0010-data.json": {
+    "data0010": "ping"
   }
 }
 </pre>
+
 
 <h2>Inline Syntax Highlighting</h2>
 
@@ -394,7 +463,7 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "parent": ""
   },
   {
-    "name": "test-files",
+    "name": "tests",
     "parent": ""
   },
   {
@@ -438,8 +507,16 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "parent": "releases/aarch64-apple-darwin"
   },
   {
+    "name": "0.7.0",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
     "name": "p5",
     "parent": "scripts"
+  },
+  {
+    "name": "0010-js-is-processed",
+    "parent": "tests"
   }
 ]
 </pre>
@@ -526,6 +603,14 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "name": "v0.6.3.md",
+    "output_folder": null,
+    "output_name": null
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "name": "v0.6.4.md",
     "output_folder": null,
     "output_name": null
   },
@@ -722,20 +807,12 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "output_name": "ssb-0-6-x"
   },
   {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "scripts/p5",
-    "name": "p5-1.11.10.min.js",
-    "output_folder": "scripts/p5",
-    "output_name": "p5-1.11.10.min.js"
-  },
-  {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "scripts/p5",
-    "name": "p5-sound-1.0.1.min.js",
-    "output_folder": "scripts/p5",
-    "output_name": "p5-sound-1.0.1.min.js"
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.7.0",
+    "name": "ssb-0-7",
+    "output_folder": "releases/aarch64-apple-darwin/0.7.0",
+    "output_name": "ssb-0-7"
   },
   {
     "extension": "css",
@@ -764,34 +841,68 @@ This should say `TEST_VAR_3_WORKED` in the array:
   {
     "extension": "md",
     "file_move_type": "Copy",
-    "folder": "test-files",
+    "folder": "tests",
     "name": "README.md",
-    "output_folder": "test-files",
+    "output_folder": "tests",
     "output_name": "README.md"
   },
   {
-    "extension": "js",
-    "file_move_type": "Skip",
-    "folder": "test-files",
-    "name": "_js-include.js",
-    "output_folder": null,
-    "output_name": null
+    "extension": "json",
+    "file_move_type": "Copy",
+    "folder": "tests/0010-js-is-processed",
+    "name": "0010-data.json",
+    "output_folder": "tests/0010-js-is-processed",
+    "output_name": "0010-data.json"
   },
   {
     "extension": "js",
     "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "test-files",
-    "name": "js-with-include.js",
-    "output_folder": "test-files",
-    "output_name": "js-with-include.js"
+    "folder": "tests/0010-js-is-processed",
+    "name": "got.js",
+    "output_folder": "tests/0010-js-is-processed",
+    "output_name": "got.js"
+  },
+  {
+    "extension": "js",
+    "file_move_type": "CopyAndMinifyJavaScript",
+    "folder": "tests/0010-js-is-processed",
+    "name": "target.js",
+    "output_folder": "tests/0010-js-is-processed",
+    "output_name": "target.js"
   }
 ]
 </pre>
 </details>
 
+<h2>Tests</h2>
+<p>
+  Not sure how to automate testing yet. For now, 
+  manually look at: 
+<div>
+function test0010() {
+  console.log(`Expected: ping`);
+  console.log(`
+Result: ping
+`);
+}</div>
+<div>
+function test0010() {
+  console.log(`Expected: ping`);
+  console.log(`
+Result: ping
+`);
+}</div>
+</p>
+
 <h2>Release Notes</h2>
 
 <details>
+<h3>Version 0.6.4</h3>
+<p>DATE: TBD</p>
+<ul>
+<li>TODO...</li>
+</ul>
+
 <h3>Version 0.6.3</h3>
 <p>Oct. 4. 2025</p>
 <ul>
