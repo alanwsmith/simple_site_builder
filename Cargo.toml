@@ -1,6 +1,6 @@
 [package]
 name = "simple_site_builder"
-version = "0.7.0"
+version = "0.7.1"
 edition = "2024"
 
 [[bin]]
@@ -13,7 +13,7 @@ chrono = "0.4.41"
 clearscreen = "4.0.2"
 itertools = "0.14.0"
 markdown = "1.0.0"
-minijinja = { version = "2.12.0", features = ["custom_syntax", "json", "loader"] }
+minijinja = { version = "2.12.0", features = ["debug", "custom_syntax", "json", "loader"] }
 port_check = "0.3.0"
 pretty_assertions = "1.4.1"
 regex = "1.11.2"

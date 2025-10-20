@@ -130,6 +130,7 @@ impl Builder {
     // javascript or other files stuff)
     let mut env = get_env(&self.config.build_files_dir());
     env.add_function("highlight_file", highlight_file);
+    env.add_function("highlight_code", highlight_code);
     env.add_function("markdown_file", markdown_file);
     let file_list_as_value =
       Value::from_serialize(file_list);
@@ -167,18 +168,18 @@ impl Builder {
               );
             }
             Err(e) => {
-              println!("{}", e);
+              println!("{:#}", e);
               let _ = write_file_with_mkdir(
                 output_path,
-                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{}</pre></body></html>"#, e).as_str()
+                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{:#}</pre></body></html>"#, e).as_str()
               );
             }
           },
           Err(e) => {
-            println!("{}", e);
+            println!("{:#}", e);
               let _ = write_file_with_mkdir(
                 output_path,
-                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{}</pre></body></html>"#, e).as_str()
+                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{:#}</pre></body></html>"#, e).as_str()
               );
           }
         }
@@ -213,13 +214,13 @@ impl Builder {
               }
               Err(e) => {
                 // TODO: Add better error handling here
-                dbg!(e);
+                println!("ERROR: {:#}", e);
               }
             }
           }
           Err(e) => {
             // TODO: Add better error messaging here
-            dbg!(e);
+            println!("ERROR: {:#}", e);
           }
         }
       });
@@ -246,6 +247,7 @@ impl Builder {
     // javascript or other files stuff)
     let mut env = get_env(&self.config.build_files_dir());
     env.add_function("highlight_file", highlight_file);
+    env.add_function("highlight_code", highlight_code);
     env.add_function("markdown_file", markdown_file);
     let file_list_as_value =
       Value::from_serialize(file_list);
@@ -283,18 +285,18 @@ impl Builder {
               );
             }
             Err(e) => {
-              println!("{}", e);
+              println!("{:#}", e);
               let _ = write_file_with_mkdir(
                 output_path,
-                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{}</pre></body></html>"#, e).as_str()
+                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{:#}</pre></body></html>"#, e).as_str()
               );
             }
           },
           Err(e) => {
-            println!("{}", e);
+            println!("{:#}", e);
               let _ = write_file_with_mkdir(
                 output_path,
-                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{}</pre></body></html>"#, e).as_str()
+                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{:#}</pre></body></html>"#, e).as_str()
               );
           }
         }
