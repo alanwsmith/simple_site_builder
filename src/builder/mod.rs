@@ -167,20 +167,20 @@ impl Builder {
                 &content,
               );
             }
-            Err(e) => {
-              println!("{:#}", e);
+            Err(err) => {
+              println!("{}", error_html(&err));
               let _ = write_file_with_mkdir(
                 output_path,
-                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{:#}</pre></body></html>"#, e).as_str()
+                &error_html(&err),
               );
             }
           },
-          Err(e) => {
-            println!("{:#}", e);
-              let _ = write_file_with_mkdir(
-                output_path,
-                format!(r#"<html><head><style>body {{ background-color: black; color: goldenrod; }}</style></head><body>A MiniJinja error occurred. <pre>{:#}</pre></body></html>"#, e).as_str()
-              );
+          Err(err) => {
+            println!("{}", error_html(&err));
+            let _ = write_file_with_mkdir(
+              output_path,
+              &error_html(&err),
+            );
           }
         }
       }
@@ -212,15 +212,15 @@ impl Builder {
                   data,
                 );
               }
-              Err(e) => {
+              Err(err) => {
                 // TODO: Add better error handling here
-                println!("ERROR: {:#}", e);
+                println!("ERROR: {:#}", err);
               }
             }
           }
-          Err(e) => {
+          Err(err) => {
             // TODO: Add better error messaging here
-            println!("ERROR: {:#}", e);
+            println!("ERROR: {:#}", err);
           }
         }
       });
