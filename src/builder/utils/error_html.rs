@@ -1,6 +1,15 @@
 pub fn error_html(err: &minijinja::Error) -> String {
   let mut output = vec![
-    r#"<!DOCTYPE html><html lang="en"><head><style>body { background-color: black; color: goldenrod; }</style></head><body><pre>"#.to_string()
+    r#"<!DOCTYPE html><html lang="en"><head><style>
+    body { background-color: black; color: goldenrod; }
+    pre {
+      white-space: pre-wrap; 
+      overflow-wrap: anywhere;
+      overflow-x: auto;
+      overscroll-behavior-x: auto;
+    }
+    </style></head><body><pre>"#
+      .to_string(),
   ];
   output.push("A MiniJinja error occurred\n".to_string());
   output.push(format!(
