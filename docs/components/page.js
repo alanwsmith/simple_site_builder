@@ -1,4 +1,3 @@
 export default class {
-jsIncludeTest(event, el) {
-  el.innerHTML = "PASSED";
-}}
+  [! include "components/_js-include-test.js" !]
+}
