@@ -46,8 +46,8 @@ impl Builder {
     )?;
     let file_list =
       file_list(&self.config.build_files_dir());
-    info!("Transforming HTML.");
-    let _ = &self.transform_html(&file_list)?;
+    info!("Transforming HTML and TXT.");
+    let _ = &self.transform_html_and_txt(&file_list)?;
     info!("Copying files.");
     let _ = &self.copy_files(&file_list)?;
     info!("Copying JavaScript Files.");
@@ -238,7 +238,7 @@ impl Builder {
     Ok(())
   }
 
-  pub fn transform_html(
+  pub fn transform_html_and_txt(
     &self,
     file_list: &[FileDetails],
   ) -> Result<()> {
@@ -260,6 +260,8 @@ impl Builder {
       // dbg!(&details.file_move_type);
       if details.file_move_type
         == FileMoveType::TransformHtml
+        || details.file_move_type
+          == FileMoveType::TransformTxt
       {
         let template_name = details
           .folder
