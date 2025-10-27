@@ -46,8 +46,8 @@ impl Builder {
     )?;
     let file_list =
       file_list(&self.config.build_files_dir());
-    info!("Transforming HTML.");
-    let _ = &self.transform_html(&file_list)?;
+    info!("Transforming HTML and TXT.");
+    let _ = &self.transform_html_and_txt(&file_list)?;
     info!("Copying files.");
     let _ = &self.copy_files(&file_list)?;
     info!("Copying JavaScript Files.");
@@ -88,34 +88,6 @@ impl Builder {
     Ok(())
   }
 
-  // pub fn copy_js_old(
-  //   &self,
-  //   file_list: &[FileDetails],
-  // ) -> Result<()> {
-  //   // TODO: Set up a minifier at some point
-  //   // when you get one that works (the rust one
-  //   // broke on import statements).
-  //   file_list.iter().for_each(|details| {
-  //     if details.file_move_type
-  //       == FileMoveType::CopyAndMinifyJavaScript
-  //     {
-  //       let input_path = &self
-  //         .config
-  //         .build_files_dir()
-  //         .join(&details.folder)
-  //         .join(&details.name);
-  //       let output_path = &self
-  //         .config
-  //         .output_root
-  //         .join(details.output_folder.as_ref().unwrap())
-  //         .join(details.output_name.as_ref().unwrap());
-  //       let _ =
-  //         copy_file_with_mkdir(input_path, output_path);
-  //     }
-  //   });
-  //   Ok(())
-  // }
-
   pub fn copy_js(
     &self,
     file_list: &[FileDetails],
@@ -123,70 +95,98 @@ impl Builder {
     // TODO: Set up a minifier at some point
     // when you get one that works (the rust one
     // broke on import statements).
-    let folders =
-      folder_list(&self.config.build_files_dir());
-    // TODO: Hoist get_env so you only call it
-    // once per build (e.g. not again in the copy
-    // javascript or other files stuff)
-    let mut env = get_env(&self.config.build_files_dir());
-    env.add_function("highlight_file", highlight_file);
-    env.add_function("highlight_code", highlight_code);
-    env.add_function("markdown_file", markdown_file);
-    let file_list_as_value =
-      Value::from_serialize(file_list);
-    let folders_as_value = Value::from_serialize(folders);
-    info!("Loading data.");
-    let data = self.load_data(file_list);
     file_list.iter().for_each(|details| {
-      // dbg!(&details.file_move_type);
       if details.file_move_type
         == FileMoveType::CopyAndMinifyJavaScript
       {
-        let template_name = details
-          .folder
-          .join(&details.name)
-          .display()
-          .to_string();
-        let output_path = &self.config.output_root.join(
-          details
-            .output_folder
-            .clone()
-            .unwrap()
-            .join(details.output_name.clone().unwrap()),
-        );
-        match env.get_template(&template_name) {
-          Ok(template) => match template.render(context!(
-            data => data,
-            files => file_list_as_value,
-            folders => folders_as_value,
-            file => Value::from_serialize(details),
-          )) {
-            Ok(content) => {
-              let _ = write_file_with_mkdir(
-                output_path,
-                &content,
-              );
-            }
-            Err(err) => {
-              println!("{}", error_html(&err));
-              let _ = write_file_with_mkdir(
-                output_path,
-                &error_html(&err),
-              );
-            }
-          },
-          Err(err) => {
-            println!("{}", error_html(&err));
-            let _ = write_file_with_mkdir(
-              output_path,
-              &error_html(&err),
-            );
-          }
-        }
+        let input_path = &self
+          .config
+          .build_files_dir()
+          .join(&details.folder)
+          .join(&details.name);
+        let output_path = &self
+          .config
+          .output_root
+          .join(details.output_folder.as_ref().unwrap())
+          .join(details.output_name.as_ref().unwrap());
+        let _ =
+          copy_file_with_mkdir(input_path, output_path);
       }
     });
     Ok(())
   }
+
+  // pub fn copy_js_with_transform_which_breaks_files_easily(
+  //   &self,
+  //   file_list: &[FileDetails],
+  // ) -> Result<()> {
+  //   // TODO: Set up a minifier at some point
+  //   // when you get one that works (the rust one
+  //   // broke on import statements).
+  //   let folders =
+  //     folder_list(&self.config.build_files_dir());
+  //   // TODO: Hoist get_env so you only call it
+  //   // once per build (e.g. not again in the copy
+  //   // javascript or other files stuff)
+  //   let mut env = get_env(&self.config.build_files_dir());
+  //   env.add_function("highlight_file", highlight_file);
+  //   env.add_function("highlight_code", highlight_code);
+  //   env.add_function("markdown_file", markdown_file);
+  //   let file_list_as_value =
+  //     Value::from_serialize(file_list);
+  //   let folders_as_value = Value::from_serialize(folders);
+  //   info!("Loading data.");
+  //   let data = self.load_data(file_list);
+  //   file_list.iter().for_each(|details| {
+  //     // dbg!(&details.file_move_type);
+  //     if details.file_move_type
+  //       == FileMoveType::CopyAndMinifyJavaScript
+  //     {
+  //       let template_name = details
+  //         .folder
+  //         .join(&details.name)
+  //         .display()
+  //         .to_string();
+  //       let output_path = &self.config.output_root.join(
+  //         details
+  //           .output_folder
+  //           .clone()
+  //           .unwrap()
+  //           .join(details.output_name.clone().unwrap()),
+  //       );
+  //       match env.get_template(&template_name) {
+  //         Ok(template) => match template.render(context!(
+  //           data => data,
+  //           files => file_list_as_value,
+  //           folders => folders_as_value,
+  //           file => Value::from_serialize(details),
+  //         )) {
+  //           Ok(content) => {
+  //             let _ = write_file_with_mkdir(
+  //               output_path,
+  //               &content,
+  //             );
+  //           }
+  //           Err(err) => {
+  //             println!("{}", error_html(&err));
+  //             let _ = write_file_with_mkdir(
+  //               output_path,
+  //               &error_html(&err),
+  //             );
+  //           }
+  //         },
+  //         Err(err) => {
+  //           println!("{}", error_html(&err));
+  //           let _ = write_file_with_mkdir(
+  //             output_path,
+  //             &error_html(&err),
+  //           );
+  //         }
+  //       }
+  //     }
+  //   });
+  //   Ok(())
+  // }
 
   pub fn load_data(
     &self,
@@ -213,6 +213,7 @@ impl Builder {
                 );
               }
               Err(err) => {
+                println!("{}", &input_path.display());
                 // TODO: Add better error handling here
                 println!("ERROR: {:#}", err);
               }
@@ -220,6 +221,7 @@ impl Builder {
           }
           Err(err) => {
             // TODO: Add better error messaging here
+            println!("{}", &input_path.display());
             println!("ERROR: {:#}", err);
           }
         }
@@ -236,7 +238,7 @@ impl Builder {
     Ok(())
   }
 
-  pub fn transform_html(
+  pub fn transform_html_and_txt(
     &self,
     file_list: &[FileDetails],
   ) -> Result<()> {
@@ -258,6 +260,8 @@ impl Builder {
       // dbg!(&details.file_move_type);
       if details.file_move_type
         == FileMoveType::TransformHtml
+        || details.file_move_type
+          == FileMoveType::TransformTxt
       {
         let template_name = details
           .folder
