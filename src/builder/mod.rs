@@ -36,7 +36,7 @@ impl Builder {
   }
 
   pub fn build_site(&self) -> Result<()> {
-    let _ = clearscreen::clear();
+    // let _ = clearscreen::clear();
     info!("Building site on port {}.", &self.port);
     empty_dir(&self.config.build_files_dir())?;
     empty_dir(&self.config.output_root)?;
