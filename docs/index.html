@@ -45,6 +45,17 @@ if you want to check it out or tinker with it.</p>
 <h2>TODO/Goals:</h2>
 <ul>
 <li>
+<p>[] Set up a way to configure individual files
+other than <code>.html</code>, <code>.txt</code>, and <code>.css</code> to
+go through a transform process. (default is
+not to)</p>
+</li>
+<li>
+<p>[] set up a way to configure individaul
+files that would be transformed so that
+they aren't.</p>
+</li>
+<li>
 <p>[] Add automated tests</p>
 </li>
 <li>
@@ -123,6 +134,12 @@ line.</p>
 <li>
 <p>[x] Provide a pre-build find/replace to change
 out basic string matches.</p>
+</li>
+<li>
+<p>[x] Send .txt files through the transformer</p>
+</li>
+<li>
+<p>[] Send .css files through the transformer</p>
 </li>
 <li>
 <p>[] Set up a way to do JavaScript includes
@@ -250,7 +267,7 @@ you want to include? Is that safe?)</p>
 <li>
 <p>[x] Load any <code>.json</code> file in the content
 directory so it's data can be accessed
-in templates via <code>data.[&quot;FILENAME&quot;].whatever</code></p>
+in templates via <code>data.[&quot;FILE_STEM&quot;].whatever</code>.</p>
 </li>
 <li>
 <p>[x] Run basic find/replace over files
@@ -313,27 +330,30 @@ the input.</p>
 
 <h2>Automatically Loaded Data</h2>
 
+<div>Processing .txt files with MiniJinja Worked!</div>
+
 <pre>
 {
-  "_config.json": {
+  "_config": {
     "txtTest": "Processing .txt files with MiniJinja Worked!"
   },
-  "examples/data/sample-2.json": {
-    "anotherSample": "with some data"
-  },
-  "examples/data/sample.json": {
-    "dataset": {
-      "alfa": "the quick brown fox",
-      "bravo": [
-        "the",
-        "quick",
-        "brown",
-        "fox"
-      ]
+  "examples": {
+    "data": {
+      "sample": {
+        "dataset": {
+          "alfa": "the quick brown fox",
+          "bravo": [
+            "the",
+            "quick",
+            "brown",
+            "fox"
+          ]
+        }
+      },
+      "sample-2": {
+        "anotherSample": "with some data"
+      }
     }
-  },
-  "tests/0010-js-is-processed/0010-data.json": {
-    "data0010": "ping"
   }
 }
 </pre>
@@ -419,9 +439,11 @@ This should say `TEST_VAR_3_WORKED` in the array:
   "extension": "html",
   "file_move_type": "TransformHtml",
   "folder": "",
+  "input_path": "index.html",
   "name": "index.html",
   "output_folder": "",
-  "output_name": "index.html"
+  "output_name": "index.html",
+  "stem": "index"
 }
 </pre>
 
@@ -530,8 +552,8 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "parent": "releases/aarch64-apple-darwin"
   },
   {
-    "name": "0010-js-is-processed",
-    "parent": "tests"
+    "name": "0.8.0",
+    "parent": "releases/aarch64-apple-darwin"
   }
 ]
 </pre>
@@ -545,425 +567,481 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "extension": "json",
     "file_move_type": "Skip",
     "folder": "",
+    "input_path": "_config.json",
     "name": "_config.json",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "_config"
   },
   {
     "extension": "ico",
     "file_move_type": "Copy",
     "folder": "",
+    "input_path": "favicon.ico",
     "name": "favicon.ico",
     "output_folder": "",
-    "output_name": "favicon.ico"
+    "output_name": "favicon.ico",
+    "stem": "favicon"
   },
   {
     "extension": "html",
     "file_move_type": "TransformHtml",
     "folder": "",
+    "input_path": "index.html",
     "name": "index.html",
     "output_folder": "",
-    "output_name": "index.html"
+    "output_name": "index.html",
+    "stem": "index"
   },
   {
     "extension": "js",
     "file_move_type": "Skip",
     "folder": "_includes",
+    "input_path": "_includes/test-highlight-with-find-replace.js",
     "name": "test-highlight-with-find-replace.js",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "test-highlight-with-find-replace"
   },
   {
     "extension": "txt",
     "file_move_type": "Skip",
     "folder": "_includes",
+    "input_path": "_includes/txt-test.txt",
     "name": "txt-test.txt",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "txt-test"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.3.0.md",
     "name": "v0.3.0.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.3.0"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.4.0.md",
     "name": "v0.4.0.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.4.0"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.5.0.md",
     "name": "v0.5.0.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.5.0"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.6.0.md",
     "name": "v0.6.0.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.6.0"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.6.1.md",
     "name": "v0.6.1.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.6.1"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.6.2.md",
     "name": "v0.6.2.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.6.2"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.6.3.md",
     "name": "v0.6.3.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.6.3"
   },
   {
     "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
+    "input_path": "_release-notes/v0.6.4.md",
     "name": "v0.6.4.md",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "v0.6.4"
   },
   {
     "extension": "html",
     "file_move_type": "Skip",
     "folder": "_wrappers",
+    "input_path": "_wrappers/main.html",
     "name": "main.html",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "main"
   },
   {
     "extension": "js",
     "file_move_type": "Skip",
     "folder": "components",
+    "input_path": "components/_js-include-test.js",
     "name": "_js-include-test.js",
     "output_folder": null,
-    "output_name": null
+    "output_name": null,
+    "stem": "_js-include-test"
   },
   {
     "extension": "js",
     "file_move_type": "CopyAndMinifyJavaScript",
     "folder": "components",
+    "input_path": "components/bitty-1.0.0-rc4.full.js",
     "name": "bitty-1.0.0-rc4.full.js",
     "output_folder": "components",
-    "output_name": "bitty-1.0.0-rc4.full.js"
+    "output_name": "bitty-1.0.0-rc4.full.js",
+    "stem": "bitty-1.0.0-rc4.full"
   },
   {
     "extension": "js",
     "file_move_type": "CopyAndMinifyJavaScript",
     "folder": "components",
+    "input_path": "components/page.js",
     "name": "page.js",
     "output_folder": "components",
-    "output_name": "page.js"
+    "output_name": "page.js",
+    "stem": "page"
   },
   {
     "extension": "json",
     "file_move_type": "Copy",
     "folder": "examples/data",
+    "input_path": "examples/data/sample-2.json",
     "name": "sample-2.json",
     "output_folder": "examples/data",
-    "output_name": "sample-2.json"
+    "output_name": "sample-2.json",
+    "stem": "sample-2"
   },
   {
     "extension": "json",
     "file_move_type": "Copy",
     "folder": "examples/data",
+    "input_path": "examples/data/sample.json",
     "name": "sample.json",
     "output_folder": "examples/data",
-    "output_name": "sample.json"
+    "output_name": "sample.json",
+    "stem": "sample"
   },
   {
     "extension": "md",
     "file_move_type": "Copy",
     "folder": "examples/markdown",
+    "input_path": "examples/markdown/sample.md",
     "name": "sample.md",
     "output_folder": "examples/markdown",
-    "output_name": "sample.md"
+    "output_name": "sample.md",
+    "stem": "sample"
   },
   {
     "extension": "png",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/android-chrome-192x192.png",
     "name": "android-chrome-192x192.png",
     "output_folder": "favicons",
-    "output_name": "android-chrome-192x192.png"
+    "output_name": "android-chrome-192x192.png",
+    "stem": "android-chrome-192x192"
   },
   {
     "extension": "png",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/android-chrome-512x512.png",
     "name": "android-chrome-512x512.png",
     "output_folder": "favicons",
-    "output_name": "android-chrome-512x512.png"
+    "output_name": "android-chrome-512x512.png",
+    "stem": "android-chrome-512x512"
   },
   {
     "extension": "png",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/apple-touch-icon.png",
     "name": "apple-touch-icon.png",
     "output_folder": "favicons",
-    "output_name": "apple-touch-icon.png"
+    "output_name": "apple-touch-icon.png",
+    "stem": "apple-touch-icon"
   },
   {
     "extension": "xml",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/browserconfig.xml",
     "name": "browserconfig.xml",
     "output_folder": "favicons",
-    "output_name": "browserconfig.xml"
+    "output_name": "browserconfig.xml",
+    "stem": "browserconfig"
   },
   {
     "extension": "png",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/favicon-16x16.png",
     "name": "favicon-16x16.png",
     "output_folder": "favicons",
-    "output_name": "favicon-16x16.png"
+    "output_name": "favicon-16x16.png",
+    "stem": "favicon-16x16"
   },
   {
     "extension": "png",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/favicon-32x32.png",
     "name": "favicon-32x32.png",
     "output_folder": "favicons",
-    "output_name": "favicon-32x32.png"
+    "output_name": "favicon-32x32.png",
+    "stem": "favicon-32x32"
   },
   {
     "extension": "ico",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/favicon.ico",
     "name": "favicon.ico",
     "output_folder": "favicons",
-    "output_name": "favicon.ico"
+    "output_name": "favicon.ico",
+    "stem": "favicon"
   },
   {
     "extension": "png",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/mstile-150x150.png",
     "name": "mstile-150x150.png",
     "output_folder": "favicons",
-    "output_name": "mstile-150x150.png"
+    "output_name": "mstile-150x150.png",
+    "stem": "mstile-150x150"
   },
   {
     "extension": "svg",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/safari-pinned-tab.svg",
     "name": "safari-pinned-tab.svg",
     "output_folder": "favicons",
-    "output_name": "safari-pinned-tab.svg"
+    "output_name": "safari-pinned-tab.svg",
+    "stem": "safari-pinned-tab"
   },
   {
     "extension": "webmanifest",
     "file_move_type": "Copy",
     "folder": "favicons",
+    "input_path": "favicons/site.webmanifest",
     "name": "site.webmanifest",
     "output_folder": "favicons",
-    "output_name": "site.webmanifest"
+    "output_name": "site.webmanifest",
+    "stem": "site"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.3.0",
+    "input_path": "releases/aarch64-apple-darwin/0.3.0/ssb",
     "name": "ssb",
     "output_folder": "releases/aarch64-apple-darwin/0.3.0",
-    "output_name": "ssb"
+    "output_name": "ssb",
+    "stem": "ssb"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.4.0",
+    "input_path": "releases/aarch64-apple-darwin/0.4.0/ssb",
     "name": "ssb",
     "output_folder": "releases/aarch64-apple-darwin/0.4.0",
-    "output_name": "ssb"
+    "output_name": "ssb",
+    "stem": "ssb"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.5.0",
+    "input_path": "releases/aarch64-apple-darwin/0.5.0/ssb",
     "name": "ssb",
     "output_folder": "releases/aarch64-apple-darwin/0.5.0",
-    "output_name": "ssb"
+    "output_name": "ssb",
+    "stem": "ssb"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.6.0",
+    "input_path": "releases/aarch64-apple-darwin/0.6.0/ssb-0-6-x",
     "name": "ssb-0-6-x",
     "output_folder": "releases/aarch64-apple-darwin/0.6.0",
-    "output_name": "ssb-0-6-x"
+    "output_name": "ssb-0-6-x",
+    "stem": "ssb-0-6-x"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.6.1",
+    "input_path": "releases/aarch64-apple-darwin/0.6.1/ssb-0-6-x",
     "name": "ssb-0-6-x",
     "output_folder": "releases/aarch64-apple-darwin/0.6.1",
-    "output_name": "ssb-0-6-x"
+    "output_name": "ssb-0-6-x",
+    "stem": "ssb-0-6-x"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.6.2",
+    "input_path": "releases/aarch64-apple-darwin/0.6.2/ssb-0-6-x",
     "name": "ssb-0-6-x",
     "output_folder": "releases/aarch64-apple-darwin/0.6.2",
-    "output_name": "ssb-0-6-x"
+    "output_name": "ssb-0-6-x",
+    "stem": "ssb-0-6-x"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.6.3",
+    "input_path": "releases/aarch64-apple-darwin/0.6.3/ssb-0-6-x",
     "name": "ssb-0-6-x",
     "output_folder": "releases/aarch64-apple-darwin/0.6.3",
-    "output_name": "ssb-0-6-x"
+    "output_name": "ssb-0-6-x",
+    "stem": "ssb-0-6-x"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.7.0",
+    "input_path": "releases/aarch64-apple-darwin/0.7.0/ssb-0-7",
     "name": "ssb-0-7",
     "output_folder": "releases/aarch64-apple-darwin/0.7.0",
-    "output_name": "ssb-0-7"
+    "output_name": "ssb-0-7",
+    "stem": "ssb-0-7"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.7.1",
+    "input_path": "releases/aarch64-apple-darwin/0.7.1/ssb-0-7",
     "name": "ssb-0-7",
     "output_folder": "releases/aarch64-apple-darwin/0.7.1",
-    "output_name": "ssb-0-7"
+    "output_name": "ssb-0-7",
+    "stem": "ssb-0-7"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.7.2",
+    "input_path": "releases/aarch64-apple-darwin/0.7.2/ssb-0-7",
     "name": "ssb-0-7",
     "output_folder": "releases/aarch64-apple-darwin/0.7.2",
-    "output_name": "ssb-0-7"
+    "output_name": "ssb-0-7",
+    "stem": "ssb-0-7"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.7.3",
+    "input_path": "releases/aarch64-apple-darwin/0.7.3/ssb-0-7",
     "name": "ssb-0-7",
     "output_folder": "releases/aarch64-apple-darwin/0.7.3",
-    "output_name": "ssb-0-7"
+    "output_name": "ssb-0-7",
+    "stem": "ssb-0-7"
   },
   {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.7.4",
+    "input_path": "releases/aarch64-apple-darwin/0.7.4/ssb-0-7",
     "name": "ssb-0-7",
     "output_folder": "releases/aarch64-apple-darwin/0.7.4",
-    "output_name": "ssb-0-7"
+    "output_name": "ssb-0-7",
+    "stem": "ssb-0-7"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.8.0",
+    "input_path": "releases/aarch64-apple-darwin/0.8.0/ssb-0-8",
+    "name": "ssb-0-8",
+    "output_folder": "releases/aarch64-apple-darwin/0.8.0",
+    "output_name": "ssb-0-8",
+    "stem": "ssb-0-8"
   },
   {
     "extension": "css",
-    "file_move_type": "Copy",
+    "file_move_type": "TransformCSS",
     "folder": "styles",
+    "input_path": "styles/highlight-base16-ocean-dark.css",
     "name": "highlight-base16-ocean-dark.css",
     "output_folder": "styles",
-    "output_name": "highlight-base16-ocean-dark.css"
+    "output_name": "highlight-base16-ocean-dark.css",
+    "stem": "highlight-base16-ocean-dark"
   },
   {
     "extension": "css",
-    "file_move_type": "Copy",
+    "file_move_type": "TransformCSS",
     "folder": "styles",
+    "input_path": "styles/highlight-base16-ocean-light.css",
     "name": "highlight-base16-ocean-light.css",
     "output_folder": "styles",
-    "output_name": "highlight-base16-ocean-light.css"
+    "output_name": "highlight-base16-ocean-light.css",
+    "stem": "highlight-base16-ocean-light"
   },
   {
     "extension": "css",
-    "file_move_type": "Copy",
+    "file_move_type": "TransformCSS",
     "folder": "styles",
+    "input_path": "styles/main.css",
     "name": "main.css",
     "output_folder": "styles",
-    "output_name": "main.css"
+    "output_name": "main.css",
+    "stem": "main"
   },
   {
     "extension": "md",
     "file_move_type": "Copy",
     "folder": "tests",
+    "input_path": "tests/README.md",
     "name": "README.md",
     "output_folder": "tests",
-    "output_name": "README.md"
-  },
-  {
-    "extension": "json",
-    "file_move_type": "Copy",
-    "folder": "tests/0010-js-is-processed",
-    "name": "0010-data.json",
-    "output_folder": "tests/0010-js-is-processed",
-    "output_name": "0010-data.json"
-  },
-  {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "tests/0010-js-is-processed",
-    "name": "got.js",
-    "output_folder": "tests/0010-js-is-processed",
-    "output_name": "got.js"
-  },
-  {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "tests/0010-js-is-processed",
-    "name": "target.js",
-    "output_folder": "tests/0010-js-is-processed",
-    "output_name": "target.js"
+    "output_name": "README.md",
+    "stem": "README"
   }
 ]
 </pre>
 </details>
-
-<h2>Tests</h2>
-<p>
-  Not sure how to automate testing yet. For now, 
-  manually look at: 
-<div>
-function test0010() {
-  console.log(`Expected: ping`);
-  console.log(`
-Result: ping
-`);
-}</div>
-<div>
-function test0010() {
-  console.log(`Expected: ping`);
-  console.log(`
-Result: ping
-`);
-}</div>
-</p>
 
 
 <h2>Test Transforming .txt Files</h2>
 <div>
   This should say something about it working here:
 Processing .txt files with MiniJinja Worked!</div>
-
-
 
 
 <h2>Release Notes</h2>

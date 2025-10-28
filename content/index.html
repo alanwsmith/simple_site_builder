@@ -20,6 +20,15 @@ if you want to check it out or tinker with it.
 
 ## TODO/Goals:
 
+- [] Set up a way to configure individual files
+other than `.html`, `.txt`, and `.css` to
+go through a transform process. (default is
+not to)
+
+- [] set up a way to configure individaul
+files that would be transformed so that
+they aren't. 
+
 - [] Add automated tests
 
 - [x] Single binary that can be run
@@ -82,6 +91,10 @@ line.
 
 - [x] Provide a pre-build find/replace to change
 out basic string matches. 
+
+- [x] Send .txt files through the transformer
+
+- [] Send .css files through the transformer 
 
 - [] Set up a way to do JavaScript includes
  with a JavaScript comment so you can do them 
@@ -181,7 +194,7 @@ you want to include? Is that safe?)
 
 - [x] Load any `.json` file in the content
 directory so it's data can be accessed
-in templates via `data.["FILENAME"].whatever`
+in templates via `data.["FILE_STEM"].whatever`.
 
 - [x] Run basic find/replace over files
 to update text strings. (Note that there's
@@ -226,8 +239,6 @@ I've added to my zsh config file.
 that includes the release binary file. 
 
 
-
-
 ## Examples
 
 These examples cover the basics. 
@@ -236,6 +247,8 @@ the input.
 [! endfilter !]
 
 <h2>Automatically Loaded Data</h2>
+
+<div>[@ data._config.txtTest @]</div>
 
 <pre>
 [@ data|tojson(true) @]
@@ -345,26 +358,12 @@ This should say `TEST_VAR_3_WORKED` in the array:
 </pre>
 </details>
 
-<h2>Tests</h2>
-<p>
-  Not sure how to automate testing yet. For now, 
-  manually look at: 
-<div>
-  [! include "tests/0010-js-is-processed/target.js" !]
-</div>
-<div>
-  [! include "tests/0010-js-is-processed/got.js" !]
-</div>
-</p>
-
 
 <h2>Test Transforming .txt Files</h2>
 <div>
   This should say something about it working here:
   [! include "_includes/txt-test.txt" !]
 </div>
-
-
 
 
 <h2>Release Notes</h2>

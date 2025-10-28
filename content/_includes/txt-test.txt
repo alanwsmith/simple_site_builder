@@ -1,1 +1,1 @@
-[@ data["_config.json"].txtTest @]
+[@ data._config.txtTest @]

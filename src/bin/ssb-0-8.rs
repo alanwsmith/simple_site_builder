@@ -1,7 +1,9 @@
 use anyhow::{Result, anyhow};
 use chrono::{DateTime, Local};
 use port_check::free_local_port_in_range;
+use simple_site_builder::builder::utils::DataNode;
 use simple_site_builder::*;
+// use std::collections::BTreeMap;
 use std::path::PathBuf;
 use tokio::sync::mpsc;
 use tower_livereload::LiveReloadLayer;
@@ -37,8 +39,13 @@ async fn main() -> Result<()> {
     let _ = server.start(live_reload).await;
   });
 
-  let mut builder =
-    Builder::new(config.clone(), reloader, rx, port);
+  let mut builder = Builder::new(
+    config.clone(),
+    reloader,
+    rx,
+    port,
+    DataNode::new(),
+  );
   let builder_handle = tokio::spawn(async move {
     let _ = builder.start().await;
   });

@@ -1,4 +1,5 @@
 pub mod copy_file_with_mkdir;
+pub mod data_node;
 pub mod empty_dir;
 pub mod error_html;
 pub mod error_text;
@@ -17,6 +18,7 @@ pub mod trim_empty_leading_lines;
 pub mod write_file_with_mkdir;
 
 pub use self::copy_file_with_mkdir::*;
+pub use self::data_node::*;
 pub use self::empty_dir::*;
 pub use self::error_html::*;
 pub use self::error_text::*;
