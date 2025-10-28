@@ -52,10 +52,14 @@ that should be made is turning <code>.md</code> into
 <code>.html</code>?</p>
 </li>
 <li>
-<p>[] Run files through transform twice
+<p>[x] Run files through transform twice
 raw() function so you can pass
 the open and close tokens to
 the second process.</p>
+</li>
+<li>
+<p>[x] can use [@ raw(&quot;minijinja stuff here&quot;) @]to pass tokens to the second pass
+of the transformation</p>
 </li>
 <li>
 <p>[x] Single binary that can be run
@@ -1086,6 +1090,10 @@ newEl.innerHTML = transformJsTest();
 document.querySelector("#jsOut").appendChild(newEl);
 </script>
 
+
+<h2>Test Raw</h2>
+
+<div>new</div>
 
 
 

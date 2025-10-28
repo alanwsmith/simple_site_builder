@@ -48,92 +48,54 @@ impl Builder {
     info!("Building site on port {}.", &self.port);
     empty_dir(&self.config.build_files_dir())?;
     empty_dir(&self.config.output_root)?;
-
     info!("Initial Pass: Loading File List...");
     let file_list =
       get_file_list(&self.config.content_root);
-
     info!("Initial Pass: Copying files...");
     let _ = &self.copy_files(
       &file_list,
       &self.config.content_root.clone(),
       &self.config.build_files_dir(),
     )?;
-
     info!("Initial Pass: Moving JavaScript Files...");
     let _ = &self.copy_js(
       &file_list,
       &self.config.content_root.clone(),
       &self.config.build_files_dir(),
     )?;
-
     info!("Initial Pass: Transform Files...");
     let _ = &self.transform_html_and_txt(
       &file_list,
       &self.config.content_root.clone(),
       &self.config.build_files_dir(),
     )?;
-
     info!("Output Pass: Loading File List...");
     let output_file_list =
       get_file_list(&self.config.content_root);
-
     info!("Initial Pass: Copying files...");
     let _ = &self.copy_files(
       &output_file_list,
       &self.config.build_files_dir(),
       &self.config.output_root.clone(),
     )?;
-
     info!("Initial Pass: Moving JavaScript Files...");
     let _ = &self.copy_js(
       &output_file_list,
       &self.config.build_files_dir(),
       &self.config.output_root.clone(),
     )?;
-
     info!("Initial Pass: Transform Files...");
     let _ = &self.transform_html_and_txt(
       &output_file_list,
       &self.config.build_files_dir(),
       &self.config.output_root.clone(),
     )?;
-
-    //
-
-    // info!("Copying files.");
-    // let _ = &self.copy_files(&file_list)?;
-    // info!("Copying JavaScript Files.");
-    // let _ = &self.copy_js(&file_list)?;
-
-    // self.prep_build_files(
-    //   &self.config.content_root,
-    //   &self.config.build_files_dir(),
-    // )?;
-
-    // let file_list =
-    //   file_list(&self.config.build_files_dir());
-    // info!("Transforming HTML and TXT.");
-    // let _ = &self.transform_html_and_txt(
-    //   &file_list,
-    //   &self.config.build_files_dir(),
-    // )?;
-    // info!("Copying files.");
-    // let _ = &self.copy_files(&file_list)?;
-    // info!("Copying JavaScript Files.");
-    // let _ = &self.copy_js(&file_list)?;
-
-    // NOTE: Keeping the .build-files directory
-    // around for now to help with debugging
-    // the builder.
-    // empty_dir(&self.config.build_files_dir())?;
-
+    empty_dir(&self.config.build_files_dir())?;
     info!(
       r#"Build complete. Reloading browser on port {}."#,
       self.port
     );
     let _ = &self.reloader.reload();
-
     Ok(())
   }
 
@@ -239,9 +201,10 @@ impl Builder {
   ) -> Result<()> {
     let folders = folder_list(input_root);
     let mut env = get_env(&input_root.clone());
-    env.add_function("highlight_file", highlight_file);
     env.add_function("highlight_code", highlight_code);
+    env.add_function("highlight_file", highlight_file);
     env.add_function("markdown_file", markdown_file);
+    // env.add_function("raw", raw);
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
@@ -274,6 +237,8 @@ impl Builder {
 
         match env.get_template(&template_name) {
           Ok(template) => match template.render(context!(
+            raw => Value::from_function(|input: &str|
+              Value::from_safe_string(String::from(input))),
             json => json,
             files => file_list_as_value,
             folders => folders_as_value,

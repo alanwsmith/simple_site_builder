@@ -26,10 +26,14 @@ where you want it to go. The only change
 that should be made is turning `.md` into
 `.html`?
 
-- [] Run files through transform twice
+- [x] Run files through transform twice
 raw() function so you can pass
 the open and close tokens to 
 the second process. 
+
+- [x] can use [!raw!][@ raw('[@') @][!endraw!] raw("minijinja stuff here") [!raw!][@ raw('@]') @][!endraw!]
+to pass tokens to the second pass
+of the transformation 
 
 - [x] Single binary that can be run
 downloaded and run from the command 
@@ -373,6 +377,10 @@ newEl.innerHTML = transformJsTest();
 document.querySelector("#jsOut").appendChild(newEl);
 </script>
 
+
+<h2>Test Raw</h2>
+
+<div>[@ raw('[@ "new" @]') @]</div>
 
 
 
