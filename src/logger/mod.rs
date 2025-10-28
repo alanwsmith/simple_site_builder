@@ -9,7 +9,9 @@ use tracing::Subscriber;
 use tracing::metadata::LevelFilter;
 use tracing::span;
 use tracing_appender::non_blocking::WorkerGuard;
-use tracing_appender::rolling::{RollingFileAppender, Rotation};
+use tracing_appender::rolling::{
+  RollingFileAppender, Rotation,
+};
 use tracing_subscriber::fmt;
 use tracing_subscriber::fmt::FmtContext;
 use tracing_subscriber::fmt::FormatEvent;
@@ -102,28 +104,30 @@ impl Logger {
   }
 
   pub fn init(mut self) -> Vec<WorkerGuard> {
-    let json_dir_layer = match (&self.json_dir, &self.json_level) {
-      (Some(dir), Some(level)) => {
-        let file_appender = RollingFileAppender::builder()
-          .rotation(Rotation::DAILY)
-          .filename_suffix("json.log")
-          .max_log_files(2)
-          .build(dir)
-          .expect("could not make file appender");
-        let (file_writer, log_guard) =
-          tracing_appender::non_blocking(file_appender);
-        self.guards.push(log_guard);
-        let file_layer_format =
-          tracing_subscriber::fmt::format().json();
-        let layer = fmt::Layer::default()
-          .event_format(file_layer_format)
-          .with_writer(file_writer)
-          .json() // migth be able to remove .json since other format is ready in palce
-          .with_filter(*level);
-        Some(layer)
-      }
-      _ => None,
-    };
+    let json_dir_layer =
+      match (&self.json_dir, &self.json_level) {
+        (Some(dir), Some(level)) => {
+          let file_appender =
+            RollingFileAppender::builder()
+              .rotation(Rotation::DAILY)
+              .filename_suffix("json.log")
+              .max_log_files(2)
+              .build(dir)
+              .expect("could not make file appender");
+          let (file_writer, log_guard) =
+            tracing_appender::non_blocking(file_appender);
+          self.guards.push(log_guard);
+          let file_layer_format =
+            tracing_subscriber::fmt::format().json();
+          let layer = fmt::Layer::default()
+            .event_format(file_layer_format)
+            .with_writer(file_writer)
+            .json() // migth be able to remove .json since other format is ready in palce
+            .with_filter(*level);
+          Some(layer)
+        }
+        _ => None,
+      };
 
     let stderr_layer = match self.stderr {
       Some(level) => {
@@ -148,33 +152,36 @@ impl Logger {
       None => None,
     };
 
-    let txt_dir_layer = match (&self.txt_dir, &self.txt_level) {
-      (Some(dir), Some(level)) => {
-        let file_appender = RollingFileAppender::builder()
-          .rotation(Rotation::DAILY)
-          .filename_suffix("log")
-          .max_log_files(2)
-          .build(dir)
-          .expect("could not make file appender");
-        let (file_writer, log_guard) =
-          tracing_appender::non_blocking(file_appender);
-        self.guards.push(log_guard);
-        let file_layer_format = MiniFormat;
+    let txt_dir_layer =
+      match (&self.txt_dir, &self.txt_level) {
+        (Some(dir), Some(level)) => {
+          let file_appender =
+            RollingFileAppender::builder()
+              .rotation(Rotation::DAILY)
+              .filename_suffix("log")
+              .max_log_files(2)
+              .build(dir)
+              .expect("could not make file appender");
+          let (file_writer, log_guard) =
+            tracing_appender::non_blocking(file_appender);
+          self.guards.push(log_guard);
+          let file_layer_format = MiniFormat;
 
-        let layer = fmt::Layer::default()
-          .event_format(file_layer_format)
-          .with_writer(file_writer)
-          .with_filter(*level);
-        Some(layer)
-      }
-      _ => None,
-    };
+          let layer = fmt::Layer::default()
+            .event_format(file_layer_format)
+            .with_writer(file_writer)
+            .with_filter(*level);
+          Some(layer)
+        }
+        _ => None,
+      };
 
-    let subscriber = tracing_subscriber::Registry::default()
-      .with(json_dir_layer)
-      .with(stderr_layer)
-      .with(stdout_layer)
-      .with(txt_dir_layer);
+    let subscriber =
+      tracing_subscriber::Registry::default()
+        .with(json_dir_layer)
+        .with(stderr_layer)
+        .with(stdout_layer)
+        .with(txt_dir_layer);
 
     tracing::subscriber::set_global_default(subscriber)
       .expect("unable to set global subscriber");
@@ -207,36 +214,45 @@ where
   ) -> Result {
     let meta = event.metadata();
 
-    let _ = SystemTime.format_time(&mut writer);
-    write!(
-      writer,
-      "|{}",
-      meta.level().as_str().chars().take(1).collect::<Vec<char>>()
-        [0]
-    )?;
-    if let Some(filename) = meta.file() {
-      write!(writer, "|{}", filename)?;
-    }
-
-    if let Some(line_number) = meta.line() {
-      write!(writer, "|{}", line_number,)?;
-    }
-
-    let fmt_ctx = { FmtCtx::new(ctx, event.parent()) };
-    write!(writer, "{}", fmt_ctx)?;
-    writeln!(writer)?;
+    writeln!(writer, "#####")?;
 
     ctx.format_fields(writer.by_ref(), event)?;
-    for span in
-      ctx.event_scope().into_iter().flat_map(Scope::from_root)
+    for span in ctx
+      .event_scope()
+      .into_iter()
+      .flat_map(Scope::from_root)
     {
       let exts = span.extensions();
-      if let Some(fields) = exts.get::<FormattedFields<N>>() {
+      if let Some(fields) =
+        exts.get::<FormattedFields<N>>()
+      {
         if !fields.is_empty() {
           write!(writer, " {}", &fields.fields)?;
         }
       }
     }
+    writeln!(writer)?;
+
+    write!(writer, "  at: ")?;
+    let _ = SystemTime.format_time(&mut writer);
+    write!(
+      writer,
+      "|{}",
+      meta
+        .level()
+        .as_str()
+        .chars()
+        .take(1)
+        .collect::<Vec<char>>()[0]
+    )?;
+    if let Some(filename) = meta.file() {
+      write!(writer, "|{}", filename)?;
+    }
+    if let Some(line_number) = meta.line() {
+      write!(writer, "|{}", line_number,)?;
+    }
+    let fmt_ctx = { FmtCtx::new(ctx, event.parent()) };
+    write!(writer, "{}", fmt_ctx)?;
     writeln!(writer)?;
 
     Ok(())
@@ -283,13 +299,18 @@ where
       .and_then(|id| self.ctx.span(id))
       .or_else(|| self.ctx.lookup_current());
 
-    let scope =
-      span.into_iter().flat_map(|span| span.scope().from_root());
+    let scope = span
+      .into_iter()
+      .flat_map(|span| span.scope().from_root());
 
     for span in scope {
       seen = true;
 
-      write!(f, "|{}", bold.paint(span.metadata().name()))?;
+      write!(
+        f,
+        "|{}",
+        bold.paint(span.metadata().name())
+      )?;
     }
 
     if seen {

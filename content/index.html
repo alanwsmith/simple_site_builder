@@ -20,7 +20,7 @@ if you want to check it out or tinker with it.
 
 ## TODO/Goals:
 
-- [] Drop automatically making `.html` files
+- [x] Drop automatically making `.html` files
 be directories. Just put everything
 where you want it to go. The only change
 that should be made is turning `.md` into
@@ -77,14 +77,6 @@ providing links)
 - [x] Provide folder listing (e.g. that
 can be used to include all files in
 a folder)
-
-- [x] Automatically move .html files that
-aren't `index.html` into a folder with 
-their filename and put the contents in
-a corresponding `FOLDER-NAME/index.html` file
-(e.g. `sub-dir/about.html` becomes `sub-dir/about/index.html`).
-This helps improve portability if the site
-is moved or switched to another builder/framework.
 
 - [x] Copy non-html and non-md files directly. 
 
@@ -149,16 +141,7 @@ so that if multiple changes occur
 within like 100ms it only triggers
 one build. 
 
-- [] Document the `config/find-replace.txt`
-directory
-
-- [] Move these TODOs into the index.html file
-
-- [x] Process `.js` files as templates. 
-
-- [] Maybe: Provide for a comment at the top
-of `.js` files that prevents then
-from being processed as templates. 
+- [x] Process `.mj.js` files as templates. 
 
 - [x] Don't pre-highlight files. Or, maybe
 cache them if you do? The process bogs
@@ -200,17 +183,9 @@ you want to include? Is that safe?)
 directory so it's data can be accessed
 in templates via `data.["FILE_STEM"].whatever`.
 
-- [x] Run basic find/replace over files
-to update text strings. (Note that there's
-no escaping. Changing names is the way
-to avoid collisions)
-
 - [] Set up a function to call out to
 `support/plugins` processes. 
 
-- [x] Use the `support/find-replace` dir to 
-set up find and replace strings to do in
-files. 
 
 ## Release Build Process
 
