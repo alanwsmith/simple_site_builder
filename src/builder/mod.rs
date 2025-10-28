@@ -1,3 +1,4 @@
+#![allow(unused)]
 pub mod prep_build_files;
 pub mod utils;
 
@@ -7,6 +8,7 @@ use anyhow::Result;
 use chrono::{DateTime, Local};
 use minijinja::Value;
 use minijinja::context;
+use serde::Serialize;
 use std::collections::BTreeMap;
 use std::fs;
 use tokio::sync::mpsc::Receiver;
@@ -18,6 +20,7 @@ pub struct Builder {
   pub reloader: Reloader,
   pub rx: Receiver<DateTime<Local>>,
   pub port: u16,
+  pub data: DataNode,
 }
 
 impl Builder {
@@ -26,17 +29,20 @@ impl Builder {
     reloader: Reloader,
     rx: Receiver<DateTime<Local>>,
     port: u16,
+    data: DataNode,
   ) -> Builder {
     Builder {
       config,
       reloader,
       rx,
       port,
+      data,
     }
   }
 
-  pub fn build_site(&self) -> Result<()> {
+  pub fn build_site(&mut self) -> Result<()> {
     let _ = clearscreen::clear();
+    self.data = DataNode::new();
     info!("Building site on port {}.", &self.port);
     empty_dir(&self.config.build_files_dir())?;
     empty_dir(&self.config.output_root)?;
@@ -188,15 +194,21 @@ impl Builder {
   //   Ok(())
   // }
 
-  pub fn add_data() {}
+  // pub fn add_data(
+  //   &mut self,
+  //   data: Value,
+  //   chain: Vec<String>,
+  // ) {
+  //   // dbg!(&details.dir_path_strings());
+  //   // dbg!(&details.stem);
+  // }
 
   pub fn load_data(
-    &self,
+    &mut self,
     file_list: &[FileDetails],
-  ) -> Value {
-    let mut data_map: BTreeMap<String, Value> =
-      BTreeMap::new();
-
+  ) {
+    // let mut data_map: BTreeMap<String, DataLevel> =
+    //   BTreeMap::new();
     file_list
       .iter()
       .filter(|details| {
@@ -210,11 +222,14 @@ impl Builder {
           Ok(json) => {
             match serde_json::from_str::<Value>(&json) {
               Ok(data) => {
-
-                // data_map.insert(
-                //   details.stem.display().to_string(),
-                //   data,
-                // );
+                let _ = &self.data.insert(
+                  &details.dir_path_strings(),
+                  data,
+                );
+                // let mut chain =
+                //   details.dir_path_strings().clone();
+                // chain.reverse();
+                //let _ = &self.add_data(data, chain);
               }
               Err(err) => {
                 println!("{}", &input_path.display());
@@ -230,8 +245,7 @@ impl Builder {
           }
         }
       });
-
-    Value::from_serialize(data_map)
+    //Value::from_serialize(&self.data)
   }
 
   pub async fn start(&mut self) -> Result<()> {
@@ -244,7 +258,7 @@ impl Builder {
   }
 
   pub fn transform_html_and_txt(
-    &self,
+    &mut self,
     file_list: &[FileDetails],
   ) -> Result<()> {
     let folders =
@@ -260,9 +274,9 @@ impl Builder {
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
     info!("Loading data.");
-    let data = self.load_data(file_list);
+    self.load_data(file_list);
+    let data = Value::from_serialize(self.data.clone());
     file_list.iter().for_each(|details| {
-      // dbg!(&details.file_move_type);
       if details.file_move_type
         == FileMoveType::TransformHtml
         || details.file_move_type
@@ -284,7 +298,7 @@ impl Builder {
         );
         match env.get_template(&template_name) {
           Ok(template) => match template.render(context!(
-            data => data,
+            data =>data,
             files => file_list_as_value,
             folders => folders_as_value,
             file => Value::from_serialize(details),
