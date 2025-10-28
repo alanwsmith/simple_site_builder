@@ -8,17 +8,19 @@ pub enum FileMoveType {
   Skip,
   TransformHtml,
   TransformTxt,
+  TransformCSS,
   CopyAndMinifyJavaScript,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct FileDetails {
   pub extension: Option<String>,
+  pub file_move_type: FileMoveType,
   pub folder: PathBuf,
   pub name: PathBuf,
   pub output_folder: Option<PathBuf>,
   pub output_name: Option<PathBuf>,
-  pub file_move_type: FileMoveType,
+  pub stem: PathBuf,
 }
 
 impl FileDetails {
@@ -27,6 +29,7 @@ impl FileDetails {
       FileDetails::get_extension(input_path);
     let folder = FileDetails::get_input_dir(input_path);
     let name = FileDetails::get_input_name(input_path);
+    let stem = FileDetails::get_input_stem(input_path);
     let output_folder =
       FileDetails::get_output_dir(input_path);
     let output_name =
@@ -35,11 +38,25 @@ impl FileDetails {
       FileDetails::get_file_move_type(input_path);
     FileDetails {
       extension,
+      file_move_type,
       folder,
       name,
       output_folder,
       output_name,
-      file_move_type,
+      stem,
+    }
+  }
+
+  pub fn dir_path_strings(
+    input: &PathBuf
+  ) -> Vec<String> {
+    if let Some(parent) = input.parent() {
+      parent
+        .iter()
+        .map(|p| p.to_string_lossy().to_string())
+        .collect()
+    } else {
+      vec![]
     }
   }
 
@@ -59,6 +76,10 @@ impl FileDetails {
     input_path.parent().unwrap().into()
   }
 
+  pub fn get_input_stem(input_path: &Path) -> PathBuf {
+    input_path.file_stem().unwrap().into()
+  }
+
   pub fn get_file_move_type(
     input_path: &Path
   ) -> FileMoveType {
@@ -72,6 +93,8 @@ impl FileDetails {
         Some(ext) => {
           if ext == "html" {
             FileMoveType::TransformHtml
+          } else if ext == "css" {
+            FileMoveType::TransformCSS
           } else if ext == "txt" {
             FileMoveType::TransformTxt
           } else if ext == "js" {
@@ -168,7 +191,8 @@ mod test {
     "index.html",
     "",
     "index.html",
-    FileMoveType::TransformHtml
+    FileMoveType::TransformHtml,
+    "index"
   )]
   fn file_details_integration_test(
     #[case] extension: &str,
@@ -178,6 +202,7 @@ mod test {
     #[case] output_folder: &str,
     #[case] output_name: &str,
     #[case] file_move_type: FileMoveType,
+    #[case] stem: &str,
   ) {
     let left = FileDetails {
       extension: Some(extension.to_string()),
@@ -185,6 +210,7 @@ mod test {
       name: PathBuf::from(name),
       output_folder: Some(PathBuf::from(output_folder)),
       output_name: Some(PathBuf::from(output_name)),
+      stem: PathBuf::from(stem),
       file_move_type,
     };
     let right =
@@ -341,6 +367,17 @@ mod test {
     let got = FileDetails::get_output_dir(
       &PathBuf::from(input_path),
     );
+    assert_eq!(expected, got);
+  }
+
+  #[rstest]
+  #[case(&PathBuf::from("index.html"), vec![])]
+  #[case(&PathBuf::from("test/index.html"), vec!["test".to_string()])]
+  fn solo_dir_path_strings_test(
+    #[case] given: &PathBuf,
+    #[case] expected: Vec<String>,
+  ) {
+    let got = FileDetails::dir_path_strings(given);
     assert_eq!(expected, got);
   }
 

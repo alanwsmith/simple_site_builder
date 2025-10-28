@@ -20,6 +20,15 @@ if you want to check it out or tinker with it.
 
 ## TODO/Goals:
 
+- [] Set up a way to configure individual files
+other than `.html`, `.txt`, and `.css` to
+go through a transform process. (default is
+not to)
+
+- [] set up a way to configure individaul
+files that would be transformed so that
+they aren't. 
+
 - [] Add automated tests
 
 - [x] Single binary that can be run
@@ -82,6 +91,10 @@ line.
 
 - [x] Provide a pre-build find/replace to change
 out basic string matches. 
+
+- [x] Send .txt files through the transformer
+
+- [] Send .css files through the transformer 
 
 - [] Set up a way to do JavaScript includes
  with a JavaScript comment so you can do them 
@@ -181,7 +194,7 @@ you want to include? Is that safe?)
 
 - [x] Load any `.json` file in the content
 directory so it's data can be accessed
-in templates via `data.["FILENAME"].whatever`
+in templates via `data.["FILE_STEM"].whatever`.
 
 - [x] Run basic find/replace over files
 to update text strings. (Note that there's

@@ -188,12 +188,15 @@ impl Builder {
   //   Ok(())
   // }
 
+  pub fn add_data() {}
+
   pub fn load_data(
     &self,
     file_list: &[FileDetails],
   ) -> Value {
     let mut data_map: BTreeMap<String, Value> =
       BTreeMap::new();
+
     file_list
       .iter()
       .filter(|details| {
@@ -207,10 +210,11 @@ impl Builder {
           Ok(json) => {
             match serde_json::from_str::<Value>(&json) {
               Ok(data) => {
-                data_map.insert(
-                  key.display().to_string(),
-                  data,
-                );
+
+                // data_map.insert(
+                //   details.stem.display().to_string(),
+                //   data,
+                // );
               }
               Err(err) => {
                 println!("{}", &input_path.display());
@@ -226,6 +230,7 @@ impl Builder {
           }
         }
       });
+
     Value::from_serialize(data_map)
   }
 
@@ -262,6 +267,8 @@ impl Builder {
         == FileMoveType::TransformHtml
         || details.file_move_type
           == FileMoveType::TransformTxt
+        || details.file_move_type
+          == FileMoveType::TransformCSS
       {
         let template_name = details
           .folder
