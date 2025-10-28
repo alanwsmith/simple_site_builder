@@ -9,6 +9,7 @@ pub enum FileMoveType {
   TransformHtml,
   TransformTxt,
   TransformCSS,
+  TransformAndMinifyJavaScript,
   CopyAndMinifyJavaScript,
 }
 
@@ -100,7 +101,26 @@ impl FileDetails {
           } else if ext == "txt" {
             FileMoveType::TransformTxt
           } else if ext == "js" {
-            FileMoveType::CopyAndMinifyJavaScript
+            match input_path.file_stem() {
+              Some(stem) => {
+                let check_path = PathBuf::from(stem);
+                match check_path.extension() {
+                  Some(ext2) => {
+                    if ext2 == "mj" {
+                      FileMoveType::TransformAndMinifyJavaScript
+                    } else {
+                      FileMoveType::CopyAndMinifyJavaScript
+                    }
+                  }
+                  None => {
+                    FileMoveType::CopyAndMinifyJavaScript
+                  }
+                }
+              }
+              None => {
+                FileMoveType::CopyAndMinifyJavaScript
+              }
+            }
           } else {
             FileMoveType::Copy
           }

@@ -45,17 +45,6 @@ if you want to check it out or tinker with it.</p>
 <h2>TODO/Goals:</h2>
 <ul>
 <li>
-<p>[] Set up a way to configure individual files
-other than <code>.html</code>, <code>.txt</code>, and <code>.css</code> to
-go through a transform process. (default is
-not to)</p>
-</li>
-<li>
-<p>[] set up a way to configure individaul
-files that would be transformed so that
-they aren't.</p>
-</li>
-<li>
 <p>[] Add automated tests</p>
 </li>
 <li>
@@ -139,14 +128,11 @@ out basic string matches.</p>
 <p>[x] Send .txt files through the transformer</p>
 </li>
 <li>
-<p>[] Send .css files through the transformer</p>
+<p>[x] Send .css files through the transformer</p>
 </li>
 <li>
-<p>[] Set up a way to do JavaScript includes
-with a JavaScript comment so you can do them
-inside existing JS files and still get formatters
-to work (which they don't if you do a MiniJinja
-style include)</p>
+<p>[x] Send file with <code>.mj.js</code> extensions though
+the MiniJinja transform</p>
 </li>
 <li>
 <p>[x] Automatically load .json files to use as
@@ -553,6 +539,10 @@ This should say `TEST_VAR_3_WORKED` in the array:
   },
   {
     "name": "0.8.0",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "name": "0.8.1",
     "parent": "releases/aarch64-apple-darwin"
   }
 ]
@@ -994,6 +984,26 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "stem": "ssb-0-8"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.8.1",
+    "input_path": "releases/aarch64-apple-darwin/0.8.1/ssb-0-8",
+    "name": "ssb-0-8",
+    "output_folder": "releases/aarch64-apple-darwin/0.8.1",
+    "output_name": "ssb-0-8",
+    "stem": "ssb-0-8"
+  },
+  {
+    "extension": "js",
+    "file_move_type": "TransformAndMinifyJavaScript",
+    "folder": "scripts",
+    "input_path": "scripts/transform.mj.js",
+    "name": "transform.mj.js",
+    "output_folder": "scripts",
+    "output_name": "transform.mj.js",
+    "stem": "transform.mj"
+  },
+  {
     "extension": "css",
     "file_move_type": "TransformCSS",
     "folder": "styles",
@@ -1042,6 +1052,17 @@ This should say `TEST_VAR_3_WORKED` in the array:
 <div>
   This should say something about it working here:
 Processing .txt files with MiniJinja Worked!</div>
+
+<h2>Test Transform JS with `.mj.js` extension</h2>
+<div id="jsOut"></div>
+<script src="/scripts/transform.mj.js"></script>
+<script>
+const newEl = document.createElement("div");
+newEl.innerHTML = transformJsTest();
+document.querySelector("#jsOut").appendChild(newEl);
+</script>
+
+
 
 
 <h2>Release Notes</h2>
