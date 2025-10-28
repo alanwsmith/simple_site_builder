@@ -71,7 +71,7 @@ impl Builder {
     )?;
     info!("Output Pass: Loading File List...");
     let output_file_list =
-      get_file_list(&self.config.content_root);
+      get_file_list(&self.config.build_files_dir());
     info!("Initial Pass: Copying files...");
     let _ = &self.copy_files(
       &output_file_list,
@@ -204,7 +204,6 @@ impl Builder {
     env.add_function("highlight_code", highlight_code);
     env.add_function("highlight_file", highlight_file);
     env.add_function("markdown_file", markdown_file);
-    // env.add_function("raw", raw);
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
@@ -237,17 +236,22 @@ impl Builder {
 
         match env.get_template(&template_name) {
           Ok(template) => match template.render(context!(
-            raw => Value::from_function(|input: &str|
-              Value::from_safe_string(String::from(input))),
             json => json,
             files => file_list_as_value,
             folders => folders_as_value,
             file => Value::from_serialize(details),
           )) {
             Ok(content) => {
+              let output_content = content
+                .replace("{!", "[!")
+                .replace("!}", "!]")
+                .replace("{@", "[@")
+                .replace("@}", "@]")
+                .replace("{#", "[#")
+                .replace("#}", "#]");
               let _ = write_file_with_mkdir(
                 output_path,
-                &content,
+                &output_content,
               );
             }
             Err(err) => {

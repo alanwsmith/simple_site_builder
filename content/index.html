@@ -31,9 +31,10 @@ raw() function so you can pass
 the open and close tokens to 
 the second process. 
 
-- [x] can use [!raw!][@ raw('[@') @][!endraw!] raw("minijinja stuff here") [!raw!][@ raw('@]') @][!endraw!]
+- [x] can use `{` and `}`
+instead of `[` and `]`  
 to pass tokens to the second pass
-of the transformation 
+of the transformation.
 
 - [x] Single binary that can be run
 downloaded and run from the command 
@@ -380,9 +381,7 @@ document.querySelector("#jsOut").appendChild(newEl);
 
 <h2>Test Raw</h2>
 
-<div>[@ raw('[@ "new" @]') @]</div>
-
-
+<div>{@ "new" @}</div>
 
 <h2>Release Notes</h2>
 
@@ -393,5 +392,10 @@ document.querySelector("#jsOut").appendChild(newEl);
 [! endif !]
 [! endfor !]
 </details>
+
+<h2>JSON Data Test</h2>
+
+[@ json._config.txtTest @]
+
 
 [! endblock !]

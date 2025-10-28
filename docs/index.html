@@ -58,8 +58,10 @@ the open and close tokens to
 the second process.</p>
 </li>
 <li>
-<p>[x] can use [@ raw(&quot;minijinja stuff here&quot;) @]to pass tokens to the second pass
-of the transformation</p>
+<p>[x] can use <code>{</code> and <code>}</code>
+instead of <code>[</code> and <code>]</code><br />
+to pass tokens to the second pass
+of the transformation.</p>
 </li>
 <li>
 <p>[x] Single binary that can be run
@@ -79,7 +81,7 @@ with tokens that are easier to read (i.e.
 <code>[``!</code> <code>!``]</code>,
 <code>[``@</code> <code>@``]</code>, and
 <code>[``#</code> <code>#``]</code> instead of
-<code>{% %}</code>, <code>{{ }}</code>, and <code>{# #}</code>
+<code>{% %}</code>, <code>{{ }}</code>, and <code></code>
 )</p>
 </li>
 <li>
@@ -562,6 +564,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   {
     "name": "0.8.1",
     "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "name": "0.8.2",
+    "parent": "releases/aarch64-apple-darwin"
   }
 ]
 </pre>
@@ -1022,6 +1028,16 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "stem": "ssb-0-8"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.8.2",
+    "input_path": "releases/aarch64-apple-darwin/0.8.2/ssb-0-8",
+    "name": "ssb-0-8",
+    "output_folder": "releases/aarch64-apple-darwin/0.8.2",
+    "output_name": "ssb-0-8",
+    "stem": "ssb-0-8"
+  },
+  {
     "extension": "js",
     "file_move_type": "TransformAndMinifyJavaScript",
     "folder": "scripts",
@@ -1095,8 +1111,6 @@ document.querySelector("#jsOut").appendChild(newEl);
 
 <div>new</div>
 
-
-
 <h2>Release Notes</h2>
 
 <details>
@@ -1109,6 +1123,11 @@ Could not load file to process markdown: _release-notes/v0.5.0.md
 Could not load file to process markdown: _release-notes/v0.4.0.md
 Could not load file to process markdown: _release-notes/v0.3.0.md
 </details>
+
+<h2>JSON Data Test</h2>
+
+Processing .txt files with MiniJinja Worked!
+
 
 
       </main>
