@@ -20,7 +20,7 @@ pub struct Builder {
   pub reloader: Reloader,
   pub rx: Receiver<DateTime<Local>>,
   pub port: u16,
-  pub data: DataNode,
+  pub json: DataNode,
 }
 
 impl Builder {
@@ -29,20 +29,20 @@ impl Builder {
     reloader: Reloader,
     rx: Receiver<DateTime<Local>>,
     port: u16,
-    data: DataNode,
+    json: DataNode,
   ) -> Builder {
     Builder {
       config,
       reloader,
       rx,
       port,
-      data,
+      json,
     }
   }
 
   pub fn build_site(&mut self) -> Result<()> {
     let _ = clearscreen::clear();
-    self.data = DataNode::new();
+    self.json = DataNode::new();
     info!("Building site on port {}.", &self.port);
     empty_dir(&self.config.build_files_dir())?;
     empty_dir(&self.config.output_root)?;
@@ -141,8 +141,8 @@ impl Builder {
   //   let file_list_as_value =
   //     Value::from_serialize(file_list);
   //   let folders_as_value = Value::from_serialize(folders);
-  //   info!("Loading data.");
-  //   let data = self.load_data(file_list);
+  //   info!("Loading json .");
+  //   let data = self.load_json(file_list);
   //   file_list.iter().for_each(|details| {
   //     // dbg!(&details.file_move_type);
   //     if details.file_move_type
@@ -194,21 +194,10 @@ impl Builder {
   //   Ok(())
   // }
 
-  // pub fn add_data(
-  //   &mut self,
-  //   data: Value,
-  //   chain: Vec<String>,
-  // ) {
-  //   // dbg!(&details.dir_path_strings());
-  //   // dbg!(&details.stem);
-  // }
-
-  pub fn load_data(
+  pub fn load_json(
     &mut self,
     file_list: &[FileDetails],
   ) {
-    // let mut data_map: BTreeMap<String, DataLevel> =
-    //   BTreeMap::new();
     file_list
       .iter()
       .filter(|details| {
@@ -221,15 +210,11 @@ impl Builder {
         match fs::read_to_string(&input_path) {
           Ok(json) => {
             match serde_json::from_str::<Value>(&json) {
-              Ok(data) => {
-                let _ = &self.data.insert(
+              Ok(json) => {
+                let _ = &self.json.insert(
                   &details.dir_path_strings(),
-                  data,
+                  json,
                 );
-                // let mut chain =
-                //   details.dir_path_strings().clone();
-                // chain.reverse();
-                //let _ = &self.add_data(data, chain);
               }
               Err(err) => {
                 println!("{}", &input_path.display());
@@ -245,7 +230,6 @@ impl Builder {
           }
         }
       });
-    //Value::from_serialize(&self.data)
   }
 
   pub async fn start(&mut self) -> Result<()> {
@@ -273,9 +257,9 @@ impl Builder {
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
-    info!("Loading data.");
-    self.load_data(file_list);
-    let data = Value::from_serialize(self.data.clone());
+    info!("Loading JSONs.");
+    self.load_json(file_list);
+    let json = Value::from_serialize(self.json.clone());
     file_list.iter().for_each(|details| {
       if details.file_move_type
         == FileMoveType::TransformHtml
@@ -298,7 +282,7 @@ impl Builder {
         );
         match env.get_template(&template_name) {
           Ok(template) => match template.render(context!(
-            data =>data,
+            json => json,
             files => file_list_as_value,
             folders => folders_as_value,
             file => Value::from_serialize(details),
