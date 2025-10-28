@@ -11,6 +11,8 @@ use minijinja::context;
 use serde::Serialize;
 use std::collections::BTreeMap;
 use std::fs;
+use std::path::Path;
+use std::path::PathBuf;
 use tokio::sync::mpsc::Receiver;
 use tower_livereload::Reloader;
 use tracing::info;
@@ -46,22 +48,60 @@ impl Builder {
     info!("Building site on port {}.", &self.port);
     empty_dir(&self.config.build_files_dir())?;
     empty_dir(&self.config.output_root)?;
-    self.prep_build_files(
-      &self.config.content_root,
+
+    info!("Initial Pass: Loading File List...");
+    let file_list = file_list(&self.config.content_root);
+
+    info!("Initial Pass: Copying files...");
+    let _ = &self.copy_files(
+      &file_list,
+      &self.config.content_root.clone(),
       &self.config.build_files_dir(),
     )?;
-    let file_list =
-      file_list(&self.config.build_files_dir());
-    info!("Transforming HTML and TXT.");
-    let _ = &self.transform_html_and_txt(&file_list)?;
-    info!("Copying files.");
-    let _ = &self.copy_files(&file_list)?;
-    info!("Copying JavaScript Files.");
-    let _ = &self.copy_js(&file_list)?;
+
+    info!("Initial Pass: Moving JavaScript Files...");
+    let _ = &self.copy_js(
+      &file_list,
+      &self.config.content_root.clone(),
+      &self.config.build_files_dir(),
+    )?;
+
+    info!("Initial Pass: Transform Files...");
+    let _ = &self.transform_html_and_txt(
+      &file_list,
+      &self.config.content_root.clone(),
+      &self.config.build_files_dir(),
+    )?;
+
+    //
+
+    // info!("Copying files.");
+    // let _ = &self.copy_files(&file_list)?;
+    // info!("Copying JavaScript Files.");
+    // let _ = &self.copy_js(&file_list)?;
+
+    // self.prep_build_files(
+    //   &self.config.content_root,
+    //   &self.config.build_files_dir(),
+    // )?;
+
+    // let file_list =
+    //   file_list(&self.config.build_files_dir());
+    // info!("Transforming HTML and TXT.");
+    // let _ = &self.transform_html_and_txt(
+    //   &file_list,
+    //   &self.config.build_files_dir(),
+    // )?;
+    // info!("Copying files.");
+    // let _ = &self.copy_files(&file_list)?;
+    // info!("Copying JavaScript Files.");
+    // let _ = &self.copy_js(&file_list)?;
+
     // NOTE: Keeping the .build-files directory
     // around for now to help with debugging
     // the builder.
     // empty_dir(&self.config.build_files_dir())?;
+
     info!(
       r#"Build complete. Reloading browser on port {}."#,
       self.port
@@ -74,17 +114,15 @@ impl Builder {
   pub fn copy_files(
     &self,
     file_list: &[FileDetails],
+    input_root: &Path,
+    output_root: &Path,
   ) -> Result<()> {
     file_list.iter().for_each(|details| {
       if details.file_move_type == FileMoveType::Copy {
-        let input_path = &self
-          .config
-          .build_files_dir()
+        let input_path = &input_root
           .join(&details.folder)
           .join(&details.name);
-        let output_path = &self
-          .config
-          .output_root
+        let output_path = &output_root
           .join(details.output_folder.as_ref().unwrap())
           .join(details.output_name.as_ref().unwrap());
         let _ =
@@ -97,6 +135,8 @@ impl Builder {
   pub fn copy_js(
     &self,
     file_list: &[FileDetails],
+    input_root: &Path,
+    output_root: &Path,
   ) -> Result<()> {
     // TODO: Set up a minifier at some point
     // when you get one that works (the rust one
@@ -105,14 +145,10 @@ impl Builder {
       if details.file_move_type
         == FileMoveType::CopyAndMinifyJavaScript
       {
-        let input_path = &self
-          .config
-          .build_files_dir()
+        let input_path = &input_root
           .join(&details.folder)
           .join(&details.name);
-        let output_path = &self
-          .config
-          .output_root
+        let output_path = &output_root
           .join(details.output_folder.as_ref().unwrap())
           .join(details.output_name.as_ref().unwrap());
         let _ =
@@ -125,6 +161,7 @@ impl Builder {
   pub fn load_json(
     &mut self,
     file_list: &[FileDetails],
+    input_root: &Path,
   ) {
     file_list
       .iter()
@@ -133,8 +170,7 @@ impl Builder {
       })
       .for_each(|details| {
         let key = details.folder.join(&details.name);
-        let input_path =
-          self.config.build_files_dir().join(&key);
+        let input_path = input_root.join(&key);
         match fs::read_to_string(&input_path) {
           Ok(json) => {
             match serde_json::from_str::<Value>(&json) {
@@ -172,13 +208,11 @@ impl Builder {
   pub fn transform_html_and_txt(
     &mut self,
     file_list: &[FileDetails],
+    input_root: &PathBuf,
+    output_root: &Path,
   ) -> Result<()> {
-    let folders =
-      folder_list(&self.config.build_files_dir());
-    // TODO: Hoist get_env so you only call it
-    // once per build (e.g. not again in the copy
-    // javascript or other files stuff)
-    let mut env = get_env(&self.config.build_files_dir());
+    let folders = folder_list(input_root);
+    let mut env = get_env(&input_root.clone());
     env.add_function("highlight_file", highlight_file);
     env.add_function("highlight_code", highlight_code);
     env.add_function("markdown_file", markdown_file);
@@ -186,7 +220,7 @@ impl Builder {
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
     info!("Loading JSONs.");
-    self.load_json(file_list);
+    self.load_json(file_list, &input_root.clone());
     let json = Value::from_serialize(self.json.clone());
     file_list.iter().for_each(|details| {
       if details.file_move_type
@@ -203,13 +237,15 @@ impl Builder {
           .join(&details.name)
           .display()
           .to_string();
-        let output_path = &self.config.output_root.join(
+        let output_path = &output_root.join(
           details
             .output_folder
             .clone()
             .unwrap()
             .join(details.output_name.clone().unwrap()),
         );
+        println!("{}", output_path.display());
+
         match env.get_template(&template_name) {
           Ok(template) => match template.render(context!(
             json => json,
@@ -239,6 +275,8 @@ impl Builder {
             );
           }
         }
+
+        //
       }
     });
     Ok(())

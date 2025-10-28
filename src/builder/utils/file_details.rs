@@ -361,7 +361,7 @@ mod test {
   #[case("sub-dir/data.json", "sub-dir")]
   #[case("sub-dir/.data.json", "sub-dir")]
   #[case(".sub-dir/data.json", ".sub-dir")]
-  fn solo_get_output_dir_valid_test_non_html(
+  fn get_output_dir_valid_test_non_html(
     #[case] input_path: &str,
     #[case] target: &str,
   ) {

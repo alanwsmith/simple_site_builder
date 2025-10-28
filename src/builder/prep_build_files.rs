@@ -1,3 +1,7 @@
+// TODO: Deprecate. This was for find and
+// replace, but the new approach is to process
+// things twice so everything can be done
+// with the two passes in the template.
 use super::*;
 use anyhow::Result;
 use std::path::Path;
