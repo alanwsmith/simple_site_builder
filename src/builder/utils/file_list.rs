@@ -2,8 +2,8 @@ use crate::builder::*;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 
-pub fn file_list(
-  content_dir: &PathBuf
+pub fn get_file_list(
+  content_dir: &Path
 ) -> Vec<FileDetails> {
   let mut file_list = WalkDir::new(content_dir)
     .into_iter()

@@ -50,7 +50,8 @@ impl Builder {
     empty_dir(&self.config.output_root)?;
 
     info!("Initial Pass: Loading File List...");
-    let file_list = file_list(&self.config.content_root);
+    let file_list =
+      get_file_list(&self.config.content_root);
 
     info!("Initial Pass: Copying files...");
     let _ = &self.copy_files(
@@ -71,6 +72,31 @@ impl Builder {
       &file_list,
       &self.config.content_root.clone(),
       &self.config.build_files_dir(),
+    )?;
+
+    info!("Output Pass: Loading File List...");
+    let output_file_list =
+      get_file_list(&self.config.content_root);
+
+    info!("Initial Pass: Copying files...");
+    let _ = &self.copy_files(
+      &output_file_list,
+      &self.config.build_files_dir(),
+      &self.config.output_root.clone(),
+    )?;
+
+    info!("Initial Pass: Moving JavaScript Files...");
+    let _ = &self.copy_js(
+      &output_file_list,
+      &self.config.build_files_dir(),
+      &self.config.output_root.clone(),
+    )?;
+
+    info!("Initial Pass: Transform Files...");
+    let _ = &self.transform_html_and_txt(
+      &output_file_list,
+      &self.config.build_files_dir(),
+      &self.config.output_root.clone(),
     )?;
 
     //
