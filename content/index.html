@@ -20,15 +20,6 @@ if you want to check it out or tinker with it.
 
 ## TODO/Goals:
 
-- [] Set up a way to configure individual files
-other than `.html`, `.txt`, and `.css` to
-go through a transform process. (default is
-not to)
-
-- [] set up a way to configure individaul
-files that would be transformed so that
-they aren't. 
-
 - [] Add automated tests
 
 - [x] Single binary that can be run
@@ -94,13 +85,10 @@ out basic string matches.
 
 - [x] Send .txt files through the transformer
 
-- [] Send .css files through the transformer 
+- [x] Send .css files through the transformer 
 
-- [] Set up a way to do JavaScript includes
- with a JavaScript comment so you can do them 
-inside existing JS files and still get formatters
-to work (which they don't if you do a MiniJinja
-style include)
+- [x] Send file with `.mj.js` extensions though
+the MiniJinja transform
 
 - [x] Automatically load .json files to use as
 data across templates. 
@@ -364,6 +352,17 @@ This should say `TEST_VAR_3_WORKED` in the array:
   This should say something about it working here:
   [! include "_includes/txt-test.txt" !]
 </div>
+
+<h2>Test Transform JS with `.mj.js` extension</h2>
+<div id="jsOut"></div>
+<script src="/scripts/transform.mj.js"></script>
+<script>
+const newEl = document.createElement("div");
+newEl.innerHTML = transformJsTest();
+document.querySelector("#jsOut").appendChild(newEl);
+</script>
+
+
 
 
 <h2>Release Notes</h2>
