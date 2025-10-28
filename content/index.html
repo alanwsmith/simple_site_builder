@@ -20,7 +20,21 @@ if you want to check it out or tinker with it.
 
 ## TODO/Goals:
 
-- [] Add automated tests
+- [] Drop automatically making `.html` files
+be directories. Just put everything
+where you want it to go. The only change
+that should be made is turning `.md` into
+`.html`?
+
+- [x] Run files through transform twice
+raw() function so you can pass
+the open and close tokens to 
+the second process. 
+
+- [x] can use `{` and `}`
+instead of `[` and `]`  
+to pass tokens to the second pass
+of the transformation.
 
 - [x] Single binary that can be run
 downloaded and run from the command 
@@ -33,9 +47,9 @@ when content changes.
 
 - [x] Use jinja style templates, but 
 with tokens that are easier to read (i.e.
-`[! raw !][! !][! endraw !]`, 
-`[! raw !][@ @][! endraw !]`, and
-`[! raw !][# #][! endraw !]` instead of
+`[``!` `!``]`, 
+`[``@` `@``]`, and
+`[``#` `#``]` instead of
 `{% %}`, `{{ }}`, and `{# #}`
 )
 
@@ -92,6 +106,8 @@ the MiniJinja transform
 
 - [x] Automatically load .json files to use as
 data across templates. 
+
+- [] Add automated tests
 
 - [] Automatically make minified version of .js files
 
@@ -363,7 +379,9 @@ document.querySelector("#jsOut").appendChild(newEl);
 </script>
 
 
+<h2>Test Raw</h2>
 
+<div>{@ "new" @}</div>
 
 <h2>Release Notes</h2>
 
@@ -374,5 +392,10 @@ document.querySelector("#jsOut").appendChild(newEl);
 [! endif !]
 [! endfor !]
 </details>
+
+<h2>JSON Data Test</h2>
+
+[@ json._config.txtTest @]
+
 
 [! endblock !]

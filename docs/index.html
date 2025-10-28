@@ -45,7 +45,23 @@ if you want to check it out or tinker with it.</p>
 <h2>TODO/Goals:</h2>
 <ul>
 <li>
-<p>[] Add automated tests</p>
+<p>[] Drop automatically making <code>.html</code> files
+be directories. Just put everything
+where you want it to go. The only change
+that should be made is turning <code>.md</code> into
+<code>.html</code>?</p>
+</li>
+<li>
+<p>[x] Run files through transform twice
+raw() function so you can pass
+the open and close tokens to
+the second process.</p>
+</li>
+<li>
+<p>[x] can use <code>{</code> and <code>}</code>
+instead of <code>[</code> and <code>]</code><br />
+to pass tokens to the second pass
+of the transformation.</p>
 </li>
 <li>
 <p>[x] Single binary that can be run
@@ -62,10 +78,10 @@ when content changes.</p>
 <li>
 <p>[x] Use jinja style templates, but
 with tokens that are easier to read (i.e.
-<code>[! !]</code>,
-<code>[@ @]</code>, and
-<code>[# #]</code> instead of
-<code>{% %}</code>, <code>{{ }}</code>, and <code>{# #}</code>
+<code>[``!</code> <code>!``]</code>,
+<code>[``@</code> <code>@``]</code>, and
+<code>[``#</code> <code>#``]</code> instead of
+<code>{% %}</code>, <code>{{ }}</code>, and <code></code>
 )</p>
 </li>
 <li>
@@ -137,6 +153,9 @@ the MiniJinja transform</p>
 <li>
 <p>[x] Automatically load .json files to use as
 data across templates.</p>
+</li>
+<li>
+<p>[] Add automated tests</p>
 </li>
 <li>
 <p>[] Automatically make minified version of .js files</p>
@@ -399,7 +418,7 @@ the input.</p>
 <h2>Find and Replace from: support/find-replace/*.txt</h2>
 
 <p>
-This should say `TEST_VAR_2_WORKED`: TEST_VAR_2_WORKED
+This should say `TEST_VAR_2_WORKED`: TEST_VAR_2_DID_NOT_WORK
 </p>
 
 <h2>Confirm Find and Replace works in included files</h2>
@@ -407,10 +426,7 @@ This should say `TEST_VAR_2_WORKED`: TEST_VAR_2_WORKED
 <div>
 This should say `TEST_VAR_3_WORKED` in the array:
   <pre><code>
-<span class="line-marker"></span><span class="source js"><span class="storage type js">const</span> <span class="variable other readwrite js">tmp</span> <span class="keyword operator assignment js">=</span> <span class="meta sequence js"><span class="punctuation section brackets js">[</span>
-<span class="line-marker"></span>  <span class="string quoted double js"><span class="punctuation definition string begin js">&quot;</span>This is a test to see if find/replace works<span class="punctuation definition string end js">&quot;</span></span><span class="punctuation separator comma js">,</span>
-<span class="line-marker"></span>  <span class="string quoted double js"><span class="punctuation definition string begin js">&quot;</span>TEST_VAR_3_WORKED<span class="punctuation definition string end js">&quot;</span></span><span class="punctuation separator comma js">,</span>
-<span class="line-marker"></span><span class="punctuation section brackets js">]</span></span><span class="punctuation terminator statement js">;</span></span>
+Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   </code></pre>
 </div>
 
@@ -459,6 +475,10 @@ This should say `TEST_VAR_3_WORKED` in the array:
   },
   {
     "name": "favicons",
+    "parent": ""
+  },
+  {
+    "name": "images",
     "parent": ""
   },
   {
@@ -543,6 +563,10 @@ This should say `TEST_VAR_3_WORKED` in the array:
   },
   {
     "name": "0.8.1",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "name": "0.8.2",
     "parent": "releases/aarch64-apple-darwin"
   }
 ]
@@ -854,6 +878,16 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "stem": "site"
   },
   {
+    "extension": "jpg",
+    "file_move_type": "Copy",
+    "folder": "images",
+    "input_path": "images/test-image.jpg",
+    "name": "test-image.jpg",
+    "output_folder": "images",
+    "output_name": "test-image.jpg",
+    "stem": "test-image"
+  },
+  {
     "extension": null,
     "file_move_type": "Copy",
     "folder": "releases/aarch64-apple-darwin/0.3.0",
@@ -994,6 +1028,16 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "stem": "ssb-0-8"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.8.2",
+    "input_path": "releases/aarch64-apple-darwin/0.8.2/ssb-0-8",
+    "name": "ssb-0-8",
+    "output_folder": "releases/aarch64-apple-darwin/0.8.2",
+    "output_name": "ssb-0-8",
+    "stem": "ssb-0-8"
+  },
+  {
     "extension": "js",
     "file_move_type": "TransformAndMinifyJavaScript",
     "folder": "scripts",
@@ -1063,152 +1107,27 @@ document.querySelector("#jsOut").appendChild(newEl);
 </script>
 
 
+<h2>Test Raw</h2>
 
+<div>new</div>
 
 <h2>Release Notes</h2>
 
 <details>
-<h3>Version 0.6.4</h3>
-<p>DATE: TBD</p>
-<ul>
-<li>TODO...</li>
-</ul>
-
-<h3>Version 0.6.3</h3>
-<p>Oct. 4. 2025</p>
-<ul>
-<li>
-<p>Removed deprecated message about find
-and replace not being included (it was
-added back in 0.6.2)</p>
-</li>
-<li>
-<p>Removed deprecated JavaScript highlighting
-for all .js files (highlighting is
-done on a per file/pre request basis
-from the templates)</p>
-</li>
-</ul>
-
-<h3>Version 0.6.2</h3>
-<p>Oct. 4, 2025</p>
-<ul>
-<li>Set up find/replace to work
-with files that get highlighted or
-processed by markdown by doing the
-prep in the <code>.build-files</code> dir</li>
-</ul>
-
-<h3>Version 0.6.1</h3>
-<p>Oct. 4, 2025</p>
-<ul>
-<li>
-<p>Added highlight_file(&quot;file_path&quot;) function to
-replace original highlight_file[&quot;file_path&quot;]</p>
-</li>
-<li>
-<p>Added markdown_file(&quot;file_path&quot;) function to replace
-original markdown_file[&quot;file_path&quot;]</p>
-</li>
-<li>
-<p>Moved <code>config/find-replace.txt</code> to <code>support/find-replace/*.txt</code>
-directory that supports multiple text files.</p>
-</li>
-</ul>
-
-<h3>Version 0.6.0</h3>
-<ul>
-<li>
-<p>Added basic MiniJinja errors if
-something freaks out.</p>
-</li>
-<li>
-<p>Starting to include the version numbers
-in the binary output for now so that
-older versions can hang around and be
-used on sites that are built with them
-and not have to worry about making
-breaking changes.</p>
-<p>Names are like <code>ssb-0.6.x</code> so that
-that non-breaking patches can
-be applied without changing the
-base number (for now, the second number
-(e.g. <code>.6</code> is the major version that
-changes when breaking changes occur.
-Eventually it'll move to full semantic
-numbering with Major/Minor/Patch, but
-things need to stabilize more before
-a <code>1.0.0</code> is set)</p>
-</li>
-<li>
-<p>Looked at Updating so that <code>.js</code> files are
-treated as templates (e.g. can do include stuff
-from minijinja), but took it back out
-as it's to possible that the <code>.js</code> will
-have something that fights with MiniJinja.</p>
-</li>
-<li>
-<p>Removed <code>scripts/file-prep</code> that ran
-against every file as a pre-processor.
-It bogged down on a moderately sized
-site. Might add it back in at some
-point since the issue is really the
-speed of the script/process that's
-being called out to.</p>
-</li>
-<li>
-<p>Renamed <code>scripts</code> dir to <code>support</code>
-which will contain scripts as well
-as plugins, find replace files, and
-data files.</p>
-</li>
-</ul>
-
-<h3>Version 0.5.0</h3>
-<ul>
-<li>
-<p>The content tree is moved
-to a <code>.build-files</code> directory
-and the build occurs from those
-files.</p>
-</li>
-<li>
-<p>Scripts inside the <code>scripts/file-prep</code>
-directory are run over txt files
-during the move to the <code>.build-files</code>
-directory to do things like
-find and replace or any other
-pre-processing work that needs
-to be done.</p>
-</li>
-</ul>
-
-<h3>Version 0.4.0</h3>
-<p>Sept. 24, 2025</p>
-<ul>
-<li>
-<p>renamed <code>highlight</code> to <code>highlight_file</code>
-(<code>highlight</code> shows a deprecation message)</p>
-</li>
-<li>
-<p>renamed <code>markdown</code> to <code>markdown_file</code>
-(<code>markdown</code> shows a deprecation message)</p>
-</li>
-</ul>
-
-<h3>Version 0.3.0</h3>
-<p>Sept. 6, 2025</p>
-<ul>
-<li>
-<p>Ready for general personal use</p>
-</li>
-<li>
-<p>See home page for details on
-features and functionality.</p>
-</li>
-</ul>
-
+Could not load file to process markdown: _release-notes/v0.6.4.md
+Could not load file to process markdown: _release-notes/v0.6.3.md
+Could not load file to process markdown: _release-notes/v0.6.2.md
+Could not load file to process markdown: _release-notes/v0.6.1.md
+Could not load file to process markdown: _release-notes/v0.6.0.md
+Could not load file to process markdown: _release-notes/v0.5.0.md
+Could not load file to process markdown: _release-notes/v0.4.0.md
+Could not load file to process markdown: _release-notes/v0.3.0.md
 </details>
+
+<h2>JSON Data Test</h2>
+
+Processing .txt files with MiniJinja Worked!
+
 
 
       </main>
@@ -1218,4 +1137,3 @@ features and functionality.</p>
     <script src="/components/bitty-1.0.0-rc4.full.js" type="module"></script>
   </body>
 </html>
-
