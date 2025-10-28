@@ -239,8 +239,6 @@ I've added to my zsh config file.
 that includes the release binary file. 
 
 
-
-
 ## Examples
 
 These examples cover the basics. 
@@ -249,6 +247,8 @@ the input.
 [! endfilter !]
 
 <h2>Automatically Loaded Data</h2>
+
+<div>[@ data._config.txtTest @]</div>
 
 <pre>
 [@ data|tojson(true) @]
@@ -358,33 +358,12 @@ This should say `TEST_VAR_3_WORKED` in the array:
 </pre>
 </details>
 
-<h2>Tests</h2>
-
-<p>
-  Not sure how to automate testing yet. For now, 
-  manually look at: 
-  TODO: REMOVE COMMENT THAT"S HERE
-  [#
-<div>
-  [! include "tests/0010-js-is-processed/target.js" !]
-</div>
-<div>
-  [! include "tests/0010-js-is-processed/got.js" !]
-</div>
-#]
-</p>
-
 
 <h2>Test Transforming .txt Files</h2>
-  TODO: REMOVE COMMENT THAT"S HERE
-  [#
 <div>
   This should say something about it working here:
   [! include "_includes/txt-test.txt" !]
 </div>
-#]
-
-
 
 
 <h2>Release Notes</h2>

@@ -51,10 +51,12 @@ impl FileDetails {
 
   pub fn dir_path_strings(&self) -> Vec<String> {
     if let Some(parent) = self.input_path.parent() {
-      parent
+      let mut items: Vec<String> = parent
         .iter()
         .map(|p| p.to_string_lossy().to_string())
-        .collect()
+        .collect();
+      items.push(self.stem.to_string_lossy().to_string());
+      items
     } else {
       vec![]
     }

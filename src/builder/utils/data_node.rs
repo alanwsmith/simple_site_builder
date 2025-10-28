@@ -5,7 +5,6 @@ use serde::Serialize;
 use std::collections::HashMap;
 
 #[derive(Clone, Debug, Serialize)]
-// #[serde(tag = "type")]
 #[serde(untagged)]
 pub enum DataNode {
   Branch(HashMap<String, DataNode>),

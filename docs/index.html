@@ -330,16 +330,29 @@ the input.</p>
 
 <h2>Automatically Loaded Data</h2>
 
+<div>Processing .txt files with MiniJinja Worked!</div>
+
 <pre>
 {
+  "_config": {
+    "txtTest": "Processing .txt files with MiniJinja Worked!"
+  },
   "examples": {
     "data": {
-      "anotherSample": "with some data"
-    }
-  },
-  "tests": {
-    "0010-js-is-processed": {
-      "data0010": "ping"
+      "sample": {
+        "dataset": {
+          "alfa": "the quick brown fox",
+          "bravo": [
+            "the",
+            "quick",
+            "brown",
+            "fox"
+          ]
+        }
+      },
+      "sample-2": {
+        "anotherSample": "with some data"
+      }
     }
   }
 }
@@ -537,10 +550,6 @@ This should say `TEST_VAR_3_WORKED` in the array:
   {
     "name": "0.7.4",
     "parent": "releases/aarch64-apple-darwin"
-  },
-  {
-    "name": "0010-js-is-processed",
-    "parent": "tests"
   }
 ]
 </pre>
@@ -999,54 +1008,16 @@ This should say `TEST_VAR_3_WORKED` in the array:
     "output_folder": "tests",
     "output_name": "README.md",
     "stem": "README"
-  },
-  {
-    "extension": "json",
-    "file_move_type": "Copy",
-    "folder": "tests/0010-js-is-processed",
-    "input_path": "tests/0010-js-is-processed/0010-data.json",
-    "name": "0010-data.json",
-    "output_folder": "tests/0010-js-is-processed",
-    "output_name": "0010-data.json",
-    "stem": "0010-data"
-  },
-  {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "tests/0010-js-is-processed",
-    "input_path": "tests/0010-js-is-processed/got.js",
-    "name": "got.js",
-    "output_folder": "tests/0010-js-is-processed",
-    "output_name": "got.js",
-    "stem": "got"
-  },
-  {
-    "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
-    "folder": "tests/0010-js-is-processed",
-    "input_path": "tests/0010-js-is-processed/target.js",
-    "name": "target.js",
-    "output_folder": "tests/0010-js-is-processed",
-    "output_name": "target.js",
-    "stem": "target"
   }
 ]
 </pre>
 </details>
 
-<h2>Tests</h2>
-
-<p>
-  Not sure how to automate testing yet. For now, 
-  manually look at: 
-  TODO: REMOVE COMMENT THAT"S HERE
-</p>
-
 
 <h2>Test Transforming .txt Files</h2>
-  TODO: REMOVE COMMENT THAT"S HERE
-
-
+<div>
+  This should say something about it working here:
+Processing .txt files with MiniJinja Worked!</div>
 
 
 <h2>Release Notes</h2>
