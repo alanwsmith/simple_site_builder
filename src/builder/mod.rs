@@ -232,8 +232,6 @@ impl Builder {
             .unwrap()
             .join(details.output_name.clone().unwrap()),
         );
-        println!("{}", output_path.display());
-
         match env.get_template(&template_name) {
           Ok(template) => match template.render(context!(
             json => json,

@@ -45,7 +45,7 @@ if you want to check it out or tinker with it.</p>
 <h2>TODO/Goals:</h2>
 <ul>
 <li>
-<p>[] Drop automatically making <code>.html</code> files
+<p>[x] Drop automatically making <code>.html</code> files
 be directories. Just put everything
 where you want it to go. The only change
 that should be made is turning <code>.md</code> into
@@ -115,15 +115,6 @@ providing links)</p>
 <p>[x] Provide folder listing (e.g. that
 can be used to include all files in
 a folder)</p>
-</li>
-<li>
-<p>[x] Automatically move .html files that
-aren't <code>index.html</code> into a folder with
-their filename and put the contents in
-a corresponding <code>FOLDER-NAME/index.html</code> file
-(e.g. <code>sub-dir/about.html</code> becomes <code>sub-dir/about/index.html</code>).
-This helps improve portability if the site
-is moved or switched to another builder/framework.</p>
 </li>
 <li>
 <p>[x] Copy non-html and non-md files directly.</p>
@@ -212,19 +203,7 @@ within like 100ms it only triggers
 one build.</p>
 </li>
 <li>
-<p>[] Document the <code>config/find-replace.txt</code>
-directory</p>
-</li>
-<li>
-<p>[] Move these TODOs into the index.html file</p>
-</li>
-<li>
-<p>[x] Process <code>.js</code> files as templates.</p>
-</li>
-<li>
-<p>[] Maybe: Provide for a comment at the top
-of <code>.js</code> files that prevents then
-from being processed as templates.</p>
+<p>[x] Process <code>.mj.js</code> files as templates.</p>
 </li>
 <li>
 <p>[x] Don't pre-highlight files. Or, maybe
@@ -275,19 +254,8 @@ directory so it's data can be accessed
 in templates via <code>data.[&quot;FILE_STEM&quot;].whatever</code>.</p>
 </li>
 <li>
-<p>[x] Run basic find/replace over files
-to update text strings. (Note that there's
-no escaping. Changing names is the way
-to avoid collisions)</p>
-</li>
-<li>
 <p>[] Set up a function to call out to
 <code>support/plugins</code> processes.</p>
-</li>
-<li>
-<p>[x] Use the <code>support/find-replace</code> dir to
-set up find and replace strings to do in
-files.</p>
 </li>
 </ul>
 <h2>Release Build Process</h2>
@@ -606,6 +574,16 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "",
     "output_name": "index.html",
     "stem": "index"
+  },
+  {
+    "extension": "html",
+    "file_move_type": "TransformHtml",
+    "folder": "",
+    "input_path": "ping.html",
+    "name": "ping.html",
+    "output_folder": "",
+    "output_name": "ping.html",
+    "stem": "ping"
   },
   {
     "extension": "js",

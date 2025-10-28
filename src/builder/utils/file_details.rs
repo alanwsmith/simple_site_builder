@@ -139,33 +139,49 @@ impl FileDetails {
     {
       None
     } else {
-      let file_stem =
-        input_path.file_stem().unwrap().to_str().unwrap();
-      let parent_path = PathBuf::from(
+      Some(PathBuf::from(
         input_path.parent().unwrap().to_str().unwrap(),
-      );
-      match input_path.extension() {
-        Some(ext) => {
-          if ext.to_str().unwrap() == "html" {
-            if input_path
-              .file_stem()
-              .unwrap()
-              .to_str()
-              .unwrap()
-              != "index"
-            {
-              Some(parent_path.join(file_stem))
-            } else {
-              Some(parent_path)
-            }
-          } else {
-            Some(parent_path)
-          }
-        }
-        None => Some(parent_path),
-      }
+      ))
     }
   }
+
+  // pub fn get_output_dir(
+  //   input_path: &Path
+  // ) -> Option<PathBuf> {
+  //   if input_path
+  //     .iter()
+  //     .any(|part| part.to_str().unwrap().starts_with("_"))
+  //   {
+  //     None
+  //   } else {
+  //     let file_stem =
+  //       input_path.file_stem().unwrap().to_str().unwrap();
+  //     let parent_path = PathBuf::from(
+  //       input_path.parent().unwrap().to_str().unwrap(),
+  //     );
+  //     match input_path.extension() {
+  //       Some(ext) => {
+  //         if ext.to_str().unwrap() == "html" {
+  //           if input_path
+  //             .file_stem()
+  //             .unwrap()
+  //             .to_str()
+  //             .unwrap()
+  //             != "index"
+  //           {
+  //             Some(parent_path.join(file_stem))
+  //           } else {
+  //             Some(parent_path)
+  //           }
+  //         } else {
+  //           Some(parent_path)
+  //         }
+  //       }
+  //       None => Some(parent_path),
+  //     }
+  //   }
+  // }
+  //
 
   pub fn get_output_name(
     input_path: &Path
@@ -176,20 +192,33 @@ impl FileDetails {
     {
       None
     } else {
-      match input_path.extension() {
-        Some(ext) => {
-          if ext.to_str().unwrap() == "html" {
-            Some(PathBuf::from("index.html"))
-          } else {
-            Some(input_path.file_name().unwrap().into())
-          }
-        }
-        None => {
-          Some(input_path.file_name().unwrap().into())
-        }
-      }
+      Some(input_path.file_name().unwrap().into())
     }
   }
+
+  // pub fn get_output_name(
+  //   input_path: &Path
+  // ) -> Option<PathBuf> {
+  //   if input_path
+  //     .iter()
+  //     .any(|part| part.to_str().unwrap().starts_with("_"))
+  //   {
+  //     None
+  //   } else {
+  //     match input_path.extension() {
+  //       Some(ext) => {
+  //         if ext.to_str().unwrap() == "html" {
+  //           Some(PathBuf::from("index.html"))
+  //         } else {
+  //           Some(input_path.file_name().unwrap().into())
+  //         }
+  //       }
+  //       None => {
+  //         Some(input_path.file_name().unwrap().into())
+  //       }
+  //     }
+  //   }
+  // }
 
   pub fn sort_key(&self) -> (String, String) {
     (
@@ -306,10 +335,10 @@ mod test {
   #[case("subdir/test.json", "test.json")]
   #[case(".dotfile", ".dotfile")]
   #[case(".dotdir/test.json", "test.json")]
-  #[case("about.html", "index.html")]
-  #[case("subdir/about.html", "index.html")]
-  #[case(".subdir/about.html", "index.html")]
-  #[case("subdir/.about.html", "index.html")]
+  #[case("about.html", "about.html")]
+  #[case("subdir/about.html", "about.html")]
+  #[case(".subdir/about.html", "about.html")]
+  #[case("subdir/.about.html", ".about.html")]
   fn get_output_name_to_move(
     #[case] input_path: &str,
     #[case] output_name: &str,
@@ -342,8 +371,8 @@ mod test {
   #[rstest]
   #[case("index.html", "")]
   #[case("sub-dir/index.html", "sub-dir")]
-  #[case("about.html", "about")]
-  #[case("valid-dir/about.html", "valid-dir/about")]
+  #[case("about.html", "")]
+  #[case("valid-dir/about.html", "valid-dir")]
   fn get_output_dir_valid_test_html(
     #[case] input_path: &str,
     #[case] target: &str,
