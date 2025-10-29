@@ -57,12 +57,6 @@ impl Builder {
       &self.config.content_root.clone(),
       &self.config.build_files_dir(),
     )?;
-    info!("Initial Pass: Moving JavaScript Files...");
-    let _ = &self.copy_js(
-      &file_list,
-      &self.config.content_root.clone(),
-      &self.config.build_files_dir(),
-    )?;
     info!("Initial Pass: Transform Files...");
     let _ = &self.transform_html_and_txt(
       &file_list,
@@ -74,12 +68,6 @@ impl Builder {
       get_file_list(&self.config.build_files_dir());
     info!("Initial Pass: Copying files...");
     let _ = &self.copy_files(
-      &output_file_list,
-      &self.config.build_files_dir(),
-      &self.config.output_root.clone(),
-    )?;
-    info!("Initial Pass: Moving JavaScript Files...");
-    let _ = &self.copy_js(
       &output_file_list,
       &self.config.build_files_dir(),
       &self.config.output_root.clone(),
@@ -120,31 +108,31 @@ impl Builder {
     Ok(())
   }
 
-  pub fn copy_js(
-    &self,
-    file_list: &[FileDetails],
-    input_root: &Path,
-    output_root: &Path,
-  ) -> Result<()> {
-    // TODO: Set up a minifier at some point
-    // when you get one that works (the rust one
-    // broke on import statements).
-    file_list.iter().for_each(|details| {
-      if details.file_move_type
-        == FileMoveType::CopyAndMinifyJavaScript
-      {
-        let input_path = &input_root
-          .join(&details.folder)
-          .join(&details.name);
-        let output_path = &output_root
-          .join(details.output_folder.as_ref().unwrap())
-          .join(details.output_name.as_ref().unwrap());
-        let _ =
-          copy_file_with_mkdir(input_path, output_path);
-      }
-    });
-    Ok(())
-  }
+  // pub fn copy_js(
+  //   &self,
+  //   file_list: &[FileDetails],
+  //   input_root: &Path,
+  //   output_root: &Path,
+  // ) -> Result<()> {
+  //   // TODO: Set up a minifier at some point
+  //   // when you get one that works (the rust one
+  //   // broke on import statements).
+  //   file_list.iter().for_each(|details| {
+  //     if details.file_move_type
+  //       == FileMoveType::Copy
+  //     {
+  //       let input_path = &input_root
+  //         .join(&details.folder)
+  //         .join(&details.name);
+  //       let output_path = &output_root
+  //         .join(details.output_folder.as_ref().unwrap())
+  //         .join(details.output_name.as_ref().unwrap());
+  //       let _ =
+  //         copy_file_with_mkdir(input_path, output_path);
+  //     }
+  //   });
+  //   Ok(())
+  // }
 
   pub fn load_json(
     &mut self,
@@ -211,14 +199,7 @@ impl Builder {
     self.load_json(file_list, &input_root.clone());
     let json = Value::from_serialize(self.json.clone());
     file_list.iter().for_each(|details| {
-      if details.file_move_type
-        == FileMoveType::TransformHtml
-        || details.file_move_type
-          == FileMoveType::TransformTxt
-        || details.file_move_type
-          == FileMoveType::TransformCSS
-        || details.file_move_type
-          == FileMoveType::TransformAndMinifyJavaScript
+      if details.file_move_type == FileMoveType::Transform
       {
         let template_name = details
           .folder
