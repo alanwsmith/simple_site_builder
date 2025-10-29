@@ -78,7 +78,8 @@ impl Builder {
       &self.config.build_files_dir(),
       &self.config.output_root.clone(),
     )?;
-    empty_dir(&self.config.build_files_dir())?;
+
+    //    empty_dir(&self.config.build_files_dir())?;
     info!(
       r#"Build complete. Reloading browser on port {}."#,
       self.port

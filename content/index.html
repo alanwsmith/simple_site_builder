@@ -366,10 +366,12 @@ document.querySelector("#jsOut").appendChild(newEl);
 
 <h2>Release Notes</h2>
 
-<details>
+<details open>
 [! for file in files|reverse !]
 [! if file.folder == "_release-notes" !]
-[@ markdown_file(file.folder + "/" + file.name)|safe @]
+  [! filter markdown|safe !]
+[! include file.folder + "/" + file.name !]
+  [! endfilter !]
 [! endif !]
 [! endfor !]
 </details>
