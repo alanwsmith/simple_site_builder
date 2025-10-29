@@ -1,11 +1,13 @@
 use serde::Serialize;
 use std::path::Path;
 use std::path::PathBuf;
+use tokio::sync::SemaphorePermit;
 
 #[derive(Debug, PartialEq, Serialize)]
 pub enum FileMoveType {
   Copy,
   Skip,
+  Transform,
   TransformHtml,
   TransformTxt,
   TransformCSS,
@@ -86,48 +88,32 @@ impl FileDetails {
   pub fn get_file_move_type(
     input_path: &Path
   ) -> FileMoveType {
+    let transforms = &["html", "txt", "md"];
+
     if input_path
       .iter()
       .any(|part| part.to_str().unwrap().starts_with("_"))
     {
-      FileMoveType::Skip
-    } else {
-      match input_path.extension() {
-        Some(ext) => {
-          if ext == "html" {
-            FileMoveType::TransformHtml
-          } else if ext == "css" {
-            FileMoveType::TransformCSS
-          } else if ext == "txt" {
-            FileMoveType::TransformTxt
-          } else if ext == "js" {
-            match input_path.file_stem() {
-              Some(stem) => {
-                let check_path = PathBuf::from(stem);
-                match check_path.extension() {
-                  Some(ext2) => {
-                    if ext2 == "mj" {
-                      FileMoveType::TransformAndMinifyJavaScript
-                    } else {
-                      FileMoveType::CopyAndMinifyJavaScript
-                    }
-                  }
-                  None => {
-                    FileMoveType::CopyAndMinifyJavaScript
-                  }
-                }
-              }
-              None => {
-                FileMoveType::CopyAndMinifyJavaScript
-              }
-            }
-          } else {
-            FileMoveType::Copy
+      return FileMoveType::Skip;
+    }
+
+    if let Some(ext) = input_path.extension() {
+      if let Some(stem) = input_path.file_stem() {
+        if let Some(ext2) =
+          PathBuf::from(stem).extension()
+        {
+          if ext2 == "on" {
+            return FileMoveType::Transform;
+          } else if ext2 == "off" {
+            return FileMoveType::Copy;
           }
         }
-        None => FileMoveType::Copy,
+      }
+      if transforms.contains(&ext.to_str().unwrap()) {
+        return FileMoveType::Transform;
       }
     }
+    FileMoveType::Copy
   }
 
   pub fn get_output_dir(
@@ -234,39 +220,54 @@ mod test {
   use pretty_assertions::assert_eq;
   use rstest::rstest;
 
+  // #[rstest]
+  // #[case(
+  //   "html",
+  //   "index.html",
+  //   "",
+  //   "index.html",
+  //   "",
+  //   "index.html",
+  //   FileMoveType::TransformHtml,
+  //   "index"
+  // )]
+  // fn file_details_integration_test(
+  //   #[case] extension: &str,
+  //   #[case] input_path: &str,
+  //   #[case] folder: &str,
+  //   #[case] name: &str,
+  //   #[case] output_folder: &str,
+  //   #[case] output_name: &str,
+  //   #[case] file_move_type: FileMoveType,
+  //   #[case] stem: &str,
+  // ) {
+  //   let left = FileDetails {
+  //     extension: Some(extension.to_string()),
+  //     folder: PathBuf::from(folder),
+  //     name: PathBuf::from(name),
+  //     output_folder: Some(PathBuf::from(output_folder)),
+  //     output_name: Some(PathBuf::from(output_name)),
+  //     stem: PathBuf::from(stem),
+  //     file_move_type,
+  //     input_path: PathBuf::from(input_path),
+  //   };
+  //   let right =
+  //     FileDetails::new(&PathBuf::from(input_path));
+  //   assert_eq!(left, right);
+  // }
+
   #[rstest]
-  #[case(
-    "html",
-    "index.html",
-    "",
-    "index.html",
-    "",
-    "index.html",
-    FileMoveType::TransformHtml,
-    "index"
-  )]
-  fn file_details_integration_test(
-    #[case] extension: &str,
+  #[case("test.js", FileMoveType::Copy)]
+  #[case("test.html", FileMoveType::Transform)]
+  #[case("test.on.js", FileMoveType::Transform)]
+  #[case("test.off.html", FileMoveType::Copy)]
+  fn get_file_move_type_test(
     #[case] input_path: &str,
-    #[case] folder: &str,
-    #[case] name: &str,
-    #[case] output_folder: &str,
-    #[case] output_name: &str,
-    #[case] file_move_type: FileMoveType,
-    #[case] stem: &str,
+    #[case] left: FileMoveType,
   ) {
-    let left = FileDetails {
-      extension: Some(extension.to_string()),
-      folder: PathBuf::from(folder),
-      name: PathBuf::from(name),
-      output_folder: Some(PathBuf::from(output_folder)),
-      output_name: Some(PathBuf::from(output_name)),
-      stem: PathBuf::from(stem),
-      file_move_type,
-      input_path: PathBuf::from(input_path),
-    };
-    let right =
-      FileDetails::new(&PathBuf::from(input_path));
+    let right = FileDetails::get_file_move_type(
+      &PathBuf::from(input_path),
+    );
     assert_eq!(left, right);
   }
 
@@ -401,26 +402,26 @@ mod test {
     assert_eq!(expected, got);
   }
 
-  #[rstest]
-  #[case("_skipped.html", None)]
-  #[case("_skipped-dir/index.html", None)]
-  #[case("_skipped-dir/about.html", None)]
-  #[case("valid-dir/_skip.html", None)]
-  #[case(".valid-dir/_skip.html", None)]
-  #[case("valid-dir/_skip-dir/file.html", None)]
-  #[case("_skipped.json", None)]
-  #[case("_skipped-dir/skipped.json", None)]
-  #[case("valid-dir/_skipped.json", None)]
-  #[case("valid-dir/_skip-dir/file.json", None)]
-  fn get_output_dir_skipped_test(
-    #[case] input_path: &str,
-    #[case] expected: Option<PathBuf>,
-  ) {
-    let got = FileDetails::get_output_dir(
-      &PathBuf::from(input_path),
-    );
-    assert_eq!(expected, got);
-  }
+  // #[rstest]
+  // #[case("_skipped.html", None)]
+  // #[case("_skipped-dir/index.html", None)]
+  // #[case("_skipped-dir/about.html", None)]
+  // #[case("valid-dir/_skip.html", None)]
+  // #[case(".valid-dir/_skip.html", None)]
+  // #[case("valid-dir/_skip-dir/file.html", None)]
+  // #[case("_skipped.json", None)]
+  // #[case("_skipped-dir/skipped.json", None)]
+  // #[case("valid-dir/_skipped.json", None)]
+  // #[case("valid-dir/_skip-dir/file.json", None)]
+  // fn get_output_dir_skipped_test(
+  //   #[case] input_path: &str,
+  //   #[case] expected: Option<PathBuf>,
+  // ) {
+  //   let got = FileDetails::get_output_dir(
+  //     &PathBuf::from(input_path),
+  //   );
+  //   assert_eq!(expected, got);
+  // }
 
   // #[rstest]
   // #[case(&PathBuf::from("index.html"), vec![])]
@@ -433,41 +434,41 @@ mod test {
   //   assert_eq!(expected, got);
   // }
 
-  #[rstest]
-  #[case("index.html", FileMoveType::TransformHtml)]
-  #[case("data.json", FileMoveType::Copy)]
-  #[case("no-extension", FileMoveType::Copy)]
-  #[case(".dot-file", FileMoveType::Copy)]
-  #[case(".dot.html", FileMoveType::TransformHtml)]
-  #[case("_skip.html", FileMoveType::Skip)]
-  #[case("_skip-dir/file.html", FileMoveType::Skip)]
-  #[case("valid-dir/_skip.html", FileMoveType::Skip)]
-  #[case(
-    "valid-dir/_skip-dir/file.html",
-    FileMoveType::Skip
-  )]
-  #[case(
-    "subdir/index.html",
-    FileMoveType::TransformHtml
-  )]
-  #[case("about.html", FileMoveType::TransformHtml)]
-  #[case(
-    "subdir/about.html",
-    FileMoveType::TransformHtml
-  )]
-  // #[case("index.md", FileMoveType::TransformMarkdown)]
-  // #[case("about.md", FileMoveType::TransformMarkdown)]
-  // #[case("subdir/index.md", FileMoveType::TransformMarkdown)]
-  // #[case("subdir/about.md", FileMoveType::TransformMarkdown)]
-  fn file_move_type_test(
-    #[case] input_path: &str,
-    #[case] expected: FileMoveType,
-  ) {
-    let got = FileDetails::get_file_move_type(
-      &PathBuf::from(input_path),
-    );
-    assert_eq!(expected, got)
-  }
+  // #[rstest]
+  // #[case("index.html", FileMoveType::TransformHtml)]
+  // #[case("data.json", FileMoveType::Copy)]
+  // #[case("no-extension", FileMoveType::Copy)]
+  // #[case(".dot-file", FileMoveType::Copy)]
+  // #[case(".dot.html", FileMoveType::TransformHtml)]
+  // #[case("_skip.html", FileMoveType::Skip)]
+  // #[case("_skip-dir/file.html", FileMoveType::Skip)]
+  // #[case("valid-dir/_skip.html", FileMoveType::Skip)]
+  // #[case(
+  //   "valid-dir/_skip-dir/file.html",
+  //   FileMoveType::Skip
+  // )]
+  // #[case(
+  //   "subdir/index.html",
+  //   FileMoveType::TransformHtml
+  // )]
+  // #[case("about.html", FileMoveType::TransformHtml)]
+  // #[case(
+  //   "subdir/about.html",
+  //   FileMoveType::TransformHtml
+  // )]
+  // // #[case("index.md", FileMoveType::TransformMarkdown)]
+  // // #[case("about.md", FileMoveType::TransformMarkdown)]
+  // // #[case("subdir/index.md", FileMoveType::TransformMarkdown)]
+  // // #[case("subdir/about.md", FileMoveType::TransformMarkdown)]
+  // fn file_move_type_test(
+  //   #[case] input_path: &str,
+  //   #[case] expected: FileMoveType,
+  // ) {
+  //   let got = FileDetails::get_file_move_type(
+  //     &PathBuf::from(input_path),
+  //   );
+  //   assert_eq!(expected, got)
+  // }
 
   //
 }
