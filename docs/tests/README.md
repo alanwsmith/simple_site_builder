@@ -5,4 +5,3 @@ They should contain the same content
 on the live site. 
 
 Testing is manual at this point. 
-

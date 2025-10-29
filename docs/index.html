@@ -45,6 +45,14 @@ if you want to check it out or tinker with it.</p>
 <h2>TODO/Goals:</h2>
 <ul>
 <li>
+<p>[x] Transform any files with <code>.on.EXTENSION</code>
+regardless of what <code>EXTENSION</code> is</p>
+</li>
+<li>
+<p>[x] Do not transform any files with <code>.off.EXTENSION</code>
+regardless of what <code>EXTENSION</code> is</p>
+</li>
+<li>
 <p>[x] Drop automatically making <code>.html</code> files
 be directories. Just put everything
 where you want it to go. The only change
@@ -375,13 +383,7 @@ the input.</p>
 
 
 <h2>Markdown File Inclusion</h2>
-<p>This is a sample markdown file</p>
-<ul>
-<li>List item</li>
-<li>Another with <strong>strong text</strong></li>
-<li>etc...</li>
-</ul>
-
+NOTE: Uses filter to render markdown for: examples/markdown/sample.md
 
 <h2>Find and Replace from: support/find-replace/*.txt</h2>
 
@@ -407,7 +409,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
 <pre class="code-block">
 {
   "extension": "html",
-  "file_move_type": "TransformHtml",
+  "file_move_type": "Transform",
   "folder": "",
   "input_path": "index.html",
   "name": "index.html",
@@ -536,6 +538,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   {
     "name": "0.8.2",
     "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "name": "0.8.3",
+    "parent": "releases/aarch64-apple-darwin"
   }
 ]
 </pre>
@@ -567,7 +573,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "html",
-    "file_move_type": "TransformHtml",
+    "file_move_type": "Transform",
     "folder": "",
     "input_path": "index.html",
     "name": "index.html",
@@ -577,7 +583,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "html",
-    "file_move_type": "TransformHtml",
+    "file_move_type": "Transform",
     "folder": "",
     "input_path": "ping.html",
     "name": "ping.html",
@@ -686,6 +692,16 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "stem": "v0.6.4"
   },
   {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "input_path": "_release-notes/v0.8.3.md",
+    "name": "v0.8.3.md",
+    "output_folder": null,
+    "output_name": null,
+    "stem": "v0.8.3"
+  },
+  {
     "extension": "html",
     "file_move_type": "Skip",
     "folder": "_wrappers",
@@ -707,7 +723,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
+    "file_move_type": "Copy",
     "folder": "components",
     "input_path": "components/bitty-1.0.0-rc4.full.js",
     "name": "bitty-1.0.0-rc4.full.js",
@@ -717,7 +733,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "js",
-    "file_move_type": "CopyAndMinifyJavaScript",
+    "file_move_type": "Copy",
     "folder": "components",
     "input_path": "components/page.js",
     "name": "page.js",
@@ -747,7 +763,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "md",
-    "file_move_type": "Copy",
+    "file_move_type": "Transform",
     "folder": "examples/markdown",
     "input_path": "examples/markdown/sample.md",
     "name": "sample.md",
@@ -1016,8 +1032,18 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "stem": "ssb-0-8"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.8.3",
+    "input_path": "releases/aarch64-apple-darwin/0.8.3/ssb-0-8",
+    "name": "ssb-0-8",
+    "output_folder": "releases/aarch64-apple-darwin/0.8.3",
+    "output_name": "ssb-0-8",
+    "stem": "ssb-0-8"
+  },
+  {
     "extension": "js",
-    "file_move_type": "TransformAndMinifyJavaScript",
+    "file_move_type": "Copy",
     "folder": "scripts",
     "input_path": "scripts/transform.mj.js",
     "name": "transform.mj.js",
@@ -1027,7 +1053,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "css",
-    "file_move_type": "TransformCSS",
+    "file_move_type": "Copy",
     "folder": "styles",
     "input_path": "styles/highlight-base16-ocean-dark.css",
     "name": "highlight-base16-ocean-dark.css",
@@ -1037,7 +1063,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "css",
-    "file_move_type": "TransformCSS",
+    "file_move_type": "Copy",
     "folder": "styles",
     "input_path": "styles/highlight-base16-ocean-light.css",
     "name": "highlight-base16-ocean-light.css",
@@ -1047,7 +1073,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "css",
-    "file_move_type": "TransformCSS",
+    "file_move_type": "Copy",
     "folder": "styles",
     "input_path": "styles/main.css",
     "name": "main.css",
@@ -1057,7 +1083,7 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "extension": "md",
-    "file_move_type": "Copy",
+    "file_move_type": "Transform",
     "folder": "tests",
     "input_path": "tests/README.md",
     "name": "README.md",
@@ -1091,15 +1117,152 @@ document.querySelector("#jsOut").appendChild(newEl);
 
 <h2>Release Notes</h2>
 
-<details>
-Could not load file to process markdown: _release-notes/v0.6.4.md
-Could not load file to process markdown: _release-notes/v0.6.3.md
-Could not load file to process markdown: _release-notes/v0.6.2.md
-Could not load file to process markdown: _release-notes/v0.6.1.md
-Could not load file to process markdown: _release-notes/v0.6.0.md
-Could not load file to process markdown: _release-notes/v0.5.0.md
-Could not load file to process markdown: _release-notes/v0.4.0.md
-Could not load file to process markdown: _release-notes/v0.3.0.md
+<details open>
+<h3>Version 0.8.3</h3>
+<ul>
+<li>
+<p>A bunch of stuff changed that
+wasn't documented. See the
+todo checklist at the top
+where things show what's
+what</p>
+</li>
+<li>
+<p>Deprecated <code>markdown_file</code> in
+favor of using <code>filter markdown</code></p>
+</li>
+</ul>
+<h3>Version 0.6.4</h3>
+<p>DATE: TBD</p>
+<ul>
+<li>TODO...</li>
+</ul><h3>Version 0.6.3</h3>
+<p>Oct. 4. 2025</p>
+<ul>
+<li>
+<p>Removed deprecated message about find
+and replace not being included (it was
+added back in 0.6.2)</p>
+</li>
+<li>
+<p>Removed deprecated JavaScript highlighting
+for all .js files (highlighting is
+done on a per file/pre request basis
+from the templates)</p>
+</li>
+</ul>
+<h3>Version 0.6.2</h3>
+<p>Oct. 4, 2025</p>
+<ul>
+<li>Set up find/replace to work
+with files that get highlighted or
+processed by markdown by doing the
+prep in the <code>.build-files</code> dir</li>
+</ul>
+<h3>Version 0.6.1</h3>
+<p>Oct. 4, 2025</p>
+<ul>
+<li>
+<p>Added highlight_file(&quot;file_path&quot;) function to
+replace original highlight_file[&quot;file_path&quot;]</p>
+</li>
+<li>
+<p>Added markdown_file(&quot;file_path&quot;) function to replace
+original markdown_file[&quot;file_path&quot;]</p>
+</li>
+<li>
+<p>Moved <code>config/find-replace.txt</code> to <code>support/find-replace/*.txt</code>
+directory that supports multiple text files.</p>
+</li>
+</ul>
+<h3>Version 0.6.0</h3>
+<ul>
+<li>
+<p>Added basic MiniJinja errors if
+something freaks out.</p>
+</li>
+<li>
+<p>Starting to include the version numbers
+in the binary output for now so that
+older versions can hang around and be
+used on sites that are built with them
+and not have to worry about making
+breaking changes.</p>
+<p>Names are like <code>ssb-0.6.x</code> so that
+that non-breaking patches can
+be applied without changing the
+base number (for now, the second number
+(e.g. <code>.6</code> is the major version that
+changes when breaking changes occur.
+Eventually it'll move to full semantic
+numbering with Major/Minor/Patch, but
+things need to stabilize more before
+a <code>1.0.0</code> is set)</p>
+</li>
+<li>
+<p>Looked at Updating so that <code>.js</code> files are
+treated as templates (e.g. can do include stuff
+from minijinja), but took it back out
+as it's to possible that the <code>.js</code> will
+have something that fights with MiniJinja.</p>
+</li>
+<li>
+<p>Removed <code>scripts/file-prep</code> that ran
+against every file as a pre-processor.
+It bogged down on a moderately sized
+site. Might add it back in at some
+point since the issue is really the
+speed of the script/process that's
+being called out to.</p>
+</li>
+<li>
+<p>Renamed <code>scripts</code> dir to <code>support</code>
+which will contain scripts as well
+as plugins, find replace files, and
+data files.</p>
+</li>
+</ul>
+<h3>Version 0.5.0</h3>
+<ul>
+<li>
+<p>The content tree is moved
+to a <code>.build-files</code> directory
+and the build occurs from those
+files.</p>
+</li>
+<li>
+<p>Scripts inside the <code>scripts/file-prep</code>
+directory are run over txt files
+during the move to the <code>.build-files</code>
+directory to do things like
+find and replace or any other
+pre-processing work that needs
+to be done.</p>
+</li>
+</ul>
+<h3>Version 0.4.0</h3>
+<p>Sept. 24, 2025</p>
+<ul>
+<li>
+<p>renamed <code>highlight</code> to <code>highlight_file</code>
+(<code>highlight</code> shows a deprecation message)</p>
+</li>
+<li>
+<p>renamed <code>markdown</code> to <code>markdown_file</code>
+(<code>markdown</code> shows a deprecation message)</p>
+</li>
+</ul>
+<h3>Version 0.3.0</h3>
+<p>Sept. 6, 2025</p>
+<ul>
+<li>
+<p>Ready for general personal use</p>
+</li>
+<li>
+<p>See home page for details on
+features and functionality.</p>
+</li>
+</ul>
 </details>
 
 <h2>JSON Data Test</h2>
