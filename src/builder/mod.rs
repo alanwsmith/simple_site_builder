@@ -218,7 +218,7 @@ impl Builder {
             json => json,
             files => file_list_as_value,
             folders => folders_as_value,
-            file => Value::from_serialize(details),
+            file_details => Value::from_serialize(details),
           )) {
             Ok(content) => {
               let output_content = content
