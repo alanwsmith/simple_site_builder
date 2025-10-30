@@ -25,7 +25,7 @@ pub struct FileDetails {
   pub output_folder: Option<PathBuf>,
   pub output_name: Option<PathBuf>,
   pub stem: PathBuf,
-  pub parent_folder: Option<PathBuf>,
+  pub parent_folder_name: Option<String>,
 }
 
 impl FileDetails {
@@ -41,8 +41,11 @@ impl FileDetails {
       FileDetails::get_output_name(input_path);
     let file_move_type =
       FileDetails::get_file_move_type(input_path);
-    let parent_folder =
-      input_path.parent().map(|p| p.to_path_buf());
+    let parent_folder_name =
+      input_path.parent().and_then(|p| {
+        p.file_stem()
+          .map(|f| f.to_string_lossy().to_string())
+      });
     FileDetails {
       extension,
       file_move_type,
@@ -52,7 +55,7 @@ impl FileDetails {
       output_folder,
       output_name,
       stem,
-      parent_folder,
+      parent_folder_name,
     }
   }
 
