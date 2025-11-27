@@ -136,21 +136,6 @@ impl FileDetails {
     initial
   }
 
-  pub fn get_output_dir(
-    input_path: &Path
-  ) -> Option<PathBuf> {
-    if input_path
-      .iter()
-      .any(|part| part.to_str().unwrap().starts_with("_"))
-    {
-      None
-    } else {
-      Some(PathBuf::from(
-        input_path.parent().unwrap().to_str().unwrap(),
-      ))
-    }
-  }
-
   // pub fn get_output_dir(
   //   input_path: &Path
   // ) -> Option<PathBuf> {
@@ -160,36 +145,13 @@ impl FileDetails {
   //   {
   //     None
   //   } else {
-  //     let file_stem =
-  //       input_path.file_stem().unwrap().to_str().unwrap();
-  //     let parent_path = PathBuf::from(
+  //     Some(PathBuf::from(
   //       input_path.parent().unwrap().to_str().unwrap(),
-  //     );
-  //     match input_path.extension() {
-  //       Some(ext) => {
-  //         if ext.to_str().unwrap() == "html" {
-  //           if input_path
-  //             .file_stem()
-  //             .unwrap()
-  //             .to_str()
-  //             .unwrap()
-  //             != "index"
-  //           {
-  //             Some(parent_path.join(file_stem))
-  //           } else {
-  //             Some(parent_path)
-  //           }
-  //         } else {
-  //           Some(parent_path)
-  //         }
-  //       }
-  //       None => Some(parent_path),
-  //     }
+  //     ))
   //   }
   // }
-  //
 
-  pub fn get_output_name(
+  pub fn get_output_dir(
     input_path: &Path
   ) -> Option<PathBuf> {
     if input_path
@@ -198,7 +160,31 @@ impl FileDetails {
     {
       None
     } else {
-      Some(input_path.file_name().unwrap().into())
+      let file_stem =
+        input_path.file_stem().unwrap().to_str().unwrap();
+      let parent_path = PathBuf::from(
+        input_path.parent().unwrap().to_str().unwrap(),
+      );
+      match input_path.extension() {
+        Some(ext) => {
+          if ext.to_str().unwrap() == "html" {
+            if input_path
+              .file_stem()
+              .unwrap()
+              .to_str()
+              .unwrap()
+              != "index"
+            {
+              Some(parent_path.join(file_stem))
+            } else {
+              Some(parent_path)
+            }
+          } else {
+            Some(parent_path)
+          }
+        }
+        None => Some(parent_path),
+      }
     }
   }
 
@@ -211,20 +197,33 @@ impl FileDetails {
   //   {
   //     None
   //   } else {
-  //     match input_path.extension() {
-  //       Some(ext) => {
-  //         if ext.to_str().unwrap() == "html" {
-  //           Some(PathBuf::from("index.html"))
-  //         } else {
-  //           Some(input_path.file_name().unwrap().into())
-  //         }
-  //       }
-  //       None => {
-  //         Some(input_path.file_name().unwrap().into())
-  //       }
-  //     }
+  //     Some(input_path.file_name().unwrap().into())
   //   }
   // }
+
+  pub fn get_output_name(
+    input_path: &Path
+  ) -> Option<PathBuf> {
+    if input_path
+      .iter()
+      .any(|part| part.to_str().unwrap().starts_with("_"))
+    {
+      None
+    } else {
+      match input_path.extension() {
+        Some(ext) => {
+          if ext.to_str().unwrap() == "html" {
+            Some(PathBuf::from("index.html"))
+          } else {
+            Some(input_path.file_name().unwrap().into())
+          }
+        }
+        None => {
+          Some(input_path.file_name().unwrap().into())
+        }
+      }
+    }
+  }
 
   pub fn sort_key(&self) -> (String, String) {
     (
@@ -349,6 +348,31 @@ mod test {
     assert_eq!(expected, got);
   }
 
+  // NOTE: This is old when files moved directly
+  // instead of making new like `about.html` to
+  // `about.html` instead of to `about/index.html`
+  // #[rstest]
+  // #[case("index.html", "index.html")]
+  // #[case("subdir/index.html", "index.html")]
+  // #[case("test.json", "test.json")]
+  // #[case("subdir/test.json", "test.json")]
+  // #[case(".dotfile", ".dotfile")]
+  // #[case(".dotdir/test.json", "test.json")]
+  // #[case("about.html", "about.html")]
+  // #[case("subdir/about.html", "about.html")]
+  // #[case(".subdir/about.html", "about.html")]
+  // #[case("subdir/.about.html", ".about.html")]
+  // fn get_output_name_to_move(
+  //   #[case] input_path: &str,
+  //   #[case] output_name: &str,
+  // ) {
+  //   let expected = Some(PathBuf::from(&output_name));
+  //   let got = FileDetails::get_output_name(
+  //     &PathBuf::from(input_path),
+  //   );
+  //   assert_eq!(expected, got);
+  // }
+
   #[rstest]
   #[case("index.html", "index.html")]
   #[case("subdir/index.html", "index.html")]
@@ -356,11 +380,11 @@ mod test {
   #[case("subdir/test.json", "test.json")]
   #[case(".dotfile", ".dotfile")]
   #[case(".dotdir/test.json", "test.json")]
-  #[case("about.html", "about.html")]
-  #[case("subdir/about.html", "about.html")]
-  #[case(".subdir/about.html", "about.html")]
-  #[case("subdir/.about.html", ".about.html")]
-  fn get_output_name_to_move(
+  #[case("about.html", "index.html")]
+  #[case("subdir/about.html", "index.html")]
+  #[case(".subdir/about.html", "index.html")]
+  #[case("subdir/.about.html", "index.html")]
+  fn solo_get_output_name_to_move(
     #[case] input_path: &str,
     #[case] output_name: &str,
   ) {
@@ -389,11 +413,30 @@ mod test {
     assert_eq!(expected, got);
   }
 
+  // THIS IS FOR PRIOR VERSION WHEN NOT
+  // MAKING `item.html` turn into
+  // `item/index.html`
+  // #[rstest]
+  // #[case("index.html", "")]
+  // #[case("sub-dir/index.html", "sub-dir")]
+  // #[case("about.html", "")]
+  // #[case("valid-dir/about.html", "valid-dir")]
+  // fn get_output_dir_valid_test_html(
+  //   #[case] input_path: &str,
+  //   #[case] target: &str,
+  // ) {
+  //   let expected = Some(PathBuf::from(target));
+  //   let got = FileDetails::get_output_dir(
+  //     &PathBuf::from(input_path),
+  //   );
+  //   assert_eq!(expected, got);
+  // }
+
   #[rstest]
   #[case("index.html", "")]
   #[case("sub-dir/index.html", "sub-dir")]
-  #[case("about.html", "")]
-  #[case("valid-dir/about.html", "valid-dir")]
+  #[case("about.html", "about")]
+  #[case("valid-dir/about.html", "valid-dir/about")]
   fn get_output_dir_valid_test_html(
     #[case] input_path: &str,
     #[case] target: &str,
@@ -436,26 +479,26 @@ mod test {
     assert_eq!(expected, got);
   }
 
-  // #[rstest]
-  // #[case("_skipped.html", None)]
-  // #[case("_skipped-dir/index.html", None)]
-  // #[case("_skipped-dir/about.html", None)]
-  // #[case("valid-dir/_skip.html", None)]
-  // #[case(".valid-dir/_skip.html", None)]
-  // #[case("valid-dir/_skip-dir/file.html", None)]
-  // #[case("_skipped.json", None)]
-  // #[case("_skipped-dir/skipped.json", None)]
-  // #[case("valid-dir/_skipped.json", None)]
-  // #[case("valid-dir/_skip-dir/file.json", None)]
-  // fn get_output_dir_skipped_test(
-  //   #[case] input_path: &str,
-  //   #[case] expected: Option<PathBuf>,
-  // ) {
-  //   let got = FileDetails::get_output_dir(
-  //     &PathBuf::from(input_path),
-  //   );
-  //   assert_eq!(expected, got);
-  // }
+  #[rstest]
+  #[case("_skipped.html", None)]
+  #[case("_skipped-dir/index.html", None)]
+  #[case("_skipped-dir/about.html", None)]
+  #[case("valid-dir/_skip.html", None)]
+  #[case(".valid-dir/_skip.html", None)]
+  #[case("valid-dir/_skip-dir/file.html", None)]
+  #[case("_skipped.json", None)]
+  #[case("_skipped-dir/skipped.json", None)]
+  #[case("valid-dir/_skipped.json", None)]
+  #[case("valid-dir/_skip-dir/file.json", None)]
+  fn get_output_dir_skipped_test(
+    #[case] input_path: &str,
+    #[case] expected: Option<PathBuf>,
+  ) {
+    let got = FileDetails::get_output_dir(
+      &PathBuf::from(input_path),
+    );
+    assert_eq!(expected, got);
+  }
 
   // #[rstest]
   // #[case(&PathBuf::from("index.html"), vec![])]

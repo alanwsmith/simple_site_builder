@@ -650,6 +650,14 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin"
+    ],
+    "name": "0.9.0",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "folder_parts": [
       "sub-dir-test"
     ],
     "name": "level-1",
@@ -723,8 +731,8 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "folder_parts": [],
     "input_path": "ping.html",
     "name": "ping.html",
-    "output_folder": "",
-    "output_name": "ping.html",
+    "output_folder": "ping",
+    "output_name": "index.html",
     "parent_folder": null,
     "stem": "ping"
   },
@@ -909,6 +917,20 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_name": null,
     "parent_folder": "_release-notes",
     "stem": "v0.8.5"
+  },
+  {
+    "extension": "0md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "folder_parts": [
+      "_release-notes"
+    ],
+    "input_path": "_release-notes/v0.9.0md",
+    "name": "v0.9.0md",
+    "output_folder": null,
+    "output_name": null,
+    "parent_folder": "_release-notes",
+    "stem": "v0.9"
   },
   {
     "extension": "html",
@@ -1454,6 +1476,22 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "stem": "ssb-0-8"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.9.0",
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.0"
+    ],
+    "input_path": "releases/aarch64-apple-darwin/0.9.0/ssb-0-9",
+    "name": "ssb-0-9",
+    "output_folder": "releases/aarch64-apple-darwin/0.9.0",
+    "output_name": "ssb-0-9",
+    "parent_folder": "0.9",
+    "stem": "ssb-0-9"
+  },
+  {
     "extension": "js",
     "file_move_type": "Copy",
     "folder": "scripts",
@@ -1559,7 +1597,6 @@ newEl.innerHTML = transformJsTest();
 document.querySelector("#jsOut").appendChild(newEl);
 </script>
 
-
 <h2>Test Raw</h2>
 
 <div>new</div>
@@ -1567,6 +1604,16 @@ document.querySelector("#jsOut").appendChild(newEl);
 <h2>Release Notes</h2>
 
 <details open>
+<h3>Version 0.9.0</h3>
+<ul>
+<li>
+<p>Went back to doing a directory move
+for non <code>index.html</code> files like:</p>
+<p>something/about.html</p>
+<p>to</p>
+<p>something/about/index.html</p>
+</li>
+</ul>
 <h3>Version 0.8.5</h3>
 <ul>
 <li>
@@ -1761,7 +1808,7 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;extension&quot;: &quot;json&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;_config.json&quot;, &quot;name&quot;: &quot;_config.json&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;_config&quot;}
   <li>{&quot;extension&quot;: &quot;ico&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;favicon.ico&quot;, &quot;name&quot;: &quot;favicon.ico&quot;, &quot;output_folder&quot;: &quot;&quot;, &quot;output_name&quot;: &quot;favicon.ico&quot;, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;favicon&quot;}
   <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;index.html&quot;, &quot;name&quot;: &quot;index.html&quot;, &quot;output_folder&quot;: &quot;&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;index&quot;}
-  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;ping.html&quot;, &quot;name&quot;: &quot;ping.html&quot;, &quot;output_folder&quot;: &quot;&quot;, &quot;output_name&quot;: &quot;ping.html&quot;, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;ping&quot;}
+  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;ping.html&quot;, &quot;name&quot;: &quot;ping.html&quot;, &quot;output_folder&quot;: &quot;ping&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;ping&quot;}
   <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_includes&quot;, &quot;folder_parts&quot;: [&quot;_includes&quot;], &quot;input_path&quot;: &quot;_includes&#x2f;test-highlight-with-find-replace.js&quot;, &quot;name&quot;: &quot;test-highlight-with-find-replace.js&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_includes&quot;, &quot;stem&quot;: &quot;test-highlight-with-find-replace&quot;}
   <li>{&quot;extension&quot;: &quot;txt&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_includes&quot;, &quot;folder_parts&quot;: [&quot;_includes&quot;], &quot;input_path&quot;: &quot;_includes&#x2f;txt-test.txt&quot;, &quot;name&quot;: &quot;txt-test.txt&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_includes&quot;, &quot;stem&quot;: &quot;txt-test&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.3.0.md&quot;, &quot;name&quot;: &quot;v0.3.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.3.0&quot;}
@@ -1775,6 +1822,7 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.3.md&quot;, &quot;name&quot;: &quot;v0.8.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.3&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.4.md&quot;, &quot;name&quot;: &quot;v0.8.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.4&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.5.md&quot;, &quot;name&quot;: &quot;v0.8.5.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.5&quot;}
+  <li>{&quot;extension&quot;: &quot;0md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.0md&quot;, &quot;name&quot;: &quot;v0.9.0md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.9&quot;}
   <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_wrappers&quot;, &quot;folder_parts&quot;: [&quot;_wrappers&quot;], &quot;input_path&quot;: &quot;_wrappers&#x2f;main.html&quot;, &quot;name&quot;: &quot;main.html&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_wrappers&quot;, &quot;stem&quot;: &quot;main&quot;}
   <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;_js-include-test.js&quot;, &quot;name&quot;: &quot;_js-include-test.js&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;components&quot;, &quot;stem&quot;: &quot;_js-include-test&quot;}
   <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;bitty-1.0.0-rc4.full.js&quot;, &quot;name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;output_folder&quot;: &quot;components&quot;, &quot;output_name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;parent_folder&quot;: &quot;components&quot;, &quot;stem&quot;: &quot;bitty-1.0.0-rc4.full&quot;}
@@ -1811,6 +1859,7 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
   <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.4&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
   <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.5&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;stem&quot;: &quot;ssb-0-9&quot;}
   <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;scripts&quot;, &quot;folder_parts&quot;: [&quot;scripts&quot;], &quot;input_path&quot;: &quot;scripts&#x2f;transform.mj.js&quot;, &quot;name&quot;: &quot;transform.mj.js&quot;, &quot;output_folder&quot;: &quot;scripts&quot;, &quot;output_name&quot;: &quot;transform.mj.js&quot;, &quot;parent_folder&quot;: &quot;scripts&quot;, &quot;stem&quot;: &quot;transform.mj&quot;}
   <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-dark.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;stem&quot;: &quot;highlight-base16-ocean-dark&quot;}
   <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-light.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;stem&quot;: &quot;highlight-base16-ocean-light&quot;}
@@ -1856,6 +1905,7 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.8.3&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.8.4&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.8.5&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
+  <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.0&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;], &quot;name&quot;: &quot;level-1&quot;, &quot;parent&quot;: &quot;sub-dir-test&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;], &quot;name&quot;: &quot;level-2&quot;, &quot;parent&quot;: &quot;sub-dir-test&#x2f;level-1&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;, &quot;level-2&quot;], &quot;name&quot;: &quot;level-3&quot;, &quot;parent&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&quot;}
