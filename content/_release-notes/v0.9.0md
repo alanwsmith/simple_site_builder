@@ -1,0 +1,13 @@
+### Version 0.9.0
+
+- Went back to doing a directory move
+for non `index.html` files like:
+
+    something/about.html
+
+  to
+
+    something/about/index.html
+
+
+
