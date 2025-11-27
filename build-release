@@ -3,7 +3,7 @@
 # REMINDER: This does a cargo run
 # at the end to build the site so
 # the binary gets added to it. 
-# (i.e. it's not for testing, but
+# (i.e. that part is not for testing, so
 # don't remove it)
 
 cargo -Z unstable-options build --bins --release --artifact-dir "./content/releases/$(rustc --print host-tuple)/$(cargo metadata --no-deps | jq -r '.packages[0].version' | tr -d '\n')" && echo "Building site with release via cargo run..." && sleep 3 && cargo run

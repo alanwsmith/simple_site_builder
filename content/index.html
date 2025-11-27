@@ -382,7 +382,26 @@ document.querySelector("#jsOut").appendChild(newEl);
 
 <h2>File Details</h2>
 <pre class="code-block"><code>
-[@ file_details|tojson(true) @]
+[@ file|tojson(true) @]
 </code></pre>
+
+<h2>Files</h2>
+<details>
+<ul>
+[! for f in files !]
+  <li>[@ f @]
+[! endfor !]
+</ul>
+</details>
+
+<h2>Folders</h2>
+<details open>
+<ul>
+[! for folder in folders !]
+  <li>[@ folder @]
+[! endfor !]
+</ul>
+</details>
+
 
 [! endblock !]
