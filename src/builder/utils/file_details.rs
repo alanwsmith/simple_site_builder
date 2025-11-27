@@ -26,6 +26,7 @@ pub struct FileDetails {
   pub output_name: Option<PathBuf>,
   pub stem: PathBuf,
   pub parent_folder: Option<String>,
+  pub folder_parts: Vec<String>,
 }
 
 impl FileDetails {
@@ -33,6 +34,8 @@ impl FileDetails {
     let extension =
       FileDetails::get_extension(input_path);
     let folder = FileDetails::get_input_dir(input_path);
+    let folder_parts =
+      FileDetails::get_folder_parts(input_path);
     let name = FileDetails::get_input_name(input_path);
     let stem = FileDetails::get_input_stem(input_path);
     let output_folder =
@@ -50,6 +53,7 @@ impl FileDetails {
       extension,
       file_move_type,
       folder,
+      folder_parts,
       input_path: input_path.to_path_buf(),
       name,
       output_folder,
@@ -96,14 +100,12 @@ impl FileDetails {
     input_path: &Path
   ) -> FileMoveType {
     let transforms = &["html", "txt", "md"];
-
     if input_path
       .iter()
       .any(|part| part.to_str().unwrap().starts_with("_"))
     {
       return FileMoveType::Skip;
     }
-
     if let Some(ext) = input_path.extension() {
       if let Some(stem) = input_path.file_stem() {
         if let Some(ext2) =
@@ -121,6 +123,17 @@ impl FileDetails {
       }
     }
     FileMoveType::Copy
+  }
+
+  pub fn get_folder_parts(
+    input_path: &Path
+  ) -> Vec<String> {
+    let mut initial = input_path
+      .iter()
+      .map(|part| part.to_string_lossy().to_string())
+      .collect::<Vec<String>>();
+    let _ = initial.pop();
+    initial
   }
 
   pub fn get_output_dir(
@@ -404,6 +417,20 @@ mod test {
   ) {
     let expected = Some(PathBuf::from(target));
     let got = FileDetails::get_output_dir(
+      &PathBuf::from(input_path),
+    );
+    assert_eq!(expected, got);
+  }
+
+  #[rstest]
+  #[case("index.html", vec![])]
+  #[case("parent/index.html", vec!["parent".to_string()])]
+  #[case("grandparent/parent/index.html", vec!["grandparent".to_string(), "parent".to_string()])]
+  fn get_folder_parts_test(
+    #[case] input_path: &str,
+    #[case] expected: Vec<String>,
+  ) {
+    let got = FileDetails::get_folder_parts(
       &PathBuf::from(input_path),
     );
     assert_eq!(expected, got);
