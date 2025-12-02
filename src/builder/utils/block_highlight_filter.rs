@@ -4,12 +4,11 @@ use syntect::html::{ClassStyle, ClassedHTMLGenerator};
 use syntect::parsing::SyntaxSet;
 use syntect::util::LinesWithEndings;
 
-// TODO: Deprecate in favor of highlight_code_with_safe
-
-pub fn highlight_code(
+pub fn block_highlight_filter(
   code: &str,
   lang: &str,
-) -> String {
+  classes: Option<&str>,
+) -> Value {
   let syntax_set = SyntaxSet::load_defaults_newlines();
   let syntax =
     syntax_set.find_syntax_by_token(lang).unwrap_or_else(
@@ -37,5 +36,13 @@ pub fn highlight_code(
       )
     })
     .collect();
-  output_html.join("\n")
+  let extra_classes = match classes {
+    Some(c) => format!(" {}", c),
+    None => "".to_string(),
+  };
+  Value::from_safe_string(format!(
+    r#"<pre class="code-block{}"><code>{}</code></pre>"#,
+    extra_classes,
+    output_html.join("\n")
+  ))
 }

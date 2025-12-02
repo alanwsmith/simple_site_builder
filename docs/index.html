@@ -28,6 +28,16 @@
       </header>
       <main>
 
+<style>
+.red {
+  color: black;
+  background-color: red;
+}
+
+</style>
+<p>this is <code class="lang-html red"><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>inline highlighted html<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code></p>
+
+
 <h1>Simple Site Builder</h1>
 <h2>Overview</h2>
 <p>Simple Site Builder is my latest
@@ -150,6 +160,21 @@ the MiniJinja transform</p>
 <li>
 <p>[x] Automatically load .json files to use as
 data across templates.</p>
+</li>
+<li>
+<p>[x] Can do <code>filter block_highlight(&quot;lang&quot;, &quot;extra classes&quot;)</code> filters
+which return the coded inside <code>pre/code</code> blocks with
+a <code>code-block</code> class on the <code>pre</code> tag and
+<code>extra classes</code> added to the pre tag and the code
+highlighted in the lang. The returned value is
+<code>safe</code> so there's no need to apply a <code>|safe</code> string
+to the filter.</p>
+</li>
+<li>
+<p>[x] So, there's an <code>inline_highlight</code> function, and
+<code>inline_highlight</code> filter, and a <code>block_highlight</code>
+filter. (Not doing a <code>block_highlight</code> function because
+wrapping a large block that ways is fraught)</p>
 </li>
 <li>
 <p>[] Add automated tests</p>
@@ -337,16 +362,32 @@ the input.</p>
 }
 </pre>
 
+<h2>Inline Syntax Highlighting with `@ inline_highlight("LANG", "CODE", "optional extra classes") @`</h2>
 
-<h2>Inline Syntax Highlighting</h2>
+<p>This is <code class="lang-html"><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>some HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code></p>
+
+
+<h2>Inline Syntax Highlighting with a filter `! filter inline_highlight("LANG", "optional extra classes") !`</h2>
+
+<code class="lang-html extra classes"><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>this is filter highlighted html<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code>
+
+<h2>Block Syntax Highlighting with `filter block_highlight("LANG", "optional extra classes")`</h2>
+
+<div>HTML</div><pre class="code-block"><code><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML from filter highlight<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code></pre><h2>Block Syntax Highlighting directly named filters (e.g. `filter hightlight_html`)</h2>
+
+
+<p>NOTE: This was the original appraoch. It's here for backward
+compatability. Probably you want to use: `filter block_highlight("LANG", "optional extra classes")`
+which returns stuff already in a `pre` tag with classes added to it.</p>
 
 <div>CSS</div>
 <pre><span class="line-marker"></span><span class="source css"><span class="meta selector css"><span class="entity other attribute-name class css"><span class="punctuation definition entity css">.</span>highlighted-css</span> </span><span class="meta property-list css"><span class="punctuation section property-list css">{</span>
 <span class="line-marker"></span>  <span class="meta property-name css"><span class="support type property-name css">color</span></span><span class="punctuation separator key-value css">:</span><span class="meta property-value css"> </span><span class="meta property-value css"><span class="support constant color w3c-extended-color-keywords css">goldenrod</span></span><span class="punctuation terminator rule css">;</span>
 <span class="line-marker"></span></span><span class="punctuation section property-list css">}</span></span></pre>
 
+
 <div>HTML</div>
-<pre><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
+<pre><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML form filter highlight_html<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
 
 <div>JSON</div>
 <pre><span class="line-marker"></span><span class="source json"><span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span> <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_key<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_value<span class="punctuation definition string end json">&quot;</span></span> </span><span class="punctuation section dictionary end json">}</span></span></span></pre>
@@ -658,6 +699,14 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin"
+    ],
+    "name": "0.9.1",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "folder_parts": [
       "sub-dir-test"
     ],
     "name": "level-1",
@@ -919,18 +968,32 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "stem": "v0.8.5"
   },
   {
-    "extension": "0md",
+    "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "folder_parts": [
       "_release-notes"
     ],
-    "input_path": "_release-notes/v0.9.0md",
-    "name": "v0.9.0md",
+    "input_path": "_release-notes/v0.9.0.md",
+    "name": "v0.9.0.md",
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
-    "stem": "v0.9"
+    "stem": "v0.9.0"
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "folder_parts": [
+      "_release-notes"
+    ],
+    "input_path": "_release-notes/v0.9.1.md",
+    "name": "v0.9.1.md",
+    "output_folder": null,
+    "output_name": null,
+    "parent_folder": "_release-notes",
+    "stem": "v0.9.1"
   },
   {
     "extension": "html",
@@ -1492,6 +1555,22 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "stem": "ssb-0-9"
   },
   {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.9.1",
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.1"
+    ],
+    "input_path": "releases/aarch64-apple-darwin/0.9.1/ssb-0-9",
+    "name": "ssb-0-9",
+    "output_folder": "releases/aarch64-apple-darwin/0.9.1",
+    "output_name": "ssb-0-9",
+    "parent_folder": "0.9",
+    "stem": "ssb-0-9"
+  },
+  {
     "extension": "js",
     "file_move_type": "Copy",
     "folder": "scripts",
@@ -1604,6 +1683,38 @@ document.querySelector("#jsOut").appendChild(newEl);
 <h2>Release Notes</h2>
 
 <details open>
+<h3>Version 0.9.1</h3>
+<ul>
+<li>
+<p>Switch <code>highlight_css</code>, <code>highlight_html</code>, etc...
+to return <code>safe</code> values so they can be used with
+<code>filter highlight_css</code> instead of requiring
+<code>filter highlight_css|safe</code></p>
+</li>
+<li>
+<p>Added <code>filter block_highlight(&quot;LANG&quot;)</code> which allows
+for highlighting languages based off the <code>LANG</code> argument.</p>
+<p>The return value is wrapped in a <code>&lt;pre class=&quot;code-block language-LANG&quot;&gt;&lt;code&gt;</code>
+... <code>&lt;/code&gt;&lt;/pre&gt;</code> block.</p>
+</li>
+<li>
+<p>Added <code>filter block_highlight(&quot;LANG&quot;, &quot;extra classes&quot;)</code> which
+adds <code>extra classes</code> to the <code>pre</code> tag like: <code>&lt;pre class=&quot;code-block language-LANG extra classes&quot;&gt;</code></p>
+</li>
+<li>
+<p>Added <code>inline_highlight</code> function for strings with
+<code>[</code> <code>@ inline_highlight(&quot;LANG&quot;, &quot;CODE&quot;, &quot;extra classes&quot;) @</code> <code>]</code> that return
+<code>&lt;code class=&quot;inline-code language-LANG extra classes&quot;&gt;CODE&lt;/code&gt;</code>
+where the <code>CODE</code> has been syntax highlighted.</p>
+</li>
+<li>
+<p>Added <code>inline_highlight</code> filter for strings with
+<code>[</code> <code>! filter inline_highlight(&quot;LANG&quot;, &quot;extra classes&quot;) !</code> <code>][</code> <code>! endfilter !</code> <code>]</code>
+that returns
+<code>&lt;code class=&quot;inline-code language-LANG extra classes&quot;&gt;CODE&lt;/code&gt;</code>
+where the <code>CODE</code> has been syntax highlighted.</p>
+</li>
+</ul>
 <h3>Version 0.9.0</h3>
 <ul>
 <li>
@@ -1822,7 +1933,8 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.3.md&quot;, &quot;name&quot;: &quot;v0.8.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.3&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.4.md&quot;, &quot;name&quot;: &quot;v0.8.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.4&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.5.md&quot;, &quot;name&quot;: &quot;v0.8.5.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.5&quot;}
-  <li>{&quot;extension&quot;: &quot;0md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.0md&quot;, &quot;name&quot;: &quot;v0.9.0md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.9&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.0.md&quot;, &quot;name&quot;: &quot;v0.9.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.9.0&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.1.md&quot;, &quot;name&quot;: &quot;v0.9.1.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.9.1&quot;}
   <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_wrappers&quot;, &quot;folder_parts&quot;: [&quot;_wrappers&quot;], &quot;input_path&quot;: &quot;_wrappers&#x2f;main.html&quot;, &quot;name&quot;: &quot;main.html&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_wrappers&quot;, &quot;stem&quot;: &quot;main&quot;}
   <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;_js-include-test.js&quot;, &quot;name&quot;: &quot;_js-include-test.js&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;components&quot;, &quot;stem&quot;: &quot;_js-include-test&quot;}
   <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;bitty-1.0.0-rc4.full.js&quot;, &quot;name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;output_folder&quot;: &quot;components&quot;, &quot;output_name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;parent_folder&quot;: &quot;components&quot;, &quot;stem&quot;: &quot;bitty-1.0.0-rc4.full&quot;}
@@ -1860,6 +1972,7 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.4&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
   <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.5&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
   <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;stem&quot;: &quot;ssb-0-9&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.1&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.1&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;stem&quot;: &quot;ssb-0-9&quot;}
   <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;scripts&quot;, &quot;folder_parts&quot;: [&quot;scripts&quot;], &quot;input_path&quot;: &quot;scripts&#x2f;transform.mj.js&quot;, &quot;name&quot;: &quot;transform.mj.js&quot;, &quot;output_folder&quot;: &quot;scripts&quot;, &quot;output_name&quot;: &quot;transform.mj.js&quot;, &quot;parent_folder&quot;: &quot;scripts&quot;, &quot;stem&quot;: &quot;transform.mj&quot;}
   <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-dark.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;stem&quot;: &quot;highlight-base16-ocean-dark&quot;}
   <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-light.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;stem&quot;: &quot;highlight-base16-ocean-light&quot;}
@@ -1906,6 +2019,7 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.8.4&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.8.5&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.0&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
+  <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.1&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;], &quot;name&quot;: &quot;level-1&quot;, &quot;parent&quot;: &quot;sub-dir-test&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;], &quot;name&quot;: &quot;level-2&quot;, &quot;parent&quot;: &quot;sub-dir-test&#x2f;level-1&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;, &quot;level-2&quot;], &quot;name&quot;: &quot;level-3&quot;, &quot;parent&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&quot;}

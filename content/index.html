@@ -1,6 +1,16 @@
 [! extends "_wrappers/main.html" !]
 [! block main !]
 
+<style>
+.red {
+  color: black;
+  background-color: red;
+}
+
+</style>
+<p>this is [@ inline_highlight("html", '<div>inline highlighted html</div>', "red") @]</p>
+
+
 [! filter markdown|safe !]
 # Simple Site Builder 
 
@@ -104,6 +114,19 @@ the MiniJinja transform
 
 - [x] Automatically load .json files to use as
 data across templates. 
+
+- [x] Can do `filter block_highlight("lang", "extra classes")` filters
+which return the coded inside `pre/code` blocks with 
+a `code-block` class on the `pre` tag and
+`extra classes` added to the pre tag and the code
+highlighted in the lang. The returned value is
+`safe` so there's no need to apply a `|safe` string
+to the filter. 
+
+- [x] So, there's an `inline_highlight` function, and
+`inline_highlight` filter, and a `block_highlight`
+filter. (Not doing a `block_highlight` function because
+wrapping a large block that ways is fraught)
 
 - [] Add automated tests
 
@@ -239,49 +262,74 @@ the input.
 [@ json|tojson(true) @]
 </pre>
 
+<h2>Inline Syntax Highlighting with `@ inline_highlight("LANG", "CODE", "optional extra classes") @`</h2>
 
-<h2>Inline Syntax Highlighting</h2>
+<p>This is [@ inline_highlight("html", "<div>some HTML</div>") @]</p>
+
+
+<h2>Inline Syntax Highlighting with a filter `! filter inline_highlight("LANG", "optional extra classes") !`</h2>
+
+[! filter inline_highlight("html", "extra classes") -!]
+<div>this is filter highlighted html</div>
+[!- endfilter !]
+
+
+<h2>Block Syntax Highlighting with `filter block_highlight("LANG", "optional extra classes")`</h2>
+
+<div>HTML</div>
+[!- filter block_highlight("html") -!]
+<div>highlighted HTML from filter highlight</div>
+[!- endfilter -!]
+
+
+<h2>Block Syntax Highlighting directly named filters (e.g. `filter hightlight_html`)</h2>
+
+
+<p>NOTE: This was the original appraoch. It's here for backward
+compatability. Probably you want to use: `filter block_highlight("LANG", "optional extra classes")`
+which returns stuff already in a `pre` tag with classes added to it.</p>
 
 <div>CSS</div>
 <pre>
-[!- filter highlight_css|safe -!]
+[!- filter highlight_css -!]
 .highlighted-css {
   color: goldenrod;
 }
 [!- endfilter -!]
 </pre>
 
+
 <div>HTML</div>
 <pre>
-[!- filter highlight_html|safe -!]
-<div>highlighted HTML</div>
+[!- filter highlight_html -!]
+<div>highlighted HTML form filter highlight_html</div>
 [!- endfilter -!]
 </pre>
 
 <div>JSON</div>
 <pre>
-[!- filter highlight_json|safe -!]
+[!- filter highlight_json -!]
 { "json_key": "json_value" }
 [!- endfilter -!]
 </pre>
 
 <div>Lua</div>
 <pre>
-[!- filter highlight_lua|safe -!]
+[!- filter highlight_lua -!]
   print('this is lua')
 [!- endfilter -!]
 </pre>
 
 <div>Python</div>
 <pre>
-[!- filter highlight_python|safe -!]
+[!- filter highlight_python -!]
   print("this is python")
 [!- endfilter -!]
 </pre>
 
 <div>Rust</div>
 <pre>
-[!- filter highlight_rust|safe -!]
+[!- filter highlight_rust -!]
 fn main() {
   println!("Highlighted rust");
 }

@@ -4,12 +4,10 @@ use syntect::html::{ClassStyle, ClassedHTMLGenerator};
 use syntect::parsing::SyntaxSet;
 use syntect::util::LinesWithEndings;
 
-// TODO: Deprecate in favor of highlight_code_with_safe
-
-pub fn highlight_code(
+pub fn highlight_code_with_safe(
   code: &str,
   lang: &str,
-) -> String {
+) -> Value {
   let syntax_set = SyntaxSet::load_defaults_newlines();
   let syntax =
     syntax_set.find_syntax_by_token(lang).unwrap_or_else(
@@ -37,5 +35,5 @@ pub fn highlight_code(
       )
     })
     .collect();
-  output_html.join("\n")
+  Value::from_safe_string(output_html.join("\n"))
 }
