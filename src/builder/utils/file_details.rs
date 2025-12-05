@@ -19,7 +19,7 @@ pub enum FileMoveType {
 pub struct FileDetails {
   pub extension: Option<String>,
   pub file_move_type: FileMoveType,
-  pub file_path_parts: Vec<String>,
+  pub path_parts: Vec<String>,
   pub folder: PathBuf,
   pub folder_parts: Vec<String>,
   pub input_path: PathBuf,
@@ -36,8 +36,8 @@ impl FileDetails {
       FileDetails::get_extension(input_path);
     let file_move_type =
       FileDetails::get_file_move_type(input_path);
-    let file_path_parts =
-      FileDetails::get_file_path_parts(input_path);
+    let path_parts =
+      FileDetails::get_path_parts(input_path);
     let folder = FileDetails::get_input_dir(input_path);
     let folder_parts =
       FileDetails::get_folder_parts(input_path);
@@ -55,7 +55,7 @@ impl FileDetails {
     FileDetails {
       extension,
       file_move_type,
-      file_path_parts,
+      path_parts,
       folder,
       folder_parts,
       input_path: input_path.to_path_buf(),
@@ -129,7 +129,7 @@ impl FileDetails {
     FileMoveType::Copy
   }
 
-  pub fn get_file_path_parts(
+  pub fn get_path_parts(
     input_path: &Path
   ) -> Vec<String> {
     input_path
