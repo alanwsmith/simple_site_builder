@@ -19,39 +19,43 @@ pub enum FileMoveType {
 pub struct FileDetails {
   pub extension: Option<String>,
   pub file_move_type: FileMoveType,
+  pub file_path_parts: Vec<String>,
   pub folder: PathBuf,
+  pub folder_parts: Vec<String>,
   pub input_path: PathBuf,
   pub name: PathBuf,
   pub output_folder: Option<PathBuf>,
   pub output_name: Option<PathBuf>,
-  pub stem: PathBuf,
   pub parent_folder: Option<String>,
-  pub folder_parts: Vec<String>,
+  pub stem: PathBuf,
 }
 
 impl FileDetails {
   pub fn new(input_path: &Path) -> FileDetails {
     let extension =
       FileDetails::get_extension(input_path);
+    let file_move_type =
+      FileDetails::get_file_move_type(input_path);
+    let file_path_parts =
+      FileDetails::get_file_path_parts(input_path);
     let folder = FileDetails::get_input_dir(input_path);
     let folder_parts =
       FileDetails::get_folder_parts(input_path);
     let name = FileDetails::get_input_name(input_path);
-    let stem = FileDetails::get_input_stem(input_path);
     let output_folder =
       FileDetails::get_output_dir(input_path);
     let output_name =
       FileDetails::get_output_name(input_path);
-    let file_move_type =
-      FileDetails::get_file_move_type(input_path);
     let parent_folder =
       input_path.parent().and_then(|p| {
         p.file_stem()
           .map(|f| f.to_string_lossy().to_string())
       });
+    let stem = FileDetails::get_input_stem(input_path);
     FileDetails {
       extension,
       file_move_type,
+      file_path_parts,
       folder,
       folder_parts,
       input_path: input_path.to_path_buf(),
@@ -123,6 +127,15 @@ impl FileDetails {
       }
     }
     FileMoveType::Copy
+  }
+
+  pub fn get_file_path_parts(
+    input_path: &Path
+  ) -> Vec<String> {
+    input_path
+      .iter()
+      .map(|part| part.to_string_lossy().to_string())
+      .collect::<Vec<String>>()
   }
 
   pub fn get_folder_parts(
