@@ -1,6 +1,7 @@
 [package]
 name = "simple_site_builder"
-version = "0.9.0"
+# NOTE: Remember to update release notes
+version = "0.9.4"
 edition = "2024"
 
 [[bin]]

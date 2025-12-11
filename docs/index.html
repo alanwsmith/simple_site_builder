@@ -28,6 +28,29 @@
       </header>
       <main>
 
+<h3>TODO</h3>
+<ul>
+<li>Make a demo showing how to use config.json files
+in a directory that you pick up by looping
+through folders that you can then use to
+make decisions about what do to with the
+    the folder (e.g. ignoring it
+    for output instead of trying to figure
+    that out by looking at the templates)
+  </li>
+</ul>
+
+
+<style>
+.red {
+  color: black;
+  background-color: red;
+}
+
+</style>
+<p>this is <code class="code-span lang-html red"><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>inline highlighted html<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code></p>
+
+
 <h1>Simple Site Builder</h1>
 <h2>Overview</h2>
 <p>Simple Site Builder is my latest
@@ -150,6 +173,26 @@ the MiniJinja transform</p>
 <li>
 <p>[x] Automatically load .json files to use as
 data across templates.</p>
+</li>
+<li>
+<p>[x] Can do <code>filter block_highlight(&quot;lang&quot;, &quot;extra classes&quot;)</code> filters
+which return the coded inside <code>pre/code</code> blocks with
+a <code>code-block</code> class on the <code>pre</code> tag and
+<code>extra classes</code> added to the pre tag and the code
+highlighted in the lang. The returned value is
+<code>safe</code> so there's no need to apply a <code>|safe</code> string
+to the filter.</p>
+</li>
+<li>
+<p>[x] So, there's an <code>inline_highlight</code> function, and
+<code>inline_highlight</code> filter, and a <code>block_highlight</code>
+filter. (Not doing a <code>block_highlight</code> function because
+wrapping a large block that ways is fraught)</p>
+</li>
+<li>
+<p>[x] Add <code>path_parts</code> to file details that's like
+<code>folder_parts</code> but includes the file name:</p>
+<p>OUTPUT: [&quot;index.html&quot;]</p>
 </li>
 <li>
 <p>[] Add automated tests</p>
@@ -337,16 +380,32 @@ the input.</p>
 }
 </pre>
 
+<h2>Inline Syntax Highlighting with `@ inline_highlight("LANG", "CODE", "optional extra classes") @`</h2>
 
-<h2>Inline Syntax Highlighting</h2>
+<p>This is <code class="code-span lang-html"><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>some HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code></p>
+
+
+<h2>Inline Syntax Highlighting with a filter `! filter inline_highlight("LANG", "optional extra classes") !`</h2>
+
+<code class="code-span lang-html extra classes"><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>this is filter highlighted html<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code>
+
+<h2>Block Syntax Highlighting with `filter block_highlight("LANG", "optional extra classes")`</h2>
+
+<div>HTML</div><pre class="code-block"><code><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML from filter highlight<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></code></pre><h2>Block Syntax Highlighting directly named filters (e.g. `filter hightlight_html`)</h2>
+
+
+<p>NOTE: This was the original appraoch. It's here for backward
+compatability. Probably you want to use: `filter block_highlight("LANG", "optional extra classes")`
+which returns stuff already in a `pre` tag with classes added to it.</p>
 
 <div>CSS</div>
 <pre><span class="line-marker"></span><span class="source css"><span class="meta selector css"><span class="entity other attribute-name class css"><span class="punctuation definition entity css">.</span>highlighted-css</span> </span><span class="meta property-list css"><span class="punctuation section property-list css">{</span>
 <span class="line-marker"></span>  <span class="meta property-name css"><span class="support type property-name css">color</span></span><span class="punctuation separator key-value css">:</span><span class="meta property-value css"> </span><span class="meta property-value css"><span class="support constant color w3c-extended-color-keywords css">goldenrod</span></span><span class="punctuation terminator rule css">;</span>
 <span class="line-marker"></span></span><span class="punctuation section property-list css">}</span></span></pre>
 
+
 <div>HTML</div>
-<pre><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
+<pre><span class="line-marker"></span><span class="text html basic"><span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span>highlighted HTML form filter highlight_html<span class="meta tag block any html"><span class="punctuation definition tag begin html">&lt;/</span><span class="entity name tag block any html">div</span><span class="punctuation definition tag end html">&gt;</span></span></span></pre>
 
 <div>JSON</div>
 <pre><span class="line-marker"></span><span class="source json"><span class="meta structure dictionary json"><span class="punctuation section dictionary begin json">{</span> <span class="meta structure dictionary key json"><span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_key<span class="punctuation definition string end json">&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json">:</span> <span class="string quoted double json"><span class="punctuation definition string begin json">&quot;</span>json_value<span class="punctuation definition string end json">&quot;</span></span> </span><span class="punctuation section dictionary end json">}</span></span></span></pre>
@@ -415,6 +474,9 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   "output_folder": "",
   "output_name": "index.html",
   "parent_folder": null,
+  "path_parts": [
+    "index.html"
+  ],
   "stem": "index"
 }
 </pre>
@@ -658,6 +720,38 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
   },
   {
     "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin"
+    ],
+    "name": "0.9.1",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin"
+    ],
+    "name": "0.9.2",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin"
+    ],
+    "name": "0.9.3",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin"
+    ],
+    "name": "0.9.4",
+    "parent": "releases/aarch64-apple-darwin"
+  },
+  {
+    "folder_parts": [
       "sub-dir-test"
     ],
     "name": "level-1",
@@ -698,6 +792,9 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": null,
+    "path_parts": [
+      "_config.json"
+    ],
     "stem": "_config"
   },
   {
@@ -710,6 +807,9 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "",
     "output_name": "favicon.ico",
     "parent_folder": null,
+    "path_parts": [
+      "favicon.ico"
+    ],
     "stem": "favicon"
   },
   {
@@ -722,6 +822,9 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "",
     "output_name": "index.html",
     "parent_folder": null,
+    "path_parts": [
+      "index.html"
+    ],
     "stem": "index"
   },
   {
@@ -734,6 +837,9 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "ping",
     "output_name": "index.html",
     "parent_folder": null,
+    "path_parts": [
+      "ping.html"
+    ],
     "stem": "ping"
   },
   {
@@ -748,6 +854,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_includes",
+    "path_parts": [
+      "_includes",
+      "test-highlight-with-find-replace.js"
+    ],
     "stem": "test-highlight-with-find-replace"
   },
   {
@@ -762,6 +872,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_includes",
+    "path_parts": [
+      "_includes",
+      "txt-test.txt"
+    ],
     "stem": "txt-test"
   },
   {
@@ -776,6 +890,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.3.0.md"
+    ],
     "stem": "v0.3.0"
   },
   {
@@ -790,6 +908,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.4.0.md"
+    ],
     "stem": "v0.4.0"
   },
   {
@@ -804,6 +926,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.5.0.md"
+    ],
     "stem": "v0.5.0"
   },
   {
@@ -818,6 +944,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.6.0.md"
+    ],
     "stem": "v0.6.0"
   },
   {
@@ -832,6 +962,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.6.1.md"
+    ],
     "stem": "v0.6.1"
   },
   {
@@ -846,6 +980,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.6.2.md"
+    ],
     "stem": "v0.6.2"
   },
   {
@@ -860,6 +998,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.6.3.md"
+    ],
     "stem": "v0.6.3"
   },
   {
@@ -874,6 +1016,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.6.4.md"
+    ],
     "stem": "v0.6.4"
   },
   {
@@ -888,6 +1034,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.8.3.md"
+    ],
     "stem": "v0.8.3"
   },
   {
@@ -902,6 +1052,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.8.4.md"
+    ],
     "stem": "v0.8.4"
   },
   {
@@ -916,21 +1070,101 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.8.5.md"
+    ],
     "stem": "v0.8.5"
   },
   {
-    "extension": "0md",
+    "extension": "md",
     "file_move_type": "Skip",
     "folder": "_release-notes",
     "folder_parts": [
       "_release-notes"
     ],
-    "input_path": "_release-notes/v0.9.0md",
-    "name": "v0.9.0md",
+    "input_path": "_release-notes/v0.9.0.md",
+    "name": "v0.9.0.md",
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_release-notes",
-    "stem": "v0.9"
+    "path_parts": [
+      "_release-notes",
+      "v0.9.0.md"
+    ],
+    "stem": "v0.9.0"
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "folder_parts": [
+      "_release-notes"
+    ],
+    "input_path": "_release-notes/v0.9.1.md",
+    "name": "v0.9.1.md",
+    "output_folder": null,
+    "output_name": null,
+    "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.9.1.md"
+    ],
+    "stem": "v0.9.1"
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "folder_parts": [
+      "_release-notes"
+    ],
+    "input_path": "_release-notes/v0.9.2.md",
+    "name": "v0.9.2.md",
+    "output_folder": null,
+    "output_name": null,
+    "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.9.2.md"
+    ],
+    "stem": "v0.9.2"
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "folder_parts": [
+      "_release-notes"
+    ],
+    "input_path": "_release-notes/v0.9.3.md",
+    "name": "v0.9.3.md",
+    "output_folder": null,
+    "output_name": null,
+    "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.9.3.md"
+    ],
+    "stem": "v0.9.3"
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "folder_parts": [
+      "_release-notes"
+    ],
+    "input_path": "_release-notes/v0.9.4.md",
+    "name": "v0.9.4.md",
+    "output_folder": null,
+    "output_name": null,
+    "parent_folder": "_release-notes",
+    "path_parts": [
+      "_release-notes",
+      "v0.9.4.md"
+    ],
+    "stem": "v0.9.4"
   },
   {
     "extension": "html",
@@ -944,6 +1178,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "_wrappers",
+    "path_parts": [
+      "_wrappers",
+      "main.html"
+    ],
     "stem": "main"
   },
   {
@@ -958,6 +1196,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": null,
     "output_name": null,
     "parent_folder": "components",
+    "path_parts": [
+      "components",
+      "_js-include-test.js"
+    ],
     "stem": "_js-include-test"
   },
   {
@@ -972,6 +1214,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "components",
     "output_name": "bitty-1.0.0-rc4.full.js",
     "parent_folder": "components",
+    "path_parts": [
+      "components",
+      "bitty-1.0.0-rc4.full.js"
+    ],
     "stem": "bitty-1.0.0-rc4.full"
   },
   {
@@ -986,6 +1232,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "components",
     "output_name": "page.js",
     "parent_folder": "components",
+    "path_parts": [
+      "components",
+      "page.js"
+    ],
     "stem": "page"
   },
   {
@@ -1001,6 +1251,11 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "examples/data",
     "output_name": "sample-2.json",
     "parent_folder": "data",
+    "path_parts": [
+      "examples",
+      "data",
+      "sample-2.json"
+    ],
     "stem": "sample-2"
   },
   {
@@ -1016,6 +1271,11 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "examples/data",
     "output_name": "sample.json",
     "parent_folder": "data",
+    "path_parts": [
+      "examples",
+      "data",
+      "sample.json"
+    ],
     "stem": "sample"
   },
   {
@@ -1031,6 +1291,11 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "examples/markdown",
     "output_name": "sample.md",
     "parent_folder": "markdown",
+    "path_parts": [
+      "examples",
+      "markdown",
+      "sample.md"
+    ],
     "stem": "sample"
   },
   {
@@ -1045,6 +1310,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "android-chrome-192x192.png",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "android-chrome-192x192.png"
+    ],
     "stem": "android-chrome-192x192"
   },
   {
@@ -1059,6 +1328,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "android-chrome-512x512.png",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "android-chrome-512x512.png"
+    ],
     "stem": "android-chrome-512x512"
   },
   {
@@ -1073,6 +1346,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "apple-touch-icon.png",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "apple-touch-icon.png"
+    ],
     "stem": "apple-touch-icon"
   },
   {
@@ -1087,6 +1364,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "browserconfig.xml",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "browserconfig.xml"
+    ],
     "stem": "browserconfig"
   },
   {
@@ -1101,6 +1382,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "favicon-16x16.png",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "favicon-16x16.png"
+    ],
     "stem": "favicon-16x16"
   },
   {
@@ -1115,6 +1400,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "favicon-32x32.png",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "favicon-32x32.png"
+    ],
     "stem": "favicon-32x32"
   },
   {
@@ -1129,6 +1418,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "favicon.ico",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "favicon.ico"
+    ],
     "stem": "favicon"
   },
   {
@@ -1143,6 +1436,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "mstile-150x150.png",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "mstile-150x150.png"
+    ],
     "stem": "mstile-150x150"
   },
   {
@@ -1157,6 +1454,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "safari-pinned-tab.svg",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "safari-pinned-tab.svg"
+    ],
     "stem": "safari-pinned-tab"
   },
   {
@@ -1171,6 +1472,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "favicons",
     "output_name": "site.webmanifest",
     "parent_folder": "favicons",
+    "path_parts": [
+      "favicons",
+      "site.webmanifest"
+    ],
     "stem": "site"
   },
   {
@@ -1185,6 +1490,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "images",
     "output_name": "test-image.jpg",
     "parent_folder": "images",
+    "path_parts": [
+      "images",
+      "test-image.jpg"
+    ],
     "stem": "test-image"
   },
   {
@@ -1201,6 +1510,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.3.0",
     "output_name": "ssb",
     "parent_folder": "0.3",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.3.0",
+      "ssb"
+    ],
     "stem": "ssb"
   },
   {
@@ -1217,6 +1532,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.4.0",
     "output_name": "ssb",
     "parent_folder": "0.4",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.4.0",
+      "ssb"
+    ],
     "stem": "ssb"
   },
   {
@@ -1233,6 +1554,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.5.0",
     "output_name": "ssb",
     "parent_folder": "0.5",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.5.0",
+      "ssb"
+    ],
     "stem": "ssb"
   },
   {
@@ -1249,6 +1576,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.6.0",
     "output_name": "ssb-0-6-x",
     "parent_folder": "0.6",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.6.0",
+      "ssb-0-6-x"
+    ],
     "stem": "ssb-0-6-x"
   },
   {
@@ -1265,6 +1598,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.6.1",
     "output_name": "ssb-0-6-x",
     "parent_folder": "0.6",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.6.1",
+      "ssb-0-6-x"
+    ],
     "stem": "ssb-0-6-x"
   },
   {
@@ -1281,6 +1620,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.6.2",
     "output_name": "ssb-0-6-x",
     "parent_folder": "0.6",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.6.2",
+      "ssb-0-6-x"
+    ],
     "stem": "ssb-0-6-x"
   },
   {
@@ -1297,6 +1642,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.6.3",
     "output_name": "ssb-0-6-x",
     "parent_folder": "0.6",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.6.3",
+      "ssb-0-6-x"
+    ],
     "stem": "ssb-0-6-x"
   },
   {
@@ -1313,6 +1664,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.7.0",
     "output_name": "ssb-0-7",
     "parent_folder": "0.7",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.7.0",
+      "ssb-0-7"
+    ],
     "stem": "ssb-0-7"
   },
   {
@@ -1329,6 +1686,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.7.1",
     "output_name": "ssb-0-7",
     "parent_folder": "0.7",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.7.1",
+      "ssb-0-7"
+    ],
     "stem": "ssb-0-7"
   },
   {
@@ -1345,6 +1708,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.7.2",
     "output_name": "ssb-0-7",
     "parent_folder": "0.7",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.7.2",
+      "ssb-0-7"
+    ],
     "stem": "ssb-0-7"
   },
   {
@@ -1361,6 +1730,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.7.3",
     "output_name": "ssb-0-7",
     "parent_folder": "0.7",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.7.3",
+      "ssb-0-7"
+    ],
     "stem": "ssb-0-7"
   },
   {
@@ -1377,6 +1752,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.7.4",
     "output_name": "ssb-0-7",
     "parent_folder": "0.7",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.7.4",
+      "ssb-0-7"
+    ],
     "stem": "ssb-0-7"
   },
   {
@@ -1393,6 +1774,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.8.0",
     "output_name": "ssb-0-8",
     "parent_folder": "0.8",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.8.0",
+      "ssb-0-8"
+    ],
     "stem": "ssb-0-8"
   },
   {
@@ -1409,6 +1796,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.8.1",
     "output_name": "ssb-0-8",
     "parent_folder": "0.8",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.8.1",
+      "ssb-0-8"
+    ],
     "stem": "ssb-0-8"
   },
   {
@@ -1425,6 +1818,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.8.2",
     "output_name": "ssb-0-8",
     "parent_folder": "0.8",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.8.2",
+      "ssb-0-8"
+    ],
     "stem": "ssb-0-8"
   },
   {
@@ -1441,6 +1840,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.8.3",
     "output_name": "ssb-0-8",
     "parent_folder": "0.8",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.8.3",
+      "ssb-0-8"
+    ],
     "stem": "ssb-0-8"
   },
   {
@@ -1457,6 +1862,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.8.4",
     "output_name": "ssb-0-8",
     "parent_folder": "0.8",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.8.4",
+      "ssb-0-8"
+    ],
     "stem": "ssb-0-8"
   },
   {
@@ -1473,6 +1884,12 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.8.5",
     "output_name": "ssb-0-8",
     "parent_folder": "0.8",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.8.5",
+      "ssb-0-8"
+    ],
     "stem": "ssb-0-8"
   },
   {
@@ -1489,6 +1906,100 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "releases/aarch64-apple-darwin/0.9.0",
     "output_name": "ssb-0-9",
     "parent_folder": "0.9",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.0",
+      "ssb-0-9"
+    ],
+    "stem": "ssb-0-9"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.9.1",
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.1"
+    ],
+    "input_path": "releases/aarch64-apple-darwin/0.9.1/ssb-0-9",
+    "name": "ssb-0-9",
+    "output_folder": "releases/aarch64-apple-darwin/0.9.1",
+    "output_name": "ssb-0-9",
+    "parent_folder": "0.9",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.1",
+      "ssb-0-9"
+    ],
+    "stem": "ssb-0-9"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.9.2",
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.2"
+    ],
+    "input_path": "releases/aarch64-apple-darwin/0.9.2/ssb-0-9",
+    "name": "ssb-0-9",
+    "output_folder": "releases/aarch64-apple-darwin/0.9.2",
+    "output_name": "ssb-0-9",
+    "parent_folder": "0.9",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.2",
+      "ssb-0-9"
+    ],
+    "stem": "ssb-0-9"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.9.3",
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.3"
+    ],
+    "input_path": "releases/aarch64-apple-darwin/0.9.3/ssb-0-9",
+    "name": "ssb-0-9",
+    "output_folder": "releases/aarch64-apple-darwin/0.9.3",
+    "output_name": "ssb-0-9",
+    "parent_folder": "0.9",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.3",
+      "ssb-0-9"
+    ],
+    "stem": "ssb-0-9"
+  },
+  {
+    "extension": null,
+    "file_move_type": "Copy",
+    "folder": "releases/aarch64-apple-darwin/0.9.4",
+    "folder_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.4"
+    ],
+    "input_path": "releases/aarch64-apple-darwin/0.9.4/ssb-0-9",
+    "name": "ssb-0-9",
+    "output_folder": "releases/aarch64-apple-darwin/0.9.4",
+    "output_name": "ssb-0-9",
+    "parent_folder": "0.9",
+    "path_parts": [
+      "releases",
+      "aarch64-apple-darwin",
+      "0.9.4",
+      "ssb-0-9"
+    ],
     "stem": "ssb-0-9"
   },
   {
@@ -1503,6 +2014,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "scripts",
     "output_name": "transform.mj.js",
     "parent_folder": "scripts",
+    "path_parts": [
+      "scripts",
+      "transform.mj.js"
+    ],
     "stem": "transform.mj"
   },
   {
@@ -1517,6 +2032,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "styles",
     "output_name": "highlight-base16-ocean-dark.css",
     "parent_folder": "styles",
+    "path_parts": [
+      "styles",
+      "highlight-base16-ocean-dark.css"
+    ],
     "stem": "highlight-base16-ocean-dark"
   },
   {
@@ -1531,6 +2050,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "styles",
     "output_name": "highlight-base16-ocean-light.css",
     "parent_folder": "styles",
+    "path_parts": [
+      "styles",
+      "highlight-base16-ocean-light.css"
+    ],
     "stem": "highlight-base16-ocean-light"
   },
   {
@@ -1545,6 +2068,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "styles",
     "output_name": "main.css",
     "parent_folder": "styles",
+    "path_parts": [
+      "styles",
+      "main.css"
+    ],
     "stem": "main"
   },
   {
@@ -1562,6 +2089,13 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "sub-dir-test/level-1/level-2/level-3",
     "output_name": "index.html",
     "parent_folder": "level-3",
+    "path_parts": [
+      "sub-dir-test",
+      "level-1",
+      "level-2",
+      "level-3",
+      "index.html"
+    ],
     "stem": "index"
   },
   {
@@ -1576,6 +2110,10 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
     "output_folder": "tests",
     "output_name": "README.md",
     "parent_folder": "tests",
+    "path_parts": [
+      "tests",
+      "README.md"
+    ],
     "stem": "README"
   }
 ]
@@ -1604,6 +2142,60 @@ document.querySelector("#jsOut").appendChild(newEl);
 <h2>Release Notes</h2>
 
 <details open>
+<h3>Version: 0.9.4</h3>
+<ul>
+<li>Turned off auto launching
+the browser on the first start. It's
+more of a pain than useful since
+it always goes to the default browser
+and opens new tabs every time.</li>
+</ul>
+<h3>Version: 0.9.3</h3>
+<ul>
+<li>
+<p>Added <code>code-span</code> class to
+<code>&lt;code&gt;</code> spans from <code>inline_highlight</code>
+filter</p>
+</li>
+</ul>
+<h3>Version: 0.9.2</h3>
+<ul>
+<li>Added <code>path_parts</code> to file details
+that is the same as <code>folder_parts</code>, but includes
+the file name.</li>
+</ul>
+<h3>Version 0.9.1</h3>
+<ul>
+<li>
+<p>Switch <code>highlight_css</code>, <code>highlight_html</code>, etc...
+to return <code>safe</code> values so they can be used with
+<code>filter highlight_css</code> instead of requiring
+<code>filter highlight_css|safe</code></p>
+</li>
+<li>
+<p>Added <code>filter block_highlight(&quot;LANG&quot;)</code> which allows
+for highlighting languages based off the <code>LANG</code> argument.</p>
+<p>The return value is wrapped in a <code>&lt;pre class=&quot;code-block language-LANG&quot;&gt;&lt;code&gt;</code>
+... <code>&lt;/code&gt;&lt;/pre&gt;</code> block.</p>
+</li>
+<li>
+<p>Added <code>filter block_highlight(&quot;LANG&quot;, &quot;extra classes&quot;)</code> which
+adds <code>extra classes</code> to the <code>pre</code> tag like: <code>&lt;pre class=&quot;code-block language-LANG extra classes&quot;&gt;</code></p>
+</li>
+<li>
+<p>Added <code>inline_highlight</code> function for strings with
+<code>[</code> <code>@ inline_highlight(&quot;LANG&quot;, &quot;CODE&quot;, &quot;extra classes&quot;) @</code> <code>]</code> that return
+<code>&lt;code class=&quot;inline-code language-LANG extra classes&quot;&gt;CODE&lt;/code&gt;</code>
+where the <code>CODE</code> has been syntax highlighted.</p>
+</li>
+<li>
+<p>Added <code>inline_highlight</code> filter for strings with
+<code>[</code> <code>! filter inline_highlight(&quot;LANG&quot;, &quot;extra classes&quot;) !</code> <code>][</code> <code>! endfilter !</code> <code>]</code>
+that returns
+<code>&lt;code class=&quot;inline-code language-LANG extra classes&quot;&gt;CODE&lt;/code&gt;</code>
+where the <code>CODE</code> has been syntax highlighted.</p>
+</li>
+</ul>
 <h3>Version 0.9.0</h3>
 <ul>
 <li>
@@ -1798,6 +2390,9 @@ Processing .txt files with MiniJinja Worked!
   "output_folder": "",
   "output_name": "index.html",
   "parent_folder": null,
+  "path_parts": [
+    "index.html"
+  ],
   "stem": "index"
 }
 </code></pre>
@@ -1805,67 +2400,75 @@ Processing .txt files with MiniJinja Worked!
 <h2>Files</h2>
 <details>
 <ul>
-  <li>{&quot;extension&quot;: &quot;json&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;_config.json&quot;, &quot;name&quot;: &quot;_config.json&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;_config&quot;}
-  <li>{&quot;extension&quot;: &quot;ico&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;favicon.ico&quot;, &quot;name&quot;: &quot;favicon.ico&quot;, &quot;output_folder&quot;: &quot;&quot;, &quot;output_name&quot;: &quot;favicon.ico&quot;, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;favicon&quot;}
-  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;index.html&quot;, &quot;name&quot;: &quot;index.html&quot;, &quot;output_folder&quot;: &quot;&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;index&quot;}
-  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;ping.html&quot;, &quot;name&quot;: &quot;ping.html&quot;, &quot;output_folder&quot;: &quot;ping&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: none, &quot;stem&quot;: &quot;ping&quot;}
-  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_includes&quot;, &quot;folder_parts&quot;: [&quot;_includes&quot;], &quot;input_path&quot;: &quot;_includes&#x2f;test-highlight-with-find-replace.js&quot;, &quot;name&quot;: &quot;test-highlight-with-find-replace.js&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_includes&quot;, &quot;stem&quot;: &quot;test-highlight-with-find-replace&quot;}
-  <li>{&quot;extension&quot;: &quot;txt&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_includes&quot;, &quot;folder_parts&quot;: [&quot;_includes&quot;], &quot;input_path&quot;: &quot;_includes&#x2f;txt-test.txt&quot;, &quot;name&quot;: &quot;txt-test.txt&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_includes&quot;, &quot;stem&quot;: &quot;txt-test&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.3.0.md&quot;, &quot;name&quot;: &quot;v0.3.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.3.0&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.4.0.md&quot;, &quot;name&quot;: &quot;v0.4.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.4.0&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.5.0.md&quot;, &quot;name&quot;: &quot;v0.5.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.5.0&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.0.md&quot;, &quot;name&quot;: &quot;v0.6.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.6.0&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.1.md&quot;, &quot;name&quot;: &quot;v0.6.1.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.6.1&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.2.md&quot;, &quot;name&quot;: &quot;v0.6.2.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.6.2&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.3.md&quot;, &quot;name&quot;: &quot;v0.6.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.6.3&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.4.md&quot;, &quot;name&quot;: &quot;v0.6.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.6.4&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.3.md&quot;, &quot;name&quot;: &quot;v0.8.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.3&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.4.md&quot;, &quot;name&quot;: &quot;v0.8.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.4&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.5.md&quot;, &quot;name&quot;: &quot;v0.8.5.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.8.5&quot;}
-  <li>{&quot;extension&quot;: &quot;0md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.0md&quot;, &quot;name&quot;: &quot;v0.9.0md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;stem&quot;: &quot;v0.9&quot;}
-  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_wrappers&quot;, &quot;folder_parts&quot;: [&quot;_wrappers&quot;], &quot;input_path&quot;: &quot;_wrappers&#x2f;main.html&quot;, &quot;name&quot;: &quot;main.html&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_wrappers&quot;, &quot;stem&quot;: &quot;main&quot;}
-  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;_js-include-test.js&quot;, &quot;name&quot;: &quot;_js-include-test.js&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;components&quot;, &quot;stem&quot;: &quot;_js-include-test&quot;}
-  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;bitty-1.0.0-rc4.full.js&quot;, &quot;name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;output_folder&quot;: &quot;components&quot;, &quot;output_name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;parent_folder&quot;: &quot;components&quot;, &quot;stem&quot;: &quot;bitty-1.0.0-rc4.full&quot;}
-  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;page.js&quot;, &quot;name&quot;: &quot;page.js&quot;, &quot;output_folder&quot;: &quot;components&quot;, &quot;output_name&quot;: &quot;page.js&quot;, &quot;parent_folder&quot;: &quot;components&quot;, &quot;stem&quot;: &quot;page&quot;}
-  <li>{&quot;extension&quot;: &quot;json&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;examples&#x2f;data&quot;, &quot;folder_parts&quot;: [&quot;examples&quot;, &quot;data&quot;], &quot;input_path&quot;: &quot;examples&#x2f;data&#x2f;sample-2.json&quot;, &quot;name&quot;: &quot;sample-2.json&quot;, &quot;output_folder&quot;: &quot;examples&#x2f;data&quot;, &quot;output_name&quot;: &quot;sample-2.json&quot;, &quot;parent_folder&quot;: &quot;data&quot;, &quot;stem&quot;: &quot;sample-2&quot;}
-  <li>{&quot;extension&quot;: &quot;json&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;examples&#x2f;data&quot;, &quot;folder_parts&quot;: [&quot;examples&quot;, &quot;data&quot;], &quot;input_path&quot;: &quot;examples&#x2f;data&#x2f;sample.json&quot;, &quot;name&quot;: &quot;sample.json&quot;, &quot;output_folder&quot;: &quot;examples&#x2f;data&quot;, &quot;output_name&quot;: &quot;sample.json&quot;, &quot;parent_folder&quot;: &quot;data&quot;, &quot;stem&quot;: &quot;sample&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;examples&#x2f;markdown&quot;, &quot;folder_parts&quot;: [&quot;examples&quot;, &quot;markdown&quot;], &quot;input_path&quot;: &quot;examples&#x2f;markdown&#x2f;sample.md&quot;, &quot;name&quot;: &quot;sample.md&quot;, &quot;output_folder&quot;: &quot;examples&#x2f;markdown&quot;, &quot;output_name&quot;: &quot;sample.md&quot;, &quot;parent_folder&quot;: &quot;markdown&quot;, &quot;stem&quot;: &quot;sample&quot;}
-  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;android-chrome-192x192.png&quot;, &quot;name&quot;: &quot;android-chrome-192x192.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;android-chrome-192x192.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;android-chrome-192x192&quot;}
-  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;android-chrome-512x512.png&quot;, &quot;name&quot;: &quot;android-chrome-512x512.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;android-chrome-512x512.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;android-chrome-512x512&quot;}
-  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;apple-touch-icon.png&quot;, &quot;name&quot;: &quot;apple-touch-icon.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;apple-touch-icon.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;apple-touch-icon&quot;}
-  <li>{&quot;extension&quot;: &quot;xml&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;browserconfig.xml&quot;, &quot;name&quot;: &quot;browserconfig.xml&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;browserconfig.xml&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;browserconfig&quot;}
-  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;favicon-16x16.png&quot;, &quot;name&quot;: &quot;favicon-16x16.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;favicon-16x16.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;favicon-16x16&quot;}
-  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;favicon-32x32.png&quot;, &quot;name&quot;: &quot;favicon-32x32.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;favicon-32x32.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;favicon-32x32&quot;}
-  <li>{&quot;extension&quot;: &quot;ico&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;favicon.ico&quot;, &quot;name&quot;: &quot;favicon.ico&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;favicon.ico&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;favicon&quot;}
-  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;mstile-150x150.png&quot;, &quot;name&quot;: &quot;mstile-150x150.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;mstile-150x150.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;mstile-150x150&quot;}
-  <li>{&quot;extension&quot;: &quot;svg&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;safari-pinned-tab.svg&quot;, &quot;name&quot;: &quot;safari-pinned-tab.svg&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;safari-pinned-tab.svg&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;safari-pinned-tab&quot;}
-  <li>{&quot;extension&quot;: &quot;webmanifest&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;site.webmanifest&quot;, &quot;name&quot;: &quot;site.webmanifest&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;site.webmanifest&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;stem&quot;: &quot;site&quot;}
-  <li>{&quot;extension&quot;: &quot;jpg&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;images&quot;, &quot;folder_parts&quot;: [&quot;images&quot;], &quot;input_path&quot;: &quot;images&#x2f;test-image.jpg&quot;, &quot;name&quot;: &quot;test-image.jpg&quot;, &quot;output_folder&quot;: &quot;images&quot;, &quot;output_name&quot;: &quot;test-image.jpg&quot;, &quot;parent_folder&quot;: &quot;images&quot;, &quot;stem&quot;: &quot;test-image&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.3.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.3.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.3.0&#x2f;ssb&quot;, &quot;name&quot;: &quot;ssb&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.3.0&quot;, &quot;output_name&quot;: &quot;ssb&quot;, &quot;parent_folder&quot;: &quot;0.3&quot;, &quot;stem&quot;: &quot;ssb&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.4.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.4.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.4.0&#x2f;ssb&quot;, &quot;name&quot;: &quot;ssb&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.4.0&quot;, &quot;output_name&quot;: &quot;ssb&quot;, &quot;parent_folder&quot;: &quot;0.4&quot;, &quot;stem&quot;: &quot;ssb&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.5.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.5.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.5.0&#x2f;ssb&quot;, &quot;name&quot;: &quot;ssb&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.5.0&quot;, &quot;output_name&quot;: &quot;ssb&quot;, &quot;parent_folder&quot;: &quot;0.5&quot;, &quot;stem&quot;: &quot;ssb&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.0&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.0&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.1&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.1&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.2&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.2&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.2&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.2&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.3&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.3&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.0&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.0&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;stem&quot;: &quot;ssb-0-7&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.1&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.1&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;stem&quot;: &quot;ssb-0-7&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.2&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.2&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.2&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.2&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;stem&quot;: &quot;ssb-0-7&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.3&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.3&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;stem&quot;: &quot;ssb-0-7&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.4&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.4&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.4&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.4&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;stem&quot;: &quot;ssb-0-7&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.0&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.0&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.1&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.1&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.2&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.2&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.2&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.2&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.4&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.5&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;stem&quot;: &quot;ssb-0-8&quot;}
-  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;stem&quot;: &quot;ssb-0-9&quot;}
-  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;scripts&quot;, &quot;folder_parts&quot;: [&quot;scripts&quot;], &quot;input_path&quot;: &quot;scripts&#x2f;transform.mj.js&quot;, &quot;name&quot;: &quot;transform.mj.js&quot;, &quot;output_folder&quot;: &quot;scripts&quot;, &quot;output_name&quot;: &quot;transform.mj.js&quot;, &quot;parent_folder&quot;: &quot;scripts&quot;, &quot;stem&quot;: &quot;transform.mj&quot;}
-  <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-dark.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;stem&quot;: &quot;highlight-base16-ocean-dark&quot;}
-  <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-light.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;stem&quot;: &quot;highlight-base16-ocean-light&quot;}
-  <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;main.css&quot;, &quot;name&quot;: &quot;main.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;main.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;stem&quot;: &quot;main&quot;}
-  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&quot;, &quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;, &quot;level-2&quot;, &quot;level-3&quot;], &quot;input_path&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&#x2f;index.html&quot;, &quot;name&quot;: &quot;index.html&quot;, &quot;output_folder&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: &quot;level-3&quot;, &quot;stem&quot;: &quot;index&quot;}
-  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;tests&quot;, &quot;folder_parts&quot;: [&quot;tests&quot;], &quot;input_path&quot;: &quot;tests&#x2f;README.md&quot;, &quot;name&quot;: &quot;README.md&quot;, &quot;output_folder&quot;: &quot;tests&quot;, &quot;output_name&quot;: &quot;README.md&quot;, &quot;parent_folder&quot;: &quot;tests&quot;, &quot;stem&quot;: &quot;README&quot;}
+  <li>{&quot;extension&quot;: &quot;json&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;_config.json&quot;, &quot;name&quot;: &quot;_config.json&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: none, &quot;path_parts&quot;: [&quot;_config.json&quot;], &quot;stem&quot;: &quot;_config&quot;}
+  <li>{&quot;extension&quot;: &quot;ico&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;favicon.ico&quot;, &quot;name&quot;: &quot;favicon.ico&quot;, &quot;output_folder&quot;: &quot;&quot;, &quot;output_name&quot;: &quot;favicon.ico&quot;, &quot;parent_folder&quot;: none, &quot;path_parts&quot;: [&quot;favicon.ico&quot;], &quot;stem&quot;: &quot;favicon&quot;}
+  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;index.html&quot;, &quot;name&quot;: &quot;index.html&quot;, &quot;output_folder&quot;: &quot;&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: none, &quot;path_parts&quot;: [&quot;index.html&quot;], &quot;stem&quot;: &quot;index&quot;}
+  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;&quot;, &quot;folder_parts&quot;: [], &quot;input_path&quot;: &quot;ping.html&quot;, &quot;name&quot;: &quot;ping.html&quot;, &quot;output_folder&quot;: &quot;ping&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: none, &quot;path_parts&quot;: [&quot;ping.html&quot;], &quot;stem&quot;: &quot;ping&quot;}
+  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_includes&quot;, &quot;folder_parts&quot;: [&quot;_includes&quot;], &quot;input_path&quot;: &quot;_includes&#x2f;test-highlight-with-find-replace.js&quot;, &quot;name&quot;: &quot;test-highlight-with-find-replace.js&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_includes&quot;, &quot;path_parts&quot;: [&quot;_includes&quot;, &quot;test-highlight-with-find-replace.js&quot;], &quot;stem&quot;: &quot;test-highlight-with-find-replace&quot;}
+  <li>{&quot;extension&quot;: &quot;txt&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_includes&quot;, &quot;folder_parts&quot;: [&quot;_includes&quot;], &quot;input_path&quot;: &quot;_includes&#x2f;txt-test.txt&quot;, &quot;name&quot;: &quot;txt-test.txt&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_includes&quot;, &quot;path_parts&quot;: [&quot;_includes&quot;, &quot;txt-test.txt&quot;], &quot;stem&quot;: &quot;txt-test&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.3.0.md&quot;, &quot;name&quot;: &quot;v0.3.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.3.0.md&quot;], &quot;stem&quot;: &quot;v0.3.0&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.4.0.md&quot;, &quot;name&quot;: &quot;v0.4.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.4.0.md&quot;], &quot;stem&quot;: &quot;v0.4.0&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.5.0.md&quot;, &quot;name&quot;: &quot;v0.5.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.5.0.md&quot;], &quot;stem&quot;: &quot;v0.5.0&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.0.md&quot;, &quot;name&quot;: &quot;v0.6.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.6.0.md&quot;], &quot;stem&quot;: &quot;v0.6.0&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.1.md&quot;, &quot;name&quot;: &quot;v0.6.1.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.6.1.md&quot;], &quot;stem&quot;: &quot;v0.6.1&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.2.md&quot;, &quot;name&quot;: &quot;v0.6.2.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.6.2.md&quot;], &quot;stem&quot;: &quot;v0.6.2&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.3.md&quot;, &quot;name&quot;: &quot;v0.6.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.6.3.md&quot;], &quot;stem&quot;: &quot;v0.6.3&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.6.4.md&quot;, &quot;name&quot;: &quot;v0.6.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.6.4.md&quot;], &quot;stem&quot;: &quot;v0.6.4&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.3.md&quot;, &quot;name&quot;: &quot;v0.8.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.8.3.md&quot;], &quot;stem&quot;: &quot;v0.8.3&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.4.md&quot;, &quot;name&quot;: &quot;v0.8.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.8.4.md&quot;], &quot;stem&quot;: &quot;v0.8.4&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.5.md&quot;, &quot;name&quot;: &quot;v0.8.5.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.8.5.md&quot;], &quot;stem&quot;: &quot;v0.8.5&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.0.md&quot;, &quot;name&quot;: &quot;v0.9.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.0.md&quot;], &quot;stem&quot;: &quot;v0.9.0&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.1.md&quot;, &quot;name&quot;: &quot;v0.9.1.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.1.md&quot;], &quot;stem&quot;: &quot;v0.9.1&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.2.md&quot;, &quot;name&quot;: &quot;v0.9.2.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.2.md&quot;], &quot;stem&quot;: &quot;v0.9.2&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.3.md&quot;, &quot;name&quot;: &quot;v0.9.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.3.md&quot;], &quot;stem&quot;: &quot;v0.9.3&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.4.md&quot;, &quot;name&quot;: &quot;v0.9.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.4.md&quot;], &quot;stem&quot;: &quot;v0.9.4&quot;}
+  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_wrappers&quot;, &quot;folder_parts&quot;: [&quot;_wrappers&quot;], &quot;input_path&quot;: &quot;_wrappers&#x2f;main.html&quot;, &quot;name&quot;: &quot;main.html&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;_wrappers&quot;, &quot;path_parts&quot;: [&quot;_wrappers&quot;, &quot;main.html&quot;], &quot;stem&quot;: &quot;main&quot;}
+  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;_js-include-test.js&quot;, &quot;name&quot;: &quot;_js-include-test.js&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;parent_folder&quot;: &quot;components&quot;, &quot;path_parts&quot;: [&quot;components&quot;, &quot;_js-include-test.js&quot;], &quot;stem&quot;: &quot;_js-include-test&quot;}
+  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;bitty-1.0.0-rc4.full.js&quot;, &quot;name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;output_folder&quot;: &quot;components&quot;, &quot;output_name&quot;: &quot;bitty-1.0.0-rc4.full.js&quot;, &quot;parent_folder&quot;: &quot;components&quot;, &quot;path_parts&quot;: [&quot;components&quot;, &quot;bitty-1.0.0-rc4.full.js&quot;], &quot;stem&quot;: &quot;bitty-1.0.0-rc4.full&quot;}
+  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;components&quot;, &quot;folder_parts&quot;: [&quot;components&quot;], &quot;input_path&quot;: &quot;components&#x2f;page.js&quot;, &quot;name&quot;: &quot;page.js&quot;, &quot;output_folder&quot;: &quot;components&quot;, &quot;output_name&quot;: &quot;page.js&quot;, &quot;parent_folder&quot;: &quot;components&quot;, &quot;path_parts&quot;: [&quot;components&quot;, &quot;page.js&quot;], &quot;stem&quot;: &quot;page&quot;}
+  <li>{&quot;extension&quot;: &quot;json&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;examples&#x2f;data&quot;, &quot;folder_parts&quot;: [&quot;examples&quot;, &quot;data&quot;], &quot;input_path&quot;: &quot;examples&#x2f;data&#x2f;sample-2.json&quot;, &quot;name&quot;: &quot;sample-2.json&quot;, &quot;output_folder&quot;: &quot;examples&#x2f;data&quot;, &quot;output_name&quot;: &quot;sample-2.json&quot;, &quot;parent_folder&quot;: &quot;data&quot;, &quot;path_parts&quot;: [&quot;examples&quot;, &quot;data&quot;, &quot;sample-2.json&quot;], &quot;stem&quot;: &quot;sample-2&quot;}
+  <li>{&quot;extension&quot;: &quot;json&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;examples&#x2f;data&quot;, &quot;folder_parts&quot;: [&quot;examples&quot;, &quot;data&quot;], &quot;input_path&quot;: &quot;examples&#x2f;data&#x2f;sample.json&quot;, &quot;name&quot;: &quot;sample.json&quot;, &quot;output_folder&quot;: &quot;examples&#x2f;data&quot;, &quot;output_name&quot;: &quot;sample.json&quot;, &quot;parent_folder&quot;: &quot;data&quot;, &quot;path_parts&quot;: [&quot;examples&quot;, &quot;data&quot;, &quot;sample.json&quot;], &quot;stem&quot;: &quot;sample&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;examples&#x2f;markdown&quot;, &quot;folder_parts&quot;: [&quot;examples&quot;, &quot;markdown&quot;], &quot;input_path&quot;: &quot;examples&#x2f;markdown&#x2f;sample.md&quot;, &quot;name&quot;: &quot;sample.md&quot;, &quot;output_folder&quot;: &quot;examples&#x2f;markdown&quot;, &quot;output_name&quot;: &quot;sample.md&quot;, &quot;parent_folder&quot;: &quot;markdown&quot;, &quot;path_parts&quot;: [&quot;examples&quot;, &quot;markdown&quot;, &quot;sample.md&quot;], &quot;stem&quot;: &quot;sample&quot;}
+  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;android-chrome-192x192.png&quot;, &quot;name&quot;: &quot;android-chrome-192x192.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;android-chrome-192x192.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;android-chrome-192x192.png&quot;], &quot;stem&quot;: &quot;android-chrome-192x192&quot;}
+  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;android-chrome-512x512.png&quot;, &quot;name&quot;: &quot;android-chrome-512x512.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;android-chrome-512x512.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;android-chrome-512x512.png&quot;], &quot;stem&quot;: &quot;android-chrome-512x512&quot;}
+  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;apple-touch-icon.png&quot;, &quot;name&quot;: &quot;apple-touch-icon.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;apple-touch-icon.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;apple-touch-icon.png&quot;], &quot;stem&quot;: &quot;apple-touch-icon&quot;}
+  <li>{&quot;extension&quot;: &quot;xml&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;browserconfig.xml&quot;, &quot;name&quot;: &quot;browserconfig.xml&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;browserconfig.xml&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;browserconfig.xml&quot;], &quot;stem&quot;: &quot;browserconfig&quot;}
+  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;favicon-16x16.png&quot;, &quot;name&quot;: &quot;favicon-16x16.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;favicon-16x16.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;favicon-16x16.png&quot;], &quot;stem&quot;: &quot;favicon-16x16&quot;}
+  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;favicon-32x32.png&quot;, &quot;name&quot;: &quot;favicon-32x32.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;favicon-32x32.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;favicon-32x32.png&quot;], &quot;stem&quot;: &quot;favicon-32x32&quot;}
+  <li>{&quot;extension&quot;: &quot;ico&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;favicon.ico&quot;, &quot;name&quot;: &quot;favicon.ico&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;favicon.ico&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;favicon.ico&quot;], &quot;stem&quot;: &quot;favicon&quot;}
+  <li>{&quot;extension&quot;: &quot;png&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;mstile-150x150.png&quot;, &quot;name&quot;: &quot;mstile-150x150.png&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;mstile-150x150.png&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;mstile-150x150.png&quot;], &quot;stem&quot;: &quot;mstile-150x150&quot;}
+  <li>{&quot;extension&quot;: &quot;svg&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;safari-pinned-tab.svg&quot;, &quot;name&quot;: &quot;safari-pinned-tab.svg&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;safari-pinned-tab.svg&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;safari-pinned-tab.svg&quot;], &quot;stem&quot;: &quot;safari-pinned-tab&quot;}
+  <li>{&quot;extension&quot;: &quot;webmanifest&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;favicons&quot;, &quot;folder_parts&quot;: [&quot;favicons&quot;], &quot;input_path&quot;: &quot;favicons&#x2f;site.webmanifest&quot;, &quot;name&quot;: &quot;site.webmanifest&quot;, &quot;output_folder&quot;: &quot;favicons&quot;, &quot;output_name&quot;: &quot;site.webmanifest&quot;, &quot;parent_folder&quot;: &quot;favicons&quot;, &quot;path_parts&quot;: [&quot;favicons&quot;, &quot;site.webmanifest&quot;], &quot;stem&quot;: &quot;site&quot;}
+  <li>{&quot;extension&quot;: &quot;jpg&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;images&quot;, &quot;folder_parts&quot;: [&quot;images&quot;], &quot;input_path&quot;: &quot;images&#x2f;test-image.jpg&quot;, &quot;name&quot;: &quot;test-image.jpg&quot;, &quot;output_folder&quot;: &quot;images&quot;, &quot;output_name&quot;: &quot;test-image.jpg&quot;, &quot;parent_folder&quot;: &quot;images&quot;, &quot;path_parts&quot;: [&quot;images&quot;, &quot;test-image.jpg&quot;], &quot;stem&quot;: &quot;test-image&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.3.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.3.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.3.0&#x2f;ssb&quot;, &quot;name&quot;: &quot;ssb&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.3.0&quot;, &quot;output_name&quot;: &quot;ssb&quot;, &quot;parent_folder&quot;: &quot;0.3&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.3.0&quot;, &quot;ssb&quot;], &quot;stem&quot;: &quot;ssb&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.4.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.4.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.4.0&#x2f;ssb&quot;, &quot;name&quot;: &quot;ssb&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.4.0&quot;, &quot;output_name&quot;: &quot;ssb&quot;, &quot;parent_folder&quot;: &quot;0.4&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.4.0&quot;, &quot;ssb&quot;], &quot;stem&quot;: &quot;ssb&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.5.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.5.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.5.0&#x2f;ssb&quot;, &quot;name&quot;: &quot;ssb&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.5.0&quot;, &quot;output_name&quot;: &quot;ssb&quot;, &quot;parent_folder&quot;: &quot;0.5&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.5.0&quot;, &quot;ssb&quot;], &quot;stem&quot;: &quot;ssb&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.0&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.0&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.0&quot;, &quot;ssb-0-6-x&quot;], &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.1&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.1&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.1&quot;, &quot;ssb-0-6-x&quot;], &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.2&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.2&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.2&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.2&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.2&quot;, &quot;ssb-0-6-x&quot;], &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.3&#x2f;ssb-0-6-x&quot;, &quot;name&quot;: &quot;ssb-0-6-x&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.6.3&quot;, &quot;output_name&quot;: &quot;ssb-0-6-x&quot;, &quot;parent_folder&quot;: &quot;0.6&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.6.3&quot;, &quot;ssb-0-6-x&quot;], &quot;stem&quot;: &quot;ssb-0-6-x&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.0&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.0&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.0&quot;, &quot;ssb-0-7&quot;], &quot;stem&quot;: &quot;ssb-0-7&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.1&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.1&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.1&quot;, &quot;ssb-0-7&quot;], &quot;stem&quot;: &quot;ssb-0-7&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.2&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.2&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.2&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.2&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.2&quot;, &quot;ssb-0-7&quot;], &quot;stem&quot;: &quot;ssb-0-7&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.3&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.3&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.3&quot;, &quot;ssb-0-7&quot;], &quot;stem&quot;: &quot;ssb-0-7&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.4&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.4&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.4&#x2f;ssb-0-7&quot;, &quot;name&quot;: &quot;ssb-0-7&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.7.4&quot;, &quot;output_name&quot;: &quot;ssb-0-7&quot;, &quot;parent_folder&quot;: &quot;0.7&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.7.4&quot;, &quot;ssb-0-7&quot;], &quot;stem&quot;: &quot;ssb-0-7&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.0&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.0&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.0&quot;, &quot;ssb-0-8&quot;], &quot;stem&quot;: &quot;ssb-0-8&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.1&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.1&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.1&quot;, &quot;ssb-0-8&quot;], &quot;stem&quot;: &quot;ssb-0-8&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.2&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.2&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.2&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.2&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.2&quot;, &quot;ssb-0-8&quot;], &quot;stem&quot;: &quot;ssb-0-8&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.3&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.3&quot;, &quot;ssb-0-8&quot;], &quot;stem&quot;: &quot;ssb-0-8&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.4&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.4&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.4&quot;, &quot;ssb-0-8&quot;], &quot;stem&quot;: &quot;ssb-0-8&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.5&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&#x2f;ssb-0-8&quot;, &quot;name&quot;: &quot;ssb-0-8&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.8.5&quot;, &quot;output_name&quot;: &quot;ssb-0-8&quot;, &quot;parent_folder&quot;: &quot;0.8&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.8.5&quot;, &quot;ssb-0-8&quot;], &quot;stem&quot;: &quot;ssb-0-8&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.0&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.0&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.0&quot;, &quot;ssb-0-9&quot;], &quot;stem&quot;: &quot;ssb-0-9&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.1&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.1&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.1&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.1&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.1&quot;, &quot;ssb-0-9&quot;], &quot;stem&quot;: &quot;ssb-0-9&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.2&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.2&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.2&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.2&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.2&quot;, &quot;ssb-0-9&quot;], &quot;stem&quot;: &quot;ssb-0-9&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.3&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.3&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.3&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.3&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.3&quot;, &quot;ssb-0-9&quot;], &quot;stem&quot;: &quot;ssb-0-9&quot;}
+  <li>{&quot;extension&quot;: none, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.4&quot;, &quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.4&quot;], &quot;input_path&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.4&#x2f;ssb-0-9&quot;, &quot;name&quot;: &quot;ssb-0-9&quot;, &quot;output_folder&quot;: &quot;releases&#x2f;aarch64-apple-darwin&#x2f;0.9.4&quot;, &quot;output_name&quot;: &quot;ssb-0-9&quot;, &quot;parent_folder&quot;: &quot;0.9&quot;, &quot;path_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;, &quot;0.9.4&quot;, &quot;ssb-0-9&quot;], &quot;stem&quot;: &quot;ssb-0-9&quot;}
+  <li>{&quot;extension&quot;: &quot;js&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;scripts&quot;, &quot;folder_parts&quot;: [&quot;scripts&quot;], &quot;input_path&quot;: &quot;scripts&#x2f;transform.mj.js&quot;, &quot;name&quot;: &quot;transform.mj.js&quot;, &quot;output_folder&quot;: &quot;scripts&quot;, &quot;output_name&quot;: &quot;transform.mj.js&quot;, &quot;parent_folder&quot;: &quot;scripts&quot;, &quot;path_parts&quot;: [&quot;scripts&quot;, &quot;transform.mj.js&quot;], &quot;stem&quot;: &quot;transform.mj&quot;}
+  <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-dark.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-dark.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;path_parts&quot;: [&quot;styles&quot;, &quot;highlight-base16-ocean-dark.css&quot;], &quot;stem&quot;: &quot;highlight-base16-ocean-dark&quot;}
+  <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;highlight-base16-ocean-light.css&quot;, &quot;name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;highlight-base16-ocean-light.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;path_parts&quot;: [&quot;styles&quot;, &quot;highlight-base16-ocean-light.css&quot;], &quot;stem&quot;: &quot;highlight-base16-ocean-light&quot;}
+  <li>{&quot;extension&quot;: &quot;css&quot;, &quot;file_move_type&quot;: &quot;Copy&quot;, &quot;folder&quot;: &quot;styles&quot;, &quot;folder_parts&quot;: [&quot;styles&quot;], &quot;input_path&quot;: &quot;styles&#x2f;main.css&quot;, &quot;name&quot;: &quot;main.css&quot;, &quot;output_folder&quot;: &quot;styles&quot;, &quot;output_name&quot;: &quot;main.css&quot;, &quot;parent_folder&quot;: &quot;styles&quot;, &quot;path_parts&quot;: [&quot;styles&quot;, &quot;main.css&quot;], &quot;stem&quot;: &quot;main&quot;}
+  <li>{&quot;extension&quot;: &quot;html&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&quot;, &quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;, &quot;level-2&quot;, &quot;level-3&quot;], &quot;input_path&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&#x2f;index.html&quot;, &quot;name&quot;: &quot;index.html&quot;, &quot;output_folder&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&quot;, &quot;output_name&quot;: &quot;index.html&quot;, &quot;parent_folder&quot;: &quot;level-3&quot;, &quot;path_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;, &quot;level-2&quot;, &quot;level-3&quot;, &quot;index.html&quot;], &quot;stem&quot;: &quot;index&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Transform&quot;, &quot;folder&quot;: &quot;tests&quot;, &quot;folder_parts&quot;: [&quot;tests&quot;], &quot;input_path&quot;: &quot;tests&#x2f;README.md&quot;, &quot;name&quot;: &quot;README.md&quot;, &quot;output_folder&quot;: &quot;tests&quot;, &quot;output_name&quot;: &quot;README.md&quot;, &quot;parent_folder&quot;: &quot;tests&quot;, &quot;path_parts&quot;: [&quot;tests&quot;, &quot;README.md&quot;], &quot;stem&quot;: &quot;README&quot;}
 </ul>
 </details>
 
@@ -1906,6 +2509,10 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.8.4&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.8.5&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.0&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
+  <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.1&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
+  <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.2&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
+  <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.3&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
+  <li>{&quot;folder_parts&quot;: [&quot;releases&quot;, &quot;aarch64-apple-darwin&quot;], &quot;name&quot;: &quot;0.9.4&quot;, &quot;parent&quot;: &quot;releases&#x2f;aarch64-apple-darwin&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;], &quot;name&quot;: &quot;level-1&quot;, &quot;parent&quot;: &quot;sub-dir-test&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;], &quot;name&quot;: &quot;level-2&quot;, &quot;parent&quot;: &quot;sub-dir-test&#x2f;level-1&quot;}
   <li>{&quot;folder_parts&quot;: [&quot;sub-dir-test&quot;, &quot;level-1&quot;, &quot;level-2&quot;], &quot;name&quot;: &quot;level-3&quot;, &quot;parent&quot;: &quot;sub-dir-test&#x2f;level-1&#x2f;level-2&quot;}

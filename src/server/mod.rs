@@ -26,7 +26,11 @@ impl Server {
     live_reload: LiveReloadLayer,
   ) -> Result<()> {
     info!("Starting web server");
-    launch_browser(self.port)?;
+    // teporarily removing launcher since
+    // the it always opens new tabs in
+    // zen. TODO: Add a flag for opening
+    // it.
+    //launch_browser(self.port)?;
     let service = ServeDir::new(&self.config.output_root)
       .append_index_html_on_directories(true)
       .not_found_service(get(missing_page));
