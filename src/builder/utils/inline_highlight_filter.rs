@@ -41,7 +41,7 @@ pub fn inline_highlight_filter(
     None => "".to_string(),
   };
   Value::from_safe_string(format!(
-    r#"<code class="lang-{}{}">{}</code>"#,
+    r#"<code class="code-span lang-{}{}">{}</code>"#,
     lang,
     extra_classes,
     output_html.join("\n")
