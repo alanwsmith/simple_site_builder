@@ -20,6 +20,8 @@ pub struct FileDetails {
   pub extension: Option<String>,
   pub file_move_type: FileMoveType,
   pub path_parts: Vec<String>,
+  pub output_path_parts: Vec<PathBuf>,
+  pub output_path_part_strings: Vec<PathBuf>,
   pub path_part_strings: Vec<String>,
   pub folder: PathBuf,
   pub folder_parts: Vec<String>,
@@ -50,6 +52,12 @@ impl FileDetails {
       FileDetails::get_output_dir(input_path);
     let output_name =
       FileDetails::get_output_name(input_path);
+    let output_path_parts =
+      FileDetails::get_output_path_parts(input_path);
+    let output_path_part_strings =
+      FileDetails::get_output_path_part_strings(
+        input_path,
+      );
     let parent_folder =
       input_path.parent().and_then(|p| {
         p.file_stem()
@@ -65,6 +73,8 @@ impl FileDetails {
       name,
       output_folder,
       output_name,
+      output_path_part_strings,
+      output_path_parts,
       parent: input_path
         .parent()
         .map(|p| p.to_path_buf()),
@@ -255,6 +265,46 @@ impl FileDetails {
           Some(input_path.file_name().unwrap().into())
         }
       }
+    }
+  }
+
+  pub fn get_output_path_part_strings(
+    input_path: &Path
+  ) -> Vec<PathBuf> {
+    if let (Some(pb), Some(pn)) = (
+      FileDetails::get_output_dir(input_path),
+      FileDetails::get_output_name(input_path),
+    ) {
+      let full_path = pb.join(pn);
+      let mut parts = full_path
+        .ancestors()
+        .map(|p| p.to_path_buf())
+        .collect::<Vec<PathBuf>>();
+      parts.pop();
+      parts.reverse();
+      parts
+    } else {
+      vec![]
+    }
+  }
+
+  pub fn get_output_path_parts(
+    input_path: &Path
+  ) -> Vec<PathBuf> {
+    if let (Some(pb), Some(pn)) = (
+      FileDetails::get_output_dir(input_path),
+      FileDetails::get_output_name(input_path),
+    ) {
+      let full_path = pb.join(pn);
+      let mut parts = full_path
+        .ancestors()
+        .map(|p| p.to_path_buf())
+        .collect::<Vec<PathBuf>>();
+      parts.pop();
+      parts.reverse();
+      parts
+    } else {
+      vec![]
     }
   }
 
