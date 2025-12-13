@@ -7,6 +7,8 @@ pub struct FolderDetails {
   pub parent: PathBuf,
   pub name: PathBuf,
   pub folder_parts: Vec<String>,
+  pub path_parts: Vec<String>,
+  pub path_part_strings: Vec<String>,
 }
 
 impl FolderDetails {
@@ -15,6 +17,11 @@ impl FolderDetails {
       folder_parts: FolderDetails::get_folder_parts(
         input_path,
       ),
+      path_parts: FolderDetails::get_path_parts(
+        input_path,
+      ),
+      path_part_strings:
+        FolderDetails::get_path_part_strings(input_path),
       name: match input_path.file_name() {
         Some(path) => PathBuf::from(path),
         None => PathBuf::from(""),
@@ -36,11 +43,30 @@ impl FolderDetails {
   pub fn get_folder_parts(
     input_path: &Path
   ) -> Vec<String> {
-    let mut initial = input_path
+    input_path
       .iter()
       .map(|part| part.to_string_lossy().to_string())
+      .collect::<Vec<String>>()
+  }
+
+  pub fn get_path_parts(
+    input_path: &Path
+  ) -> Vec<String> {
+    input_path
+      .iter()
+      .map(|part| part.to_string_lossy().to_string())
+      .collect::<Vec<String>>()
+  }
+
+  pub fn get_path_part_strings(
+    input_path: &Path
+  ) -> Vec<String> {
+    let mut parts = input_path
+      .ancestors()
+      .map(|part| part.to_string_lossy().to_string())
       .collect::<Vec<String>>();
-    let _ = initial.pop();
-    initial
+    let _ = parts.pop();
+    parts.reverse();
+    parts
   }
 }

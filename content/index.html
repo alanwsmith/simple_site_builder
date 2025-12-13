@@ -1,6 +1,16 @@
 [! extends "_wrappers/main.html" !]
 [! block main !]
 
+<h2>Sub Dir Test</h2>
+[! set sub_dir_test_path = "/sub-dir-test/level-1/level-2/level-3/index.html" !]
+<a href="[@ sub_dir_test_path @]">[@ sub_dir_test_path @]</a>
+
+<h2>file</h2>
+<pre>
+[@ file|tojson(true) @]
+</pre>
+
+
 <h3>TODO</h3>
 <ul>
 <li>Make a demo showing how to use config.json files

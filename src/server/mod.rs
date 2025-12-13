@@ -3,7 +3,7 @@ use anyhow::Result;
 use axum::Router;
 use axum::response::Html;
 use axum::routing::get;
-use std::process::Command;
+// use std::process::Command;
 use tower_http::services::ServeDir;
 use tower_livereload::LiveReloadLayer;
 use tracing::info;
@@ -47,14 +47,14 @@ impl Server {
   }
 }
 
-fn launch_browser(port: u16) -> Result<()> {
-  if !cfg!(debug_assertions) {
-    let args: Vec<String> =
-      vec![format!("http://localhost:{}", port)];
-    Command::new("open").args(args).output()?;
-  }
-  Ok(())
-}
+// fn launch_browser(port: u16) -> Result<()> {
+//   if !cfg!(debug_assertions) {
+//     let args: Vec<String> =
+//       vec![format!("http://localhost:{}", port)];
+//     Command::new("open").args(args).output()?;
+//   }
+//   Ok(())
+// }
 
 async fn missing_page() -> Html<&'static str> {
   Html(
