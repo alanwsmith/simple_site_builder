@@ -1,4 +1,5 @@
 use serde::Serialize;
+use std::fs::File;
 use std::path::Path;
 use std::path::PathBuf;
 use tokio::sync::SemaphorePermit;
@@ -20,6 +21,10 @@ pub struct FileDetails {
   pub extension: Option<String>,
   pub file_move_type: FileMoveType,
   pub path_parts: Vec<String>,
+  pub output_path_string: Option<PathBuf>,
+  pub output_path_parts: Vec<String>,
+  pub output_path_part_strings: Vec<PathBuf>,
+  pub path_part_strings: Vec<String>,
   pub folder: PathBuf,
   pub folder_parts: Vec<String>,
   pub input_path: PathBuf,
@@ -27,6 +32,7 @@ pub struct FileDetails {
   pub output_folder: Option<PathBuf>,
   pub output_name: Option<PathBuf>,
   pub parent_folder: Option<String>,
+  pub parent: Option<PathBuf>,
   pub stem: PathBuf,
 }
 
@@ -38,6 +44,8 @@ impl FileDetails {
       FileDetails::get_file_move_type(input_path);
     let path_parts =
       FileDetails::get_path_parts(input_path);
+    let path_part_strings =
+      FileDetails::get_path_part_strings(input_path);
     let folder = FileDetails::get_input_dir(input_path);
     let folder_parts =
       FileDetails::get_folder_parts(input_path);
@@ -46,6 +54,14 @@ impl FileDetails {
       FileDetails::get_output_dir(input_path);
     let output_name =
       FileDetails::get_output_name(input_path);
+    let output_path_parts =
+      FileDetails::get_output_path_parts(input_path);
+    let output_path_part_strings =
+      FileDetails::get_output_path_part_strings(
+        input_path,
+      );
+    let output_path_string =
+      FileDetails::get_output_path_string(input_path);
     let parent_folder =
       input_path.parent().and_then(|p| {
         p.file_stem()
@@ -55,15 +71,22 @@ impl FileDetails {
     FileDetails {
       extension,
       file_move_type,
-      path_parts,
       folder,
       folder_parts,
       input_path: input_path.to_path_buf(),
       name,
       output_folder,
       output_name,
-      stem,
+      output_path_part_strings,
+      output_path_parts,
+      output_path_string,
+      parent: input_path
+        .parent()
+        .map(|p| p.to_path_buf()),
       parent_folder,
+      path_part_strings,
+      path_parts,
+      stem,
     }
   }
 
@@ -127,6 +150,18 @@ impl FileDetails {
       }
     }
     FileMoveType::Copy
+  }
+
+  pub fn get_path_part_strings(
+    input_path: &Path
+  ) -> Vec<String> {
+    let mut parts = input_path
+      .ancestors()
+      .map(|part| part.to_string_lossy().to_string())
+      .collect::<Vec<String>>();
+    let _ = parts.pop();
+    parts.reverse();
+    parts
   }
 
   pub fn get_path_parts(
@@ -235,6 +270,70 @@ impl FileDetails {
           Some(input_path.file_name().unwrap().into())
         }
       }
+    }
+  }
+
+  pub fn get_output_path_part_strings(
+    input_path: &Path
+  ) -> Vec<PathBuf> {
+    if let (Some(pb), Some(pn)) = (
+      FileDetails::get_output_dir(input_path),
+      FileDetails::get_output_name(input_path),
+    ) {
+      let full_path = pb.join(pn);
+      let mut parts = full_path
+        .ancestors()
+        .map(|p| p.to_path_buf())
+        .collect::<Vec<PathBuf>>();
+      parts.pop();
+      parts.reverse();
+      parts
+    } else {
+      vec![]
+    }
+  }
+
+  pub fn get_output_path_parts(
+    input_path: &Path
+  ) -> Vec<String> {
+    if let (Some(pb), Some(pn)) = (
+      FileDetails::get_output_dir(input_path),
+      FileDetails::get_output_name(input_path),
+    ) {
+      let full_path = pb.join(pn);
+      let mut parts = full_path
+        .ancestors()
+        .map(|p| p.to_path_buf())
+        .collect::<Vec<PathBuf>>();
+      parts.pop();
+      //parts.reverse();
+
+      let mut new_parts = parts
+        .iter()
+        .map(|p| {
+          p.file_name()
+            .unwrap()
+            .to_string_lossy()
+            .to_string()
+        })
+        .collect::<Vec<String>>();
+      new_parts.reverse();
+      new_parts
+    } else {
+      vec![]
+    }
+  }
+
+  pub fn get_output_path_string(
+    input_path: &Path
+  ) -> Option<PathBuf> {
+    if let (Some(pb), Some(pn)) = (
+      FileDetails::get_output_dir(input_path),
+      FileDetails::get_output_name(input_path),
+    ) {
+      Some(pb.join(pn))
+    } else {
+      FileDetails::get_output_name(input_path)
     }
   }
 
