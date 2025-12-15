@@ -6,6 +6,7 @@ use std::path::PathBuf;
 pub struct FolderDetails {
   pub parent: PathBuf,
   pub name: PathBuf,
+  pub path_string: PathBuf,
   pub folder_parts: Vec<String>,
   pub path_parts: Vec<String>,
   pub path_part_strings: Vec<String>,
@@ -30,6 +31,7 @@ impl FolderDetails {
         Some(path) => PathBuf::from(path),
         None => PathBuf::from(""),
       },
+      path_string: input_path.to_path_buf(),
     }
   }
 

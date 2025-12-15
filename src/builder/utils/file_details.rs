@@ -1,4 +1,5 @@
 use serde::Serialize;
+use std::fs::File;
 use std::path::Path;
 use std::path::PathBuf;
 use tokio::sync::SemaphorePermit;
@@ -20,6 +21,7 @@ pub struct FileDetails {
   pub extension: Option<String>,
   pub file_move_type: FileMoveType,
   pub path_parts: Vec<String>,
+  pub output_path_string: Option<PathBuf>,
   pub output_path_parts: Vec<String>,
   pub output_path_part_strings: Vec<PathBuf>,
   pub path_part_strings: Vec<String>,
@@ -58,6 +60,8 @@ impl FileDetails {
       FileDetails::get_output_path_part_strings(
         input_path,
       );
+    let output_path_string =
+      FileDetails::get_output_path_string(input_path);
     let parent_folder =
       input_path.parent().and_then(|p| {
         p.file_stem()
@@ -75,6 +79,7 @@ impl FileDetails {
       output_name,
       output_path_part_strings,
       output_path_parts,
+      output_path_string,
       parent: input_path
         .parent()
         .map(|p| p.to_path_buf()),
@@ -316,6 +321,19 @@ impl FileDetails {
       new_parts
     } else {
       vec![]
+    }
+  }
+
+  pub fn get_output_path_string(
+    input_path: &Path
+  ) -> Option<PathBuf> {
+    if let (Some(pb), Some(pn)) = (
+      FileDetails::get_output_dir(input_path),
+      FileDetails::get_output_name(input_path),
+    ) {
+      Some(pb.join(pn))
+    } else {
+      FileDetails::get_output_name(input_path)
     }
   }
 
