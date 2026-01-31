@@ -3,7 +3,6 @@ use chrono::{DateTime, Local};
 use port_check::free_local_port_in_range;
 use simple_site_builder::builder::utils::DataNode;
 use simple_site_builder::*;
-// use std::collections::BTreeMap;
 use std::path::PathBuf;
 use tokio::sync::mpsc;
 use tower_livereload::LiveReloadLayer;
@@ -24,16 +23,12 @@ async fn main() -> Result<()> {
     .to_json_dir(&config.json_logs(), LevelFilter::INFO)
     .to_txt_dir(&config.txt_logs(), LevelFilter::INFO)
     .init();
-
   info!("Initilizing");
-
   let port = find_port()?;
   info!("Found port for web server: {}", port);
-
   let live_reload = LiveReloadLayer::new();
   let reloader = live_reload.reloader();
   let (tx, rx) = mpsc::channel::<DateTime<Local>>(32);
-
   let server = Server::new(config.clone(), port);
   let server_handle = tokio::spawn(async move {
     let _ = server.start(live_reload).await;

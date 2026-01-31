@@ -225,10 +225,9 @@ where
       let exts = span.extensions();
       if let Some(fields) =
         exts.get::<FormattedFields<N>>()
+        && !fields.is_empty()
       {
-        if !fields.is_empty() {
-          write!(writer, " {}", &fields.fields)?;
-        }
+        write!(writer, " {}", &fields.fields)?;
       }
     }
     writeln!(writer)?;

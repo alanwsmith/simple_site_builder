@@ -134,15 +134,14 @@ impl FileDetails {
       return FileMoveType::Skip;
     }
     if let Some(ext) = input_path.extension() {
-      if let Some(stem) = input_path.file_stem() {
-        if let Some(ext2) =
+      if let Some(stem) = input_path.file_stem()
+        && let Some(ext2) =
           PathBuf::from(stem).extension()
-        {
-          if ext2 == "on" {
-            return FileMoveType::Transform;
-          } else if ext2 == "off" {
-            return FileMoveType::Copy;
-          }
+      {
+        if ext2 == "on" {
+          return FileMoveType::Transform;
+        } else if ext2 == "off" {
+          return FileMoveType::Copy;
         }
       }
       if transforms.contains(&ext.to_str().unwrap()) {

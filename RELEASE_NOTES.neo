@@ -1,0 +1,30 @@
+-- title
+
+Release Notes
+
+
+-- list
+-- title: Roadmap
+
+- TODO: Add road map items.
+
+
+-- list
+-- title: Version 0.9.7
+
+- Set up the watcher to check for a
+``.git/index.lock`` file. If it exists,
+the hot reload does not trigger. This
+is to prevent builds while git is
+working on the directly. From what I
+can tell this should work, but there
+may be a race condition if multiple
+git processes are run in succession. 
+
+I'll address that if I see it.
+
+- Fixed warnings from ``cargo clippy``
+
+
+
+
