@@ -36,11 +36,24 @@ impl Watcher {
       if !paths.is_empty() {
         let tx3 = tx2.clone();
         tokio::spawn(async move {
-          tx3.send(chrono::Local::now()).await.unwrap();
+          // only send refresh if .git/index.lock does
+          // not exist.
+          let index_lock_file_to_check =
+            PathBuf::from(".git/index.lock");
+          if index_lock_file_to_check
+            .try_exists()
+            .unwrap_or(true)
+          {
+            info!(
+              "no rebuild: .git/index.lock file exist "
+            );
+          } else {
+            tx3.send(chrono::Local::now()).await.unwrap();
+          }
         });
       }
       if action.signals().any(|sig| {
-        // action.signals() check required for Ctrl+c
+        // action.signals() is check required for Ctrl+c to work
         sig == Signal::Interrupt
           || sig == Signal::Terminate
       }) {
@@ -78,14 +91,12 @@ fn filter_paths(events: &Arc<[Event]>) -> Vec<PathBuf> {
           for component in path.components() {
             if let std::path::Component::Normal(part) =
               component
-            {
-              if part
+              && part
                 .display()
                 .to_string()
                 .starts_with(".")
-              {
-                return None;
-              }
+            {
+              return None;
             }
           }
           if let Some(file_name_path) = path.file_name() {
