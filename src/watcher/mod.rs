@@ -6,6 +6,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::mpsc::Sender;
 use tracing::info;
+use tracing::warn;
 use watchexec::Watchexec;
 use watchexec_events::filekind::*;
 use watchexec_events::{Event, Tag};
@@ -44,8 +45,8 @@ impl Watcher {
             .try_exists()
             .unwrap_or(true)
           {
-            info!(
-              "No rebuild: .git/index.lock file exist "
+            warn!(
+              ".git/index.lock file exists - Rebuild halted."
             );
           } else {
             info!("Caught file change");
