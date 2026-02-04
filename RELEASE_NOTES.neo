@@ -8,6 +8,14 @@ Release Notes
 
 - TODO: Add road map items.
 
+-- list
+-- title: Version 0.9.8
+
+- Moved to pollwatcher for the
+watchexec file watcher to see
+if that helps with sites 
+with a large number of files. 
+
 
 -- list
 -- title: Version 0.9.7

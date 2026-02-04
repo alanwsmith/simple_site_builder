@@ -4,6 +4,7 @@ use chrono::{DateTime, Local};
 use itertools::Itertools;
 use std::path::PathBuf;
 use std::sync::Arc;
+use std::time::Duration;
 use tokio::sync::mpsc::Sender;
 use tracing::info;
 use watchexec::Watchexec;
@@ -26,6 +27,11 @@ impl Watcher {
   pub async fn start(&self) -> Result<()> {
     info!("Starting watcher");
     let wx = Watchexec::default();
+    wx.config.file_watcher(
+      watchexec::sources::fs::Watcher::Poll(
+        Duration::from_millis(100),
+      ),
+    );
     wx.config.pathset(vec![
       self.config.content_root.display().to_string(),
       self.config.support_dir().display().to_string(),
@@ -45,9 +51,10 @@ impl Watcher {
             .unwrap_or(true)
           {
             info!(
-              "no rebuild: .git/index.lock file exist "
+              "No rebuild: .git/index.lock file exist "
             );
           } else {
+            info!("Caught file change");
             tx3.send(chrono::Local::now()).await.unwrap();
           }
         });
