@@ -24,21 +24,20 @@ to `ssb-0-VERSION`.
 
 - Run `build-release`
 
-- Copy the output from 
-
-./content/releases/.../0.VERSION.PATH/ssb-0-VESRION
-
-to:
-
-~/binaries/ssb-0-VERSION
-
-- Update the symbolic link
-to the binary. 
-
 - commit the changes to the repo 
 (since the binaries are stored in the repo)
 
-- deploy the site (e.g. ``push updated to version 0.9.7``)
+- Copy the output from 
+
+    ./content/releases/.../0.VERSION.PATH/ssb-0-VERSION
+
+    to:
+
+    ~/binaries/ssb-0-VERSION
+
+- Update the symbolic link to the binary. 
+
+- deploy the site (e.g. ``push updated to version 0.9.X``)
 
 
 
