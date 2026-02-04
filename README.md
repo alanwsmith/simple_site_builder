@@ -17,10 +17,10 @@ details at [ssb.alanwsmith.com](https://ssb.alanwsmith.com/)
     If it's a big change, do the second
     number in the rust tradition:
     x.UPDATE.x
-
-- If it's a big bump, also update
-the `[[bin]] name` in Cargo.toml
-to `ssb-0-VERSION`. 
+    
+    If it's a big bump, also update
+    the `[[bin]] name` in Cargo.toml
+    to `ssb-0-VERSION`. 
 
 - Run `build-release`
 
