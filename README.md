@@ -17,10 +17,10 @@ details at [ssb.alanwsmith.com](https://ssb.alanwsmith.com/)
     If it's a big change, do the second
     number in the rust tradition:
     x.UPDATE.x
-
-- If it's a big bump, also update
-the `[[bin]] name` in Cargo.toml
-to `ssb-0-VERSION`. 
+    
+    If it's a big bump, also update
+    the `[[bin]] name` in Cargo.toml
+    to `ssb-0-VERSION`. 
 
 - Run `build-release`
 
@@ -35,7 +35,9 @@ to `ssb-0-VERSION`.
 
     ~/binaries/ssb-0-VERSION
 
-- Update the symbolic link to the binary. 
+- You shouldn't need to update the symbolic link. 
+Just restart any processing you have running
+and they'll get the updated binary. 
 
 - deploy the site (e.g. ``push updated to version 0.9.X``)
 
