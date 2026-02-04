@@ -35,7 +35,9 @@ details at [ssb.alanwsmith.com](https://ssb.alanwsmith.com/)
 
     ~/binaries/ssb-0-VERSION
 
-- Update the symbolic link to the binary. 
+- You shouldn't need to update the symbolic link. 
+Just restart any processing you have running
+and they'll get the updated binary. 
 
 - deploy the site (e.g. ``push updated to version 0.9.X``)
 
