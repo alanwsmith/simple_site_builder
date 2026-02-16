@@ -31,6 +31,7 @@
 <h2>Sub Dir Test</h2>
 <a href="&#x2f;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&#x2f;index.html">&#x2f;sub-dir-test&#x2f;level-1&#x2f;level-2&#x2f;level-3&#x2f;index.html</a>
 
+
 <h2>file</h2>
 <pre>
 {
@@ -60,7 +61,6 @@
   "stem": "index"
 }
 </pre>
-
 
 <h3>TODO</h3>
 <ul>
@@ -1894,6 +1894,32 @@ Could not load file to highlight: _includes/test-highlight-with-find-replace.js
       "v0.9.1.md"
     ],
     "stem": "v0.9.1"
+  },
+  {
+    "extension": "md",
+    "file_move_type": "Skip",
+    "folder": "_release-notes",
+    "folder_parts": [
+      "_release-notes"
+    ],
+    "input_path": "_release-notes/v0.9.10.md",
+    "name": "v0.9.10.md",
+    "output_folder": null,
+    "output_name": null,
+    "output_path_part_strings": [],
+    "output_path_parts": [],
+    "output_path_string": null,
+    "parent": "_release-notes",
+    "parent_folder": "_release-notes",
+    "path_part_strings": [
+      "_release-notes",
+      "_release-notes/v0.9.10.md"
+    ],
+    "path_parts": [
+      "_release-notes",
+      "v0.9.10.md"
+    ],
+    "stem": "v0.9.10"
   },
   {
     "extension": "md",
@@ -4194,7 +4220,10 @@ filter</p>
 that is the same as <code>folder_parts</code>, but includes
 the file name.</li>
 </ul>
-<h3>Version 0.9.1</h3>
+<h2>Version 0.9.10</h2>
+<ul>
+<li>asdf</li>
+</ul><h3>Version 0.9.1</h3>
 <ul>
 <li>
 <p>Switch <code>highlight_css</code>, <code>highlight_html</code>, etc...
@@ -4404,10 +4433,30 @@ features and functionality.</p>
 </ul>
 <h2>Roadmap</h2>
 <ul>
-<li>Parse HTML based tags with
+<li>
+<p>TODO: Update so that leading
+single underscore dirs and files
+get published but two or more
+are only used internally
+(i.e. <code>_example</code> goes to prod,
+but <code>__example</code> does not)</p>
+</li>
+<li>
+<p>TODO: Update so that multiple
+changes debounce properly with
+large directory moves. Thinking
+the best way to do this might
+be to push change requests
+onto an array and then just clear
+the array on each run.</p>
+</li>
+<li>
+<p>Parse HTML based tags with
 <code>Hinja</code> - MiniJinja, but with HTML
-tags</li>
-</ul></details>
+tags</p>
+</li>
+</ul>
+</details>
 
 <h2>JSON Data Test</h2>
 
@@ -4466,6 +4515,7 @@ Processing .txt files with MiniJinja Worked!
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.8.5.md&quot;, &quot;name&quot;: &quot;v0.8.5.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;output_path_part_strings&quot;: [], &quot;output_path_parts&quot;: [], &quot;output_path_string&quot;: none, &quot;parent&quot;: &quot;_release-notes&quot;, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_part_strings&quot;: [&quot;_release-notes&quot;, &quot;_release-notes&#x2f;v0.8.5.md&quot;], &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.8.5.md&quot;], &quot;stem&quot;: &quot;v0.8.5&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.0.md&quot;, &quot;name&quot;: &quot;v0.9.0.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;output_path_part_strings&quot;: [], &quot;output_path_parts&quot;: [], &quot;output_path_string&quot;: none, &quot;parent&quot;: &quot;_release-notes&quot;, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_part_strings&quot;: [&quot;_release-notes&quot;, &quot;_release-notes&#x2f;v0.9.0.md&quot;], &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.0.md&quot;], &quot;stem&quot;: &quot;v0.9.0&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.1.md&quot;, &quot;name&quot;: &quot;v0.9.1.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;output_path_part_strings&quot;: [], &quot;output_path_parts&quot;: [], &quot;output_path_string&quot;: none, &quot;parent&quot;: &quot;_release-notes&quot;, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_part_strings&quot;: [&quot;_release-notes&quot;, &quot;_release-notes&#x2f;v0.9.1.md&quot;], &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.1.md&quot;], &quot;stem&quot;: &quot;v0.9.1&quot;}
+  <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.10.md&quot;, &quot;name&quot;: &quot;v0.9.10.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;output_path_part_strings&quot;: [], &quot;output_path_parts&quot;: [], &quot;output_path_string&quot;: none, &quot;parent&quot;: &quot;_release-notes&quot;, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_part_strings&quot;: [&quot;_release-notes&quot;, &quot;_release-notes&#x2f;v0.9.10.md&quot;], &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.10.md&quot;], &quot;stem&quot;: &quot;v0.9.10&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.2.md&quot;, &quot;name&quot;: &quot;v0.9.2.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;output_path_part_strings&quot;: [], &quot;output_path_parts&quot;: [], &quot;output_path_string&quot;: none, &quot;parent&quot;: &quot;_release-notes&quot;, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_part_strings&quot;: [&quot;_release-notes&quot;, &quot;_release-notes&#x2f;v0.9.2.md&quot;], &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.2.md&quot;], &quot;stem&quot;: &quot;v0.9.2&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.3.md&quot;, &quot;name&quot;: &quot;v0.9.3.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;output_path_part_strings&quot;: [], &quot;output_path_parts&quot;: [], &quot;output_path_string&quot;: none, &quot;parent&quot;: &quot;_release-notes&quot;, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_part_strings&quot;: [&quot;_release-notes&quot;, &quot;_release-notes&#x2f;v0.9.3.md&quot;], &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.3.md&quot;], &quot;stem&quot;: &quot;v0.9.3&quot;}
   <li>{&quot;extension&quot;: &quot;md&quot;, &quot;file_move_type&quot;: &quot;Skip&quot;, &quot;folder&quot;: &quot;_release-notes&quot;, &quot;folder_parts&quot;: [&quot;_release-notes&quot;], &quot;input_path&quot;: &quot;_release-notes&#x2f;v0.9.4.md&quot;, &quot;name&quot;: &quot;v0.9.4.md&quot;, &quot;output_folder&quot;: none, &quot;output_name&quot;: none, &quot;output_path_part_strings&quot;: [], &quot;output_path_parts&quot;: [], &quot;output_path_string&quot;: none, &quot;parent&quot;: &quot;_release-notes&quot;, &quot;parent_folder&quot;: &quot;_release-notes&quot;, &quot;path_part_strings&quot;: [&quot;_release-notes&quot;, &quot;_release-notes&#x2f;v0.9.4.md&quot;], &quot;path_parts&quot;: [&quot;_release-notes&quot;, &quot;v0.9.4.md&quot;], &quot;stem&quot;: &quot;v0.9.4&quot;}

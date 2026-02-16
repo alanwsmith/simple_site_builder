@@ -14,6 +14,8 @@ use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 use tokio::sync::mpsc::Receiver;
+use tokio::time::Duration;
+use tokio::time::sleep;
 use tower_livereload::Reloader;
 use tracing::info;
 
@@ -23,6 +25,7 @@ pub struct Builder {
   pub rx: Receiver<DateTime<Local>>,
   pub port: u16,
   pub json: DataNode,
+  pub last_build_started: chrono::DateTime<Local>,
 }
 
 impl Builder {
@@ -39,51 +42,60 @@ impl Builder {
       rx,
       port,
       json,
+      last_build_started: chrono::prelude::Local::now(),
     }
   }
 
-  pub fn build_site(&mut self) -> Result<()> {
-    let _ = clearscreen::clear();
-    self.json = DataNode::new();
-    info!("Building site on port {}.", &self.port);
-    empty_dir(&self.config.build_files_dir())?;
-    empty_dir(&self.config.output_root)?;
-    info!("Initial Pass: Loading File List...");
-    let file_list =
-      get_file_list(&self.config.content_root);
-    info!("Initial Pass: Copying files...");
-    let _ = &self.copy_files(
-      &file_list,
-      &self.config.content_root.clone(),
-      &self.config.build_files_dir(),
-    )?;
-    info!("Initial Pass: Transform Files...");
-    let _ = &self.transform_html_and_txt(
-      &file_list,
-      &self.config.content_root.clone(),
-      &self.config.build_files_dir(),
-    )?;
-    info!("Output Pass: Loading File List...");
-    let output_file_list =
-      get_file_list(&self.config.build_files_dir());
-    info!("Initial Pass: Copying files...");
-    let _ = &self.copy_files(
-      &output_file_list,
-      &self.config.build_files_dir(),
-      &self.config.output_root.clone(),
-    )?;
-    info!("Initial Pass: Transform Files...");
-    let _ = &self.transform_html_and_txt(
-      &output_file_list,
-      &self.config.build_files_dir(),
-      &self.config.output_root.clone(),
-    )?;
-    empty_dir(&self.config.build_files_dir())?;
-    info!(
-      r#"Build complete. Reloading browser on port {}."#,
-      self.port
-    );
-    let _ = &self.reloader.reload();
+  pub async fn build_site(
+    &mut self,
+    ts: chrono::DateTime<chrono::Local>,
+  ) -> Result<()> {
+    if ts > self.last_build_started {
+      let _ = clearscreen::clear();
+      info!("Building site on port {}.", &self.port);
+      sleep(Duration::from_millis(200)).await;
+      self.last_build_started =
+        chrono::prelude::Local::now();
+      self.json = DataNode::new();
+      empty_dir(&self.config.build_files_dir())?;
+      empty_dir(&self.config.output_root)?;
+      info!("Initial Pass: Loading File List...");
+      let file_list =
+        get_file_list(&self.config.content_root);
+      info!("Initial Pass: Copying files...");
+      let _ = &self.copy_files(
+        &file_list,
+        &self.config.content_root.clone(),
+        &self.config.build_files_dir(),
+      )?;
+      info!("Initial Pass: Transform Files...");
+      let _ = &self.transform_html_and_txt(
+        &file_list,
+        &self.config.content_root.clone(),
+        &self.config.build_files_dir(),
+      )?;
+      info!("Output Pass: Loading File List...");
+      let output_file_list =
+        get_file_list(&self.config.build_files_dir());
+      info!("Initial Pass: Copying files...");
+      let _ = &self.copy_files(
+        &output_file_list,
+        &self.config.build_files_dir(),
+        &self.config.output_root.clone(),
+      )?;
+      info!("Initial Pass: Transform Files...");
+      let _ = &self.transform_html_and_txt(
+        &output_file_list,
+        &self.config.build_files_dir(),
+        &self.config.output_root.clone(),
+      )?;
+      empty_dir(&self.config.build_files_dir())?;
+      info!(
+        r#"Build complete. Reloading browser on port {}."#,
+        self.port
+      );
+      let _ = &self.reloader.reload();
+    }
     Ok(())
   }
 
@@ -174,9 +186,11 @@ impl Builder {
 
   pub async fn start(&mut self) -> Result<()> {
     info!("Starting builder");
-    let _ = &self.build_site();
-    while (self.rx.recv().await).is_some() {
-      let _ = &self.build_site();
+    let _ = &self
+      .build_site(chrono::prelude::Local::now())
+      .await;
+    while let Some(ts) = self.rx.recv().await {
+      let _ = &self.build_site(ts).await;
     }
     Ok(())
   }
