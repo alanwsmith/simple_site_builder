@@ -1,5 +1,4 @@
 use crate::builder::trim_empty_leading_lines;
-use minijinja::Value;
 use syntect::html::{ClassStyle, ClassedHTMLGenerator};
 use syntect::parsing::SyntaxSet;
 use syntect::util::LinesWithEndings;

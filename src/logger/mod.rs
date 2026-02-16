@@ -214,7 +214,7 @@ where
   ) -> Result {
     let meta = event.metadata();
 
-    writeln!(writer, "#####")?;
+    // writeln!(writer, "#####")?;
 
     ctx.format_fields(writer.by_ref(), event)?;
     for span in ctx

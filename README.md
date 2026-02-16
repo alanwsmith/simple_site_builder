@@ -9,7 +9,11 @@ details at [ssb.alanwsmith.com](https://ssb.alanwsmith.com/)
 
 ## Deploying a New Version
 
+- Finalize Release Notes for the new version.
+
 - Update the version number in Cargo.toml
+for both the `package/version` and 
+the `bin/name` field.
 
     If the API doesn't change make it
     a patch level update: x.x.PATCH
@@ -17,10 +21,6 @@ details at [ssb.alanwsmith.com](https://ssb.alanwsmith.com/)
     If it's a big change, do the second
     number in the rust tradition:
     x.UPDATE.x
-    
-    If it's a big bump, also update
-    the `[[bin]] name` in Cargo.toml
-    to `ssb-0-VERSION`. 
 
 - Run `build-release`
 
@@ -33,13 +33,11 @@ details at [ssb.alanwsmith.com](https://ssb.alanwsmith.com/)
 
     to:
 
-    ~/binaries/ssb-0-VERSION
+    ~/binaries/ssb-0-VERSION-PATCH
 
-- You shouldn't need to update the symbolic link. 
-Just restart any processing you have running
-and they'll get the updated binary. 
+- Update the symbolic link for `ssb` to point to
+the new binary. 
 
 - deploy the site (e.g. ``push updated to version 0.9.X``)
-
 
 

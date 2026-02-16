@@ -1,5 +1,5 @@
-use markdown::{CompileOptions, Options};
-use std::path::PathBuf;
+// use markdown::{CompileOptions, Options};
+// use std::path::PathBuf;
 
 // TODO: Deprecate in favor of using the filter
 // directly in the .html files for minijinja
