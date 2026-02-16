@@ -1,11 +1,12 @@
 [package]
 name = "simple_site_builder"
 # NOTE: Remember to update release notes
-version = "0.9.9"
+version = "0.9.10"
 edition = "2024"
 
 [[bin]]
-name = "ssb-0-9"
+name = "ssb-0-9-10"
+path = "src/bin/ssb-0-9-x.rs"
 
 [dependencies]
 anyhow = "1.0.99"
