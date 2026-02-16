@@ -1,4 +1,3 @@
-#![allow(unused)]
 pub mod prep_build_files;
 pub mod utils;
 
@@ -8,8 +7,6 @@ use anyhow::Result;
 use chrono::{DateTime, Local};
 use minijinja::Value;
 use minijinja::context;
-use serde::Serialize;
-use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;

@@ -1,5 +1,4 @@
 use crate::builder::*;
-use std::path::PathBuf;
 use walkdir::WalkDir;
 
 pub fn get_file_list(

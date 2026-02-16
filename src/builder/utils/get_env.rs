@@ -1,5 +1,4 @@
 use super::block_highlight_filter;
-use super::highlight_code;
 use super::highlight_code_with_safe;
 use super::inline_highlight_filter;
 use super::inline_highlight_function;

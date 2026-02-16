@@ -1,6 +1,4 @@
-#![allow(warnings)]
 use anyhow::{Result, anyhow};
-use axum::Router;
 use chrono::{DateTime, Local};
 use itertools::Itertools;
 use notify::{EventKind, RecursiveMode};
@@ -12,9 +10,8 @@ use simple_site_builder::builder::utils::DataNode;
 use simple_site_builder::*;
 use std::path::PathBuf;
 use tokio::sync::mpsc;
-use tokio::time::{Duration, sleep};
-use tower_http::services::ServeDir;
-use tower_livereload::{LiveReloadLayer, Reloader};
+use tokio::time::Duration;
+use tower_livereload::LiveReloadLayer;
 use tracing::info;
 use tracing::metadata::LevelFilter;
 
