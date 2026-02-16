@@ -77,13 +77,13 @@ impl Builder {
       info!("Output Pass: Loading File List...");
       let output_file_list =
         get_file_list(&self.config.build_files_dir());
-      info!("Initial Pass: Copying files...");
+      info!("Output Pass: Copying files...");
       let _ = &self.copy_files(
         &output_file_list,
         &self.config.build_files_dir(),
         &self.config.output_root.clone(),
       )?;
-      info!("Initial Pass: Transform Files...");
+      info!("Output Pass: Transform Files...");
       let _ = &self.transform_html_and_txt(
         &output_file_list,
         &self.config.build_files_dir(),
