@@ -1,6 +1,8 @@
 pub mod prep_build_files;
+pub mod template_utils;
 pub mod utils;
 
+use self::template_utils::*;
 use self::utils::*;
 use crate::config::Config;
 use anyhow::Result;
@@ -203,6 +205,10 @@ impl Builder {
     env.add_function("highlight_code", highlight_code);
     env.add_function("highlight_file", highlight_file);
     env.add_function("markdown_file", markdown_file);
+    env.add_function(
+      "folders_in_folder",
+      folders_in_folder,
+    );
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
