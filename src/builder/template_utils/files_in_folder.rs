@@ -9,6 +9,12 @@ pub fn files_in_folder(path: &str) -> Vec<String> {
     .into_iter()
     .filter_map(|e| e.ok())
     .filter(|e| e.path().is_file())
-    .map(|e| e.path().to_string_lossy().to_string())
+    .map(|e| {
+      e.path()
+        .strip_prefix("content/")
+        .expect("could not remove 'content' from path")
+        .to_string_lossy()
+        .to_string()
+    })
     .collect::<Vec<_>>()
 }
