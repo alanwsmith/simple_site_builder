@@ -209,6 +209,11 @@ impl Builder {
       "folders_in_folder",
       folders_in_folder,
     );
+    env.add_function(
+      "files_in_folder_with_extension",
+      files_in_folder_with_extension,
+    );
+    env.add_function("files_in_folder", files_in_folder);
     let file_list_as_value =
       Value::from_serialize(file_list);
     let folders_as_value = Value::from_serialize(folders);
