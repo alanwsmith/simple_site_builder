@@ -256,12 +256,11 @@ impl FileDetails {
       None
     } else {
       match input_path.extension() {
-        Some(ext) => {
-          if ext.to_str().unwrap() == "html" {
-            Some(PathBuf::from("index.html"))
-          } else {
-            Some(input_path.file_name().unwrap().into())
-          }
+        Some(ext) if ext.to_str().unwrap() == "html" => {
+          Some(PathBuf::from("index.html"))
+        }
+        Some(_) => {
+          Some(input_path.file_name().unwrap().into())
         }
         None => {
           Some(input_path.file_name().unwrap().into())

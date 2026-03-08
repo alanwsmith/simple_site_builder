@@ -22,6 +22,12 @@ pub fn files_in_folder_with_extension(
       e.path().extension().unwrap_or(OsStr::new(""))
         == extension
     })
-    .map(|e| e.path().to_string_lossy().to_string())
+    .map(|e| {
+      e.path()
+        .strip_prefix("content/")
+        .expect("could not remove 'content' from path")
+        .to_string_lossy()
+        .to_string()
+    })
     .collect::<Vec<_>>()
 }
